@@ -1,7 +1,7 @@
 from __future__ import annotations
-
-import folium
 import pandas as pd
+import geopandas as gpd
+import folium
 
 
 def _icon_color(layer: str) -> str:
@@ -9,19 +9,28 @@ def _icon_color(layer: str) -> str:
     l = (layer or "").strip().lower()
     if l == "existing":
         return "green"
-    if l == "proposed":
+    if "proposed" in l:
         return "blue"
     if l == "denied":
         return "red"
-    return "gray"
+    return "gray" # covers gray case for "atlas" layer
+
+
+def _safe_text(val) -> str:
+    """Convert values to safe display strings for popups."""
+    if val is None:
+        return ""
+    if isinstance(val, float) and pd.isna(val):
+        return ""
+    return str(val)
 
 
 def add_dashed_cluster_circle(
-    fg: folium.FeatureGroup,
-    center: list[float],
-    radius_m: int,
-    label: str,
-    color: str = "purple",
+        fg: folium.FeatureGroup,
+        center: list[float],
+        radius_m: int,
+        label: str,
+        color: str = "purple",
 ) -> None:
     """Add a dashed, semi-transparent circle overlay to a FeatureGroup."""
     folium.Circle(
@@ -36,65 +45,71 @@ def add_dashed_cluster_circle(
     ).add_to(fg)
 
 
-def _safe_text(val) -> str:
-    """Convert values to safe display strings for popups."""
-    if val is None:
-        return ""
-    if isinstance(val, float) and pd.isna(val):
-        return ""
-    return str(val)
-
-
 def build_illinois_map(
-    sites: pd.DataFrame,
-    center: list[float] | None = None,
-    zoom_start: int = 7,
+        sites: pd.DataFrame,
+        counties_layer: gpd.GeoDataFrame | None = None,
+        center: list[float] | None = None,
+        zoom_start: int = 7,
 ) -> folium.Map:
     """
-    Build a Folium map for Illinois data centers with toggles.
-
-    Args:
-        sites: DataFrame of sites (see module docstring for expected columns)
-        center: [lat, lon] map center. Defaults to Illinois center-ish.
-        zoom_start: Initial zoom level.
-
-    Returns:
-        folium.Map
+    Build a Folium map for Illinois data centers with toggles and heat maps.
     """
     if center is None:
         center = [40.0, -89.2]
 
     df = sites.copy()
 
-    # Normalize expected columns if they exist
+    # Data cleaning
     if "layer" in df.columns:
         df["layer"] = df["layer"].astype(str).str.strip().str.lower()
 
-    # Drop rows without coordinates
-    if "lat" not in df.columns or "lon" not in df.columns:
-        raise ValueError("Input dataframe must include 'lat' and 'lon' columns.")
-
     df = df.dropna(subset=["lat", "lon"])
-
-    # Ensure numeric
     df["lat"] = pd.to_numeric(df["lat"], errors="coerce")
     df["lon"] = pd.to_numeric(df["lon"], errors="coerce")
     df = df.dropna(subset=["lat", "lon"])
 
+    # Base Map
     m = folium.Map(
         location=center,
         zoom_start=zoom_start,
-        tiles="OpenStreetMap",
+        tiles="cartodbpositron",
         control_scale=True,
     )
 
-    # Layer toggles
-    layer_existing = folium.FeatureGroup(name="Existing", show=True)
-    layer_proposed = folium.FeatureGroup(name="Proposed / Under Dev", show=True)
-    layer_denied = folium.FeatureGroup(name="Denied", show=True)
+    # --- CHOROPLETH LAYERS (HEAT MAPS) ---
+    if counties_layer is not None:
+        # Poverty Heat Map
+        folium.Choropleth(
+            geo_data=counties_layer,
+            name="Poverty Rate (%)",
+            data=counties_layer,
+            columns=["GEOID", "Poverty_Rate_Percent"],
+            key_on="feature.properties.GEOID",
+            fill_color="YlOrRd",
+            fill_opacity=0.6,
+            line_opacity=0.2,
+            legend_name="Percentage Below Poverty Level",
+            show=False,
+            highlight=True
+        ).add_to(m)
 
-    # Cluster overlays toggle
-    clusters = folium.FeatureGroup(name="Clusters", show=True)
+        # Minority Population Heat Map
+        folium.Choropleth(
+            geo_data=counties_layer,
+            name="Minority Population (%)",
+            data=counties_layer,
+            columns=["GEOID", "Pct_Minority"],
+            key_on="feature.properties.GEOID",
+            fill_color="Purples",
+            fill_opacity=0.6,
+            line_opacity=0.2,
+            legend_name="Minority Population (%)",
+            show=False,
+            highlight=True
+        ).add_to(m)
+
+    # --- CLUSTERS LAYER ---
+    clusters = folium.FeatureGroup(name="Impact Clusters", show=True)
 
     add_dashed_cluster_circle(
         clusters,
@@ -114,51 +129,69 @@ def build_illinois_map(
         radius_m=9000,
         label="DeKalb area cluster (campus expansion + approved proposal corridor)",
     )
-
     clusters.add_to(m)
 
-    # Add markers
+    # --- MARKER LAYERS ---
+    layer_existing = folium.FeatureGroup(name="Existing", show=True)
+    layer_proposed = folium.FeatureGroup(name="Proposed", show=True)
+    layer_denied = folium.FeatureGroup(name="Denied", show=True)
+    layer_atlas = folium.FeatureGroup(name="Atlas (Extras)", show=False)
+
     for _, r in df.iterrows():
         name = _safe_text(r.get("name"))
-        layer = _safe_text(r.get("layer"))
-        operator = _safe_text(r.get("operator"))
-        city = _safe_text(r.get("city"))
-        state = _safe_text(r.get("state"))
+        layer_val = _safe_text(r.get("layer"))
 
-        popup_html = f"""
-        <div style="font-size: 12px;">
-          <b>{name}</b><br>
-          <b>Layer:</b> {layer}<br>
-          <b>Operator:</b> {operator}<br>
-          <b>Location:</b> {city}, {state}<br>
-          <b>Address/Hint:</b> {_safe_text(r.get('address_or_hint'))}<br>
-          <b>Precision:</b> {_safe_text(r.get('location_precision'))}<br><br>
+        # Identify if it's a reserve/atlas data point
+        is_atlas = str(r.get("site_id", "")).__contains__("ATL") or "atlas" in str(r.get("layer"))
 
-          <b>Surroundings:</b> {_safe_text(r.get('surroundings_snapshot'))}<br><br>
-          <b>Community signals:</b> {_safe_text(r.get('community_signals'))}<br><br>
-          <b>Stressors:</b> {_safe_text(r.get('stressors'))}<br><br>
-
-          <b>Sources:</b> {_safe_text(r.get('sources'))}
-        </div>
-        """
-
-        marker = folium.Marker(
-            location=[float(r["lat"]), float(r["lon"])],
-            tooltip=name,
-            popup=folium.Popup(popup_html, max_width=450),
-            icon=folium.Icon(color=_icon_color(layer)),
-        )
-
-        if layer == "existing":
-            marker.add_to(layer_existing)
-        elif layer == "denied":
-            marker.add_to(layer_denied)
+        if is_atlas:
+            # Build simplified marker for atlas sites
+            marker = folium.CircleMarker(
+                location = [r["lat"], r["lon"]],
+                radius = 6,
+                color = "gray",
+                fill = True,
+                popup = f"<b>{r['name']}</b><br><br><b>Source:</b> {_safe_text(r.get('sources'))}",
+            )
+            marker.add_to(layer_atlas)
         else:
-            marker.add_to(layer_proposed)
+            # Build Popup HTML using _safe_text function
+            poverty = _safe_text(r.get('Poverty_Rate_Percent'))
+            minority = _safe_text(r.get('Pct_Minority'))
+            income = _safe_text(r.get('Median_Household_Income'))
+
+            popup_html = f"""
+                    <div style="font-size: 12px; min-width: 200px;">
+                      <b>{name}</b><br>
+                      <b>Status:</b> {layer_val}<br><hr>
+                      <b>Context:</b><br>
+                      • Poverty Rate: {poverty}%<br>
+                      • Median Income: ${income}<br>
+                      • Minority Population: {minority}%<br><br>
+                      <b>Surroundings Snapshot:</b> {_safe_text(r.get('surroundings_snapshot'))} <br>
+                      <b>Stressors:</b> {_safe_text(r.get('stressors'))} <br><br>
+                      <b>Sources:</b> {_safe_text(r.get('sources'))}
+                    </div>
+                    """
+            marker = folium.Marker(
+                location=[float(r["lat"]), float(r["lon"])],
+                tooltip=name,
+                popup=folium.Popup(popup_html, max_width=450),
+                icon=folium.Icon(color=_icon_color(layer_val)),
+            )
+
+            if layer_val == "existing":
+                marker.add_to(layer_existing)
+            elif layer_val == "denied":
+                marker.add_to(layer_denied)
+            else:
+                marker.add_to(layer_proposed)
+
 
     layer_existing.add_to(m)
     layer_proposed.add_to(m)
     layer_denied.add_to(m)
+    layer_atlas.add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
     return m
