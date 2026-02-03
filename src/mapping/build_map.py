@@ -13,7 +13,7 @@ def _icon_color(layer: str) -> str:
         return "blue"
     if l == "denied":
         return "red"
-    return "gray" # covers gray case for "atlas" layer
+    return "gray" # covers gray case for "inventory" layer
 
 
 def _safe_text(val) -> str:
@@ -135,17 +135,17 @@ def build_illinois_map(
     layer_existing = folium.FeatureGroup(name="Existing", show=True)
     layer_proposed = folium.FeatureGroup(name="Proposed", show=True)
     layer_denied = folium.FeatureGroup(name="Denied", show=True)
-    layer_atlas = folium.FeatureGroup(name="Atlas (Extras)", show=False)
+    layer_inventory = folium.FeatureGroup(name="Inventory (Reserve)", show=False)
 
     for _, r in df.iterrows():
         name = _safe_text(r.get("name"))
         layer_val = _safe_text(r.get("layer"))
 
-        # Identify if it's a reserve/atlas data point
-        is_atlas = str(r.get("site_id", "")).__contains__("ATL") or "atlas" in str(r.get("layer"))
+        # Identify if it's a reserve/inv data point
+        is_inv= str(r.get("site_id", "")).__contains__("INV") or "inventory" in str(r.get("layer"))
 
-        if is_atlas:
-            # Build simplified marker for atlas sites
+        if is_inv:
+            # Build simplified marker for inventory sites
             marker = folium.CircleMarker(
                 location = [r["lat"], r["lon"]],
                 radius = 6,
@@ -153,7 +153,7 @@ def build_illinois_map(
                 fill = True,
                 popup = f"<b>{r['name']}</b><br><br><b>Source:</b> {_safe_text(r.get('sources'))}",
             )
-            marker.add_to(layer_atlas)
+            marker.add_to(layer_inventory)
         else:
             # Build Popup HTML using _safe_text function
             poverty = _safe_text(r.get('Poverty_Rate_Percent'))
@@ -168,7 +168,8 @@ def build_illinois_map(
                       • Poverty Rate: {poverty}%<br>
                       • Median Income: ${income}<br>
                       • Minority Population: {minority}%<br><br>
-                      <b>Surroundings Snapshot:</b> {_safe_text(r.get('surroundings_snapshot'))} <br>
+                      <b>Surroundings Snapshot:</b> {_safe_text(r.get('surroundings_snapshot'))} <br><br>
+                      <b>Community Signals:</b> {_safe_text(r.get('community_signals'))} <br><br>
                       <b>Stressors:</b> {_safe_text(r.get('stressors'))} <br><br>
                       <b>Sources:</b> {_safe_text(r.get('sources'))}
                     </div>
@@ -191,7 +192,7 @@ def build_illinois_map(
     layer_existing.add_to(m)
     layer_proposed.add_to(m)
     layer_denied.add_to(m)
-    layer_atlas.add_to(m)
+    layer_inventory.add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
     return m
