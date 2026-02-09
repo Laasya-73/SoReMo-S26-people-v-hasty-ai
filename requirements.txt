@@ -9,3 +9,4 @@ streamlit-folium==0.24.0
 geopandas==1.0.1
 shapely==2.0.6
 pyproj==3.7.0
+matplotlib
