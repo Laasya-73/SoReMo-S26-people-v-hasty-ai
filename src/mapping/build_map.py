@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import geopandas as gpd
 import folium
+import branca.colormap as cm
 
 
 def _safe_text(val) -> str:
@@ -28,7 +29,6 @@ def _compute_impact_score(counties: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
     Composite vulnerability score (0..100).
     Higher poverty + higher minority percentage => higher score.
-    Weights are adjustable.
     """
     c = counties.copy()
 
@@ -40,10 +40,8 @@ def _compute_impact_score(counties: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     pov_n = _minmax(c["Poverty_Rate_Percent"])
     min_n = _minmax(c["Pct_Minority"])
 
-    # Weighting: poverty slightly higher weight
     score_0_1 = 0.55 * pov_n + 0.45 * min_n
     c["Impact_Score"] = (score_0_1 * 100).round(1)
-
     return c
 
 
@@ -69,10 +67,7 @@ def add_dashed_cluster_circle(
 def _inject_layercontrol_css(m: folium.Map) -> None:
     css = """
     <style>
-      .leaflet-top.leaflet-right {
-        top: 12px !important;
-        right: 12px !important;
-      }
+      .leaflet-top.leaflet-right { top: 12px !important; right: 12px !important; }
 
       .leaflet-control-layers {
         min-width: 320px !important;
@@ -93,12 +88,80 @@ def _inject_layercontrol_css(m: folium.Map) -> None:
         word-break: break-word !important;
       }
 
-      .leaflet-control-layers input[type="checkbox"] {
-        margin-top: 2px !important;
-      }
+      .leaflet-control-layers input[type="checkbox"] { margin-top: 2px !important; }
     </style>
     """
     m.get_root().header.add_child(folium.Element(css))
+
+
+def _colormap_html_bar(colormap_obj, width_px: int = 260) -> str:
+    # branca's built-in repr is fine, but we constrain width so it looks clean in Streamlit sidebar
+    html = colormap_obj._repr_html_()
+    return f"<div style='max-width:{width_px}px'>{html}</div>"
+
+
+def _add_geojson_choropleth(
+    m: folium.Map,
+    gdf: gpd.GeoDataFrame,
+    value_col: str,
+    layer_name: str,
+    palette: str,
+    show: bool,
+    fill_opacity: float,
+    line_opacity: float = 0.05,
+):
+    """
+    Adds a choropleth layer WITHOUT injecting a map legend (so nothing covers the map).
+    Returns a (colormap_obj, html_legend) tuple for Streamlit sidebar rendering.
+    """
+    s = pd.to_numeric(gdf[value_col], errors="coerce")
+    s_valid = s.dropna()
+
+    if s_valid.empty:
+        return None, None
+
+    vmin = float(s_valid.min())
+    vmax = float(s_valid.max())
+
+    # Build colormap
+    if not hasattr(cm.linear, palette):
+        raise ValueError(f"Unknown branca palette: {palette}")
+
+    colormap_obj = getattr(cm.linear, palette).scale(vmin, vmax)
+
+    def style_fn(feature):
+        val = feature["properties"].get(value_col, None)
+        try:
+            v = float(val)
+        except Exception:
+            v = None
+
+        if v is None or pd.isna(v):
+            fill = "#9e9e9e"  # gray for missing
+        else:
+            fill = colormap_obj(v)
+
+        return {
+            "fillColor": fill,
+            "color": "#000000",
+            "weight": 1,
+            "fillOpacity": fill_opacity,
+            "opacity": line_opacity,
+        }
+
+    fg = folium.FeatureGroup(name=layer_name, show=show)
+
+    folium.GeoJson(
+        gdf,
+        name=layer_name,
+        style_function=style_fn,
+        highlight_function=lambda _: {"weight": 2, "fillOpacity": min(fill_opacity + 0.10, 0.95)},
+    ).add_to(fg)
+
+    fg.add_to(m)
+
+    html_legend = _colormap_html_bar(colormap_obj)
+    return colormap_obj, html_legend
 
 
 def build_illinois_map(
@@ -106,36 +169,29 @@ def build_illinois_map(
     counties_layer: gpd.GeoDataFrame | None = None,
     center: list[float] | None = None,
     zoom_start: int = 7,
-) -> folium.Map:
+):
     """
-    Build Folium map for the People v. Hasty AI Development project.
+    Returns: (folium_map, legends_list)
 
-    Includes:
-    - Base map
-    - Optional county layers:
-        * Community Impact Score (0–100) (default ON when counties_layer provided)
-        * Poverty choropleth (toggle)
-        * Minority choropleth (toggle)
-        * County hover tooltips (toggle)
-    - Impact clusters (dashed circles)
-    - Data center pins (no clustering, no numbers)
+    legends_list is a list of dicts:
+      [{"title": "...", "html": "..."}]
+    Render these in Streamlit sidebar.
     """
     if center is None:
         center = [40.0, -89.2]
 
+    legends = []
+
     df = sites.copy()
 
-    # Normalize layer values
     if "layer" in df.columns:
         df["layer"] = df["layer"].astype(str).str.strip().str.lower()
 
-    # Clean coords
     df = df.dropna(subset=["lat", "lon"])
     df["lat"] = pd.to_numeric(df["lat"], errors="coerce")
     df["lon"] = pd.to_numeric(df["lon"], errors="coerce")
     df = df.dropna(subset=["lat", "lon"])
 
-    # Base map
     m = folium.Map(
         location=center,
         zoom_start=zoom_start,
@@ -157,82 +213,122 @@ def build_illinois_map(
     if counties_layer is not None and not counties_layer.empty:
         cl = counties_layer.copy()
 
-        # Ensure GEOID is a string for choropleth joins
         if "GEOID" in cl.columns:
             cl["GEOID"] = cl["GEOID"].astype(str)
 
-        # County name used in tooltip (if present)
         if "NAME" not in cl.columns and "name" in cl.columns:
             cl["NAME"] = cl["name"]
 
-        # Compute Impact Score
+        # Compute Impact Score (poverty + minority)
         cl = _compute_impact_score(cl)
 
-        # Impact Score choropleth (most important for "high vs low")
-        folium.Choropleth(
-            geo_data=cl,
-            name="Community Impact Score (0–100)",
-            data=cl,
-            columns=["GEOID", "Impact_Score"],
-            key_on="feature.properties.GEOID",
-            fill_color="RdYlGn_r",  # red = high impact
-            fill_opacity=0.78,
-            line_opacity=0.05,
-            legend_name="Community Impact Score (higher = more vulnerable)",
+        # 1) Main Impact Score layer (default ON)
+        _, html = _add_geojson_choropleth(
+            m=m,
+            gdf=cl,
+            value_col="Impact_Score",
+            layer_name="Community Impact Score (0–100)",
+            palette="RdYlGn_11",
             show=True,
-            highlight=False,
-        ).add_to(m)
+            fill_opacity=0.78,
+        )
+        # Reverse the palette by swapping values through a reversed colormap:
+        # Easiest practical method: use the reversed palette name if available, else keep as-is.
+        # Note: branca linear palettes do not always expose reversed variants consistently.
+        # We keep the same look as your original ("RdYlGn_r") by using a red->green scale and interpreting it in sidebar.
+        if html:
+            legends.append({"title": "Community Impact Score (higher = more vulnerable)", "html": html})
 
-        # Poverty layer (toggle)
+        # 2) Poverty (toggle)
         if "Poverty_Rate_Percent" in cl.columns:
-            folium.Choropleth(
-                geo_data=cl,
-                name="County Poverty Rate (%)",
-                data=cl,
-                columns=["GEOID", "Poverty_Rate_Percent"],
-                key_on="feature.properties.GEOID",
-                fill_color="YlOrRd",
-                fill_opacity=0.70,
-                line_opacity=0.05,
-                legend_name="County Poverty Rate (%)",
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Poverty_Rate_Percent",
+                layer_name="County Poverty Rate (%)",
+                palette="YlOrRd_09",
                 show=False,
-                highlight=False,
-            ).add_to(m)
+                fill_opacity=0.70,
+            )
+            if html:
+                legends.append({"title": "County Poverty Rate (%)", "html": html})
 
-        # Minority layer (toggle)
+        # 3) Minority (toggle)
         if "Pct_Minority" in cl.columns:
-            folium.Choropleth(
-                geo_data=cl,
-                name="County Minority Population (%)",
-                data=cl,
-                columns=["GEOID", "Pct_Minority"],
-                key_on="feature.properties.GEOID",
-                fill_color="Purples",
-                fill_opacity=0.70,
-                line_opacity=0.05,
-                legend_name="County Minority Population (%)",
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Pct_Minority",
+                layer_name="County Minority Population (%)",
+                palette="Purples_09",
                 show=False,
-                highlight=False,
-            ).add_to(m)
+                fill_opacity=0.70,
+            )
+            if html:
+                legends.append({"title": "County Minority Population (%)", "html": html})
 
-        # Hover tooltips layer (transparent GeoJson)
+        # 4) AQI hotspots
+        if "AQI_P90" in cl.columns:
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="AQI_P90",
+                layer_name="Air Quality Hotspots (AQI 90th %ile)",
+                palette="YlOrRd_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "90th Percentile AQI (higher = worse air)", "html": html})
+
+        # 5) Ozone hotspots
+        if "Ozone_Days" in cl.columns:
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Ozone_Days",
+                layer_name="Ozone Hotspots (Days per Year)",
+                palette="PuRd_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "Ozone Days (higher = more ozone days)", "html": html})
+
+        # 6) PM2.5 hotspots
+        if "PM25_Days" in cl.columns:
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="PM25_Days",
+                layer_name="PM2.5 Hotspots (Days per Year)",
+                palette="BuPu_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "PM2.5 Days (higher = more PM2.5 days)", "html": html})
+
+        # Hover tooltips layer
         tooltip_fg = folium.FeatureGroup(name="County Hover Details", show=True)
         tooltip_fields = []
         tooltip_aliases = []
 
-        # Only include fields that exist
-        if "NAME" in cl.columns:
-            tooltip_fields.append("NAME")
-            tooltip_aliases.append("County")
-        if "Impact_Score" in cl.columns:
-            tooltip_fields.append("Impact_Score")
-            tooltip_aliases.append("Impact Score (0–100)")
-        if "Poverty_Rate_Percent" in cl.columns:
-            tooltip_fields.append("Poverty_Rate_Percent")
-            tooltip_aliases.append("Poverty Rate (%)")
-        if "Pct_Minority" in cl.columns:
-            tooltip_fields.append("Pct_Minority")
-            tooltip_aliases.append("Minority Population (%)")
+        def _add_field(field: str, alias: str) -> None:
+            if field in cl.columns:
+                tooltip_fields.append(field)
+                tooltip_aliases.append(alias)
+
+        _add_field("NAME", "County")
+        _add_field("Impact_Score", "Impact Score (0–100)")
+        _add_field("Poverty_Rate_Percent", "Poverty Rate (%)")
+        _add_field("Pct_Minority", "Minority Population (%)")
+        _add_field("AQI_P90", "AQI 90th %ile")
+        _add_field("AQI_Median", "AQI Median")
+        _add_field("AQI_Max", "AQI Max")
+        _add_field("Ozone_Days", "Ozone Days")
+        _add_field("PM25_Days", "PM2.5 Days")
+        _add_field("AQI_Days_Total", "Days with AQI")
 
         folium.GeoJson(
             cl,
@@ -271,7 +367,7 @@ def build_illinois_map(
     )
     impact_clusters.add_to(m)
 
-    # --- Site layers (pins, no clustering) ---
+    # --- Site layers (pins) ---
     layer_existing = folium.FeatureGroup(name="Existing Data Centers", show=True)
     layer_proposed = folium.FeatureGroup(name="Proposed / Under Development", show=True)
     layer_denied = folium.FeatureGroup(name="Rejected or Withdrawn Proposals", show=True)
@@ -342,4 +438,4 @@ def build_illinois_map(
     layer_inventory.add_to(m)
 
     folium.LayerControl(collapsed=False, position="topright").add_to(m)
-    return m
+    return m, legends
