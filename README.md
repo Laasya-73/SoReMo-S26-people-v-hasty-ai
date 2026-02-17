@@ -35,6 +35,49 @@ A small Streamlit app displays the same map interactively and adds:
 - a **filter** by layer (existing, proposed, denied)
 - **jump views** (Illinois, Chicago core, Elk Grove cluster, DeKalb cluster, Naperville denied site)
 
+### 3) County context and environmental overlays
+The map now includes optional contextual layers to help interpret potential community impact:
+
+County-level overlays (toggleable):
+
+- Community Impact Score (poverty + minority composite index)
+- County poverty rate (%)
+- Minority population (%)
+- Air quality hotspot indicators
+- AQI 90th percentile
+- Ozone days per year
+- PM2.5 days per year
+
+These layers allow early exploratory analysis of possible environmental justice patterns around data center locations.
+
+Hovering over counties displays detailed contextual metrics.
+
+### 4) Sidebar legends instead of map legends (NEW)
+Map legends are now rendered in the Streamlit sidebar instead of directly on the map. This improves readability and prevents legends from covering map regions.
+
+The sidebar legends correspond exactly to the active choropleth layers.
+
+### 5) AQI data integration
+
+County air quality data is now automatically merged from:
+
+```bash
+data/raw/annual_aqi_by_county_2025.csv
+```
+
+Latest available year is detected dynamically if multiple years exist.
+
+Metrics currently used:
+- AQI 90th percentile
+- Median AQI
+- Max AQI
+- Ozone days
+- PM2.5 days
+- Total AQI reporting days
+
+This helps contextualize environmental exposure near proposed infrastructure.
+
+
 ---
 
 ## Tech stack used (so far)
@@ -46,9 +89,13 @@ A small Streamlit app displays the same map interactively and adds:
 - `folium` for interactive mapping and layer controls
 - `streamlit` for a simple interactive web UI
 - `streamlit-folium` to embed Folium maps inside Streamlit
+- `geopandas` for county boundaries and spatial joins
+- `branca` for choropleth color scales and legend rendering
 
-Planned later (not required for v1):
-- `geopandas`, `shapely`, `pyproj` for census tracts, EJ overlays, choropleths
+Planned later:
+- census tract overlays
+- environmental justice datasets
+- infrastructure proximity analysis
 
 ---
 
@@ -59,9 +106,9 @@ SoReMo-S26-people-v-hasty-ai/
   app/
     streamlit_app.py             # Streamlit UI for the interactive map
   data/
-    raw/                         # reserved for downloaded datasets later
-    processed/
-      il_sites.csv               # main dataset (15 sites currently)
+    boundaries/                  # Illinois county shapefile (required for county overlays)
+    raw/                         # reserved for downloaded datasets
+    processed/                   # Datasets used by the app
   notebooks/
     01_build_map_folium.ipynb    # notebook version of map build + export
   outputs/
@@ -79,23 +126,6 @@ SoReMo-S26-people-v-hasty-ai/
   .gitignore
   README.md
 ```
----
-
-## Data source used by the map
-
-The map reads:
-
-```data/processed/il_sites.csv```
-
-
-This file contains:
-
-- 7 existing Illinois sites  
-- 7 proposed or under-development sites  
-- 1 denied site (Naperville)
-
-Some points are marked as `approx` because the public sources do not provide a single clean address yet  
-(example: Stream Chicago I vs II). These can be refined later.
 
 ---
 
