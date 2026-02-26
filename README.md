@@ -47,6 +47,9 @@ County-level overlays (toggleable):
 - AQI 90th percentile
 - Ozone days per year
 - PM2.5 days per year
+- Energy Burden
+- Average annual household energy cost
+- Electricity Use (MWh per capita)
 
 These layers allow early exploratory analysis of possible environmental justice patterns around data center locations.
 
@@ -77,6 +80,24 @@ Metrics currently used:
 
 This helps contextualize environmental exposure near proposed infrastructure.
 
+### 6) Energy and Infrastructure Burden Layers
+
+Energy vulnerability context has been added using two datasets:
+
+```bash
+data/raw/2016cityandcountyenergyprofiles.xlsb
+data/raw/LEADTool_Data Counties.csv
+```
+
+LEAD Tool county dataset:
+- Energy burden (% of household income)
+- Average annual household energy cost
+- Household-level economic indicators
+
+County energy consumption profiles:
+- Electricity consumption per capita (MWh)
+
+These layers help explore how energy-intensive infrastructure may intersect with existing community energy burdens.
 
 ---
 
@@ -91,6 +112,9 @@ This helps contextualize environmental exposure near proposed infrastructure.
 - `streamlit-folium` to embed Folium maps inside Streamlit
 - `geopandas` for county boundaries and spatial joins
 - `branca` for choropleth color scales and legend rendering
+
+**Additional dependency:**
+- pyxlsb (for reading energy profile XLSB datasets)
 
 Planned later:
 - census tract overlays
@@ -167,11 +191,13 @@ This generates an HTML file you can open in any browser.
 ```bash
 python -m src.make_map
 ```
-Output:
+This produces:
 
-```outputs/maps/illinois_datacenters_map.html```
+- ```outputs/maps/illinois_datacenters_map.html``` → Interactive map only  
+- ```outputs/maps/legends.html``` → Choropleth legends
+- ```outputs/maps/viewer.html``` → Combined layout (legends on the left, map on the right)
 
-Open it by double clicking the file or dragging it into a browser.
+Open ```viewer.html``` (by double clicking the file or dragging it into a browser) for the cleanest presentation.
 
 ## Option B: Run the Streamlit interactive app
 

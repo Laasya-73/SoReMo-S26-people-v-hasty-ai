@@ -1,3 +1,6 @@
+# ============================================
+# src/mapping/build_map.py  (FULL UPDATED FILE)
+# ============================================
 from __future__ import annotations
 
 import pandas as pd
@@ -95,7 +98,6 @@ def _inject_layercontrol_css(m: folium.Map) -> None:
 
 
 def _colormap_html_bar(colormap_obj, width_px: int = 260) -> str:
-    # branca's built-in repr is fine, but we constrain width so it looks clean in Streamlit sidebar
     html = colormap_obj._repr_html_()
     return f"<div style='max-width:{width_px}px'>{html}</div>"
 
@@ -114,16 +116,17 @@ def _add_geojson_choropleth(
     Adds a choropleth layer WITHOUT injecting a map legend (so nothing covers the map).
     Returns a (colormap_obj, html_legend) tuple for Streamlit sidebar rendering.
     """
+    if value_col not in gdf.columns:
+        return None, None
+
     s = pd.to_numeric(gdf[value_col], errors="coerce")
     s_valid = s.dropna()
-
     if s_valid.empty:
         return None, None
 
     vmin = float(s_valid.min())
     vmax = float(s_valid.max())
 
-    # Build colormap
     if not hasattr(cm.linear, palette):
         raise ValueError(f"Unknown branca palette: {palette}")
 
@@ -137,7 +140,7 @@ def _add_geojson_choropleth(
             v = None
 
         if v is None or pd.isna(v):
-            fill = "#9e9e9e"  # gray for missing
+            fill = "#9e9e9e"
         else:
             fill = colormap_obj(v)
 
@@ -180,8 +183,7 @@ def build_illinois_map(
     if center is None:
         center = [40.0, -89.2]
 
-    legends = []
-
+    legends: list[dict] = []
     df = sites.copy()
 
     if "layer" in df.columns:
@@ -219,8 +221,23 @@ def build_illinois_map(
         if "NAME" not in cl.columns and "name" in cl.columns:
             cl["NAME"] = cl["name"]
 
-        # Compute Impact Score (poverty + minority)
         cl = _compute_impact_score(cl)
+
+        # --- Clean, readable display columns for legends ---
+        if "Energy_Burden_PctIncome" in cl.columns:
+            cl["Energy_Burden_PctIncome_disp"] = pd.to_numeric(
+                cl["Energy_Burden_PctIncome"], errors="coerce"
+            ).round(1)
+
+        if "Avg_Annual_Energy_Cost_USD" in cl.columns:
+            cl["Avg_Annual_Energy_Cost_USD_disp"] = pd.to_numeric(
+                cl["Avg_Annual_Energy_Cost_USD"], errors="coerce"
+            ).round(0)
+
+        if "Elec_Consumption_MWh_perCapita" in cl.columns:
+            cl["Elec_Consumption_MWh_perCapita_disp"] = pd.to_numeric(
+                cl["Elec_Consumption_MWh_perCapita"], errors="coerce"
+            ).round(2)
 
         # 1) Main Impact Score layer (default ON)
         _, html = _add_geojson_choropleth(
@@ -232,87 +249,120 @@ def build_illinois_map(
             show=True,
             fill_opacity=0.78,
         )
-        # Reverse the palette by swapping values through a reversed colormap:
-        # Easiest practical method: use the reversed palette name if available, else keep as-is.
-        # Note: branca linear palettes do not always expose reversed variants consistently.
-        # We keep the same look as your original ("RdYlGn_r") by using a red->green scale and interpreting it in sidebar.
         if html:
             legends.append({"title": "Community Impact Score (higher = more vulnerable)", "html": html})
 
         # 2) Poverty (toggle)
-        if "Poverty_Rate_Percent" in cl.columns:
-            _, html = _add_geojson_choropleth(
-                m=m,
-                gdf=cl,
-                value_col="Poverty_Rate_Percent",
-                layer_name="County Poverty Rate (%)",
-                palette="YlOrRd_09",
-                show=False,
-                fill_opacity=0.70,
-            )
-            if html:
-                legends.append({"title": "County Poverty Rate (%)", "html": html})
+        _, html = _add_geojson_choropleth(
+            m=m,
+            gdf=cl,
+            value_col="Poverty_Rate_Percent",
+            layer_name="County Poverty Rate (%)",
+            palette="YlOrRd_09",
+            show=False,
+            fill_opacity=0.70,
+        )
+        if html:
+            legends.append({"title": "County Poverty Rate (%) (higher = more poverty)", "html": html})
 
         # 3) Minority (toggle)
-        if "Pct_Minority" in cl.columns:
-            _, html = _add_geojson_choropleth(
-                m=m,
-                gdf=cl,
-                value_col="Pct_Minority",
-                layer_name="County Minority Population (%)",
-                palette="Purples_09",
-                show=False,
-                fill_opacity=0.70,
-            )
-            if html:
-                legends.append({"title": "County Minority Population (%)", "html": html})
+        _, html = _add_geojson_choropleth(
+            m=m,
+            gdf=cl,
+            value_col="Pct_Minority",
+            layer_name="County Minority Population (%)",
+            palette="Purples_09",
+            show=False,
+            fill_opacity=0.70,
+        )
+        if html:
+            legends.append({"title": "County Minority Population (%) (higher = more minority population)", "html": html})
 
         # 4) AQI hotspots
-        if "AQI_P90" in cl.columns:
+        _, html = _add_geojson_choropleth(
+            m=m,
+            gdf=cl,
+            value_col="AQI_P90",
+            layer_name="Air Quality Hotspots (AQI 90th %ile)",
+            palette="YlOrRd_09",
+            show=False,
+            fill_opacity=0.75,
+        )
+        if html:
+            legends.append({"title": "90th Percentile AQI (higher = worse air)", "html": html})
+
+        # 5) Ozone hotspots
+        _, html = _add_geojson_choropleth(
+            m=m,
+            gdf=cl,
+            value_col="Ozone_Days",
+            layer_name="Ozone Hotspots (Days per Year)",
+            palette="PuRd_09",
+            show=False,
+            fill_opacity=0.75,
+        )
+        if html:
+            legends.append({"title": "Ozone Days (higher = more ozone days)", "html": html})
+
+        # 6) PM2.5 hotspots
+        _, html = _add_geojson_choropleth(
+            m=m,
+            gdf=cl,
+            value_col="PM25_Days",
+            layer_name="PM2.5 Hotspots (Days per Year)",
+            palette="BuPu_09",
+            show=False,
+            fill_opacity=0.75,
+        )
+        if html:
+            legends.append({"title": "PM2.5 Days (higher = more PM2.5 days)", "html": html})
+
+        # 7) Energy Burden (LEAD)
+        if "Energy_Burden_PctIncome_disp" in cl.columns:
             _, html = _add_geojson_choropleth(
                 m=m,
                 gdf=cl,
-                value_col="AQI_P90",
-                layer_name="Air Quality Hotspots (AQI 90th %ile)",
+                value_col="Energy_Burden_PctIncome_disp",
+                layer_name="Energy Burden (% of income)",
                 palette="YlOrRd_09",
                 show=False,
                 fill_opacity=0.75,
             )
             if html:
-                legends.append({"title": "90th Percentile AQI (higher = worse air)", "html": html})
+                legends.append({"title": "Energy Burden (% of income) (higher = higher burden)", "html": html})
 
-        # 5) Ozone hotspots
-        if "Ozone_Days" in cl.columns:
+        # 8) Avg Annual Household Energy Cost (LEAD)
+        if "Avg_Annual_Energy_Cost_USD_disp" in cl.columns:
             _, html = _add_geojson_choropleth(
                 m=m,
                 gdf=cl,
-                value_col="Ozone_Days",
-                layer_name="Ozone Hotspots (Days per Year)",
-                palette="PuRd_09",
+                value_col="Avg_Annual_Energy_Cost_USD_disp",
+                layer_name="Avg Annual Household Energy Cost ($)",
+                palette="YlGnBu_09",
                 show=False,
                 fill_opacity=0.75,
             )
             if html:
-                legends.append({"title": "Ozone Days (higher = more ozone days)", "html": html})
+                legends.append({"title": "Avg Annual Household Energy Cost ($) (higher = higher cost)", "html": html})
 
-        # 6) PM2.5 hotspots
-        if "PM25_Days" in cl.columns:
+        # 9) Electricity consumption per capita (Energy Profiles)
+        if "Elec_Consumption_MWh_perCapita_disp" in cl.columns:
             _, html = _add_geojson_choropleth(
                 m=m,
                 gdf=cl,
-                value_col="PM25_Days",
-                layer_name="PM2.5 Hotspots (Days per Year)",
-                palette="BuPu_09",
+                value_col="Elec_Consumption_MWh_perCapita_disp",
+                layer_name="Electricity Use (MWh per capita)",
+                palette="PuBuGn_09",
                 show=False,
                 fill_opacity=0.75,
             )
             if html:
-                legends.append({"title": "PM2.5 Days (higher = more PM2.5 days)", "html": html})
+                legends.append({"title": "Electricity Use (MWh per capita) (higher = higher use)", "html": html})
 
         # Hover tooltips layer
         tooltip_fg = folium.FeatureGroup(name="County Hover Details", show=True)
-        tooltip_fields = []
-        tooltip_aliases = []
+        tooltip_fields: list[str] = []
+        tooltip_aliases: list[str] = []
 
         def _add_field(field: str, alias: str) -> None:
             if field in cl.columns:
@@ -323,6 +373,11 @@ def build_illinois_map(
         _add_field("Impact_Score", "Impact Score (0–100)")
         _add_field("Poverty_Rate_Percent", "Poverty Rate (%)")
         _add_field("Pct_Minority", "Minority Population (%)")
+
+        _add_field("Energy_Burden_PctIncome_disp", "Energy Burden (% income)")
+        _add_field("Avg_Annual_Energy_Cost_USD_disp", "Avg Annual Energy Cost ($)")
+        _add_field("Elec_Consumption_MWh_perCapita_disp", "Electricity Use (MWh per capita)")
+
         _add_field("AQI_P90", "AQI 90th %ile")
         _add_field("AQI_Median", "AQI Median")
         _add_field("AQI_Max", "AQI Max")
