@@ -8,6 +8,33 @@ import geopandas as gpd
 import folium
 import branca.colormap as cm
 
+DEFAULT_SCORING_WEIGHTS = {
+    "pressure": {"existing": 1.0, "proposed": 1.5, "denied": 0.5, "inventory": 0.75},
+    "economic": {"poverty": 0.30, "minority": 0.25, "income": 0.20, "housing": 0.10, "energy": 0.15},
+    "cumulative": {"aqi": 0.30, "ozone": 0.20, "pm25": 0.20, "energy": 0.20, "electricity": 0.10},
+}
+
+
+def _resolve_scoring_weights(custom_weights: dict | None) -> dict:
+    resolved = {
+        "pressure": dict(DEFAULT_SCORING_WEIGHTS["pressure"]),
+        "economic": dict(DEFAULT_SCORING_WEIGHTS["economic"]),
+        "cumulative": dict(DEFAULT_SCORING_WEIGHTS["cumulative"]),
+    }
+    if not custom_weights:
+        return resolved
+
+    for group in ["pressure", "economic", "cumulative"]:
+        group_weights = custom_weights.get(group, {})
+        if isinstance(group_weights, dict):
+            for key, value in group_weights.items():
+                if key in resolved[group]:
+                    try:
+                        resolved[group][key] = float(value)
+                    except Exception:
+                        pass
+    return resolved
+
 
 def _safe_text(val) -> str:
     if val is None:
@@ -45,6 +72,164 @@ def _compute_impact_score(counties: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
 
     score_0_1 = 0.55 * pov_n + 0.45 * min_n
     c["Impact_Score"] = (score_0_1 * 100).round(1)
+    return c
+
+
+def _compute_county_pressure_scores(
+    counties: gpd.GeoDataFrame,
+    sites: pd.DataFrame,
+    weights: dict[str, float] | None = None,
+) -> gpd.GeoDataFrame:
+    """
+    County pressure from site concentration:
+      Pressure = existing*1.0 + proposed*1.5 + denied*0.5 + inventory*0.75
+    """
+    c = counties.copy()
+    if "GEOID" not in c.columns:
+        return c
+
+    c["GEOID"] = c["GEOID"].astype(str).str.strip().str.zfill(5)
+    s = sites.copy()
+    if "layer" in s.columns:
+        s["layer"] = s["layer"].astype(str).str.strip().str.lower()
+
+    # Prefer stable county key; fall back to county-name join if GEOID is unavailable.
+    if "GEOID" in s.columns:
+        s["county_key"] = s["GEOID"].astype(str).str.strip().str.replace(".0", "", regex=False).str.zfill(5)
+        c["county_key"] = c["GEOID"]
+    elif "County_Name" in s.columns and "NAME" in c.columns:
+        s["county_key"] = s["County_Name"].astype(str).str.strip().str.upper()
+        c["county_key"] = c["NAME"].astype(str).str.strip().str.upper()
+    else:
+        return c
+
+    site_id = s.get("site_id", pd.Series("", index=s.index)).astype(str).str.upper()
+    layer_txt = s.get("layer", pd.Series("", index=s.index)).astype(str).str.lower()
+    is_inventory = (
+        site_id.str.contains("INV", na=False)
+        | layer_txt.str.contains("inventory", na=False)
+        | layer_txt.str.contains("reserve", na=False)
+        | layer_txt.str.contains("extra_inventory", na=False)
+    )
+
+    s["ct_existing"] = ((layer_txt == "existing") & (~is_inventory)).astype(int)
+    s["ct_denied"] = ((layer_txt == "denied") & (~is_inventory)).astype(int)
+    s["ct_inventory"] = is_inventory.astype(int)
+    s["ct_proposed"] = ((~is_inventory) & (s["ct_existing"] == 0) & (s["ct_denied"] == 0)).astype(int)
+
+    grouped = (
+        s.groupby("county_key", dropna=False)[["ct_existing", "ct_proposed", "ct_denied", "ct_inventory"]]
+        .sum()
+        .reset_index()
+        .rename(
+            columns={
+                "ct_existing": "Site_Count_Existing",
+                "ct_proposed": "Site_Count_Proposed",
+                "ct_denied": "Site_Count_Denied",
+                "ct_inventory": "Site_Count_Inventory",
+            }
+        )
+    )
+    grouped["Site_Count_Total"] = (
+        grouped["Site_Count_Existing"]
+        + grouped["Site_Count_Proposed"]
+        + grouped["Site_Count_Denied"]
+        + grouped["Site_Count_Inventory"]
+    )
+    w = weights or {}
+    grouped["Pressure_Score"] = (
+        grouped["Site_Count_Existing"] * float(w.get("existing", 1.0))
+        + grouped["Site_Count_Proposed"] * float(w.get("proposed", 1.5))
+        + grouped["Site_Count_Denied"] * float(w.get("denied", 0.5))
+        + grouped["Site_Count_Inventory"] * float(w.get("inventory", 0.75))
+    ).round(2)
+
+    c = c.merge(grouped, on="county_key", how="left")
+    for col in [
+        "Site_Count_Existing",
+        "Site_Count_Proposed",
+        "Site_Count_Denied",
+        "Site_Count_Inventory",
+        "Site_Count_Total",
+        "Pressure_Score",
+    ]:
+        if col in c.columns:
+            c[col] = pd.to_numeric(c[col], errors="coerce").fillna(0)
+
+    return c.drop(columns=["county_key"], errors="ignore")
+
+
+def _weighted_composite_score(
+    df: pd.DataFrame,
+    components: list[tuple[str, float]],
+    invert_fields: set[str] | None = None,
+) -> pd.Series:
+    invert_fields = invert_fields or set()
+    acc = pd.Series(0.0, index=df.index, dtype=float)
+    weight_sum = pd.Series(0.0, index=df.index, dtype=float)
+
+    for field, weight in components:
+        if field not in df.columns:
+            continue
+
+        comp = _minmax(df[field])
+        if field in invert_fields:
+            comp = 1 - comp
+
+        valid = comp.notna()
+        acc.loc[valid] += comp.loc[valid] * weight
+        weight_sum.loc[valid] += weight
+
+    out = pd.Series(float("nan"), index=df.index, dtype="float64")
+    valid_rows = weight_sum > 0
+    out.loc[valid_rows] = ((acc.loc[valid_rows] / weight_sum.loc[valid_rows]) * 100).round(1)
+    return out
+
+
+def _compute_economic_vulnerability_score(
+    counties: gpd.GeoDataFrame,
+    weights: dict[str, float] | None = None,
+) -> gpd.GeoDataFrame:
+    """
+    Economic Vulnerability 2.0:
+      poverty + minority + inverse income + housing cost + energy burden.
+    """
+    w = weights or {}
+    c = counties.copy()
+    c["Economic_Vulnerability_Score"] = _weighted_composite_score(
+        c,
+        components=[
+            ("Poverty_Rate_Percent", float(w.get("poverty", 0.30))),
+            ("Pct_Minority", float(w.get("minority", 0.25))),
+            ("Median_Household_Income", float(w.get("income", 0.20))),
+            ("Median_Monthly_Housing_Cost", float(w.get("housing", 0.10))),
+            ("Energy_Burden_PctIncome_disp", float(w.get("energy", 0.15))),
+        ],
+        invert_fields={"Median_Household_Income"},
+    )
+    return c
+
+
+def _compute_cumulative_burden_score(
+    counties: gpd.GeoDataFrame,
+    weights: dict[str, float] | None = None,
+) -> gpd.GeoDataFrame:
+    """
+    Cumulative Burden:
+      AQI + ozone + PM2.5 + energy burden + electricity use intensity.
+    """
+    w = weights or {}
+    c = counties.copy()
+    c["Cumulative_Burden_Score"] = _weighted_composite_score(
+        c,
+        components=[
+            ("AQI_P90", float(w.get("aqi", 0.30))),
+            ("Ozone_Days", float(w.get("ozone", 0.20))),
+            ("PM25_Days", float(w.get("pm25", 0.20))),
+            ("Energy_Burden_PctIncome_disp", float(w.get("energy", 0.20))),
+            ("Elec_Consumption_MWh_perCapita_disp", float(w.get("electricity", 0.10))),
+        ],
+    )
     return c
 
 
@@ -172,6 +357,9 @@ def build_illinois_map(
     counties_layer: gpd.GeoDataFrame | None = None,
     center: list[float] | None = None,
     zoom_start: int = 7,
+    scoring_weights: dict | None = None,
+    enabled_county_layers: list[str] | set[str] | None = None,
+    show_county_tooltips: bool = True,
 ):
     """
     Returns: (folium_map, legends_list)
@@ -182,6 +370,13 @@ def build_illinois_map(
     """
     if center is None:
         center = [40.0, -89.2]
+    weights = _resolve_scoring_weights(scoring_weights)
+    enabled_set = None
+    if enabled_county_layers is not None:
+        enabled_set = {str(x).strip().lower() for x in enabled_county_layers}
+
+    def is_enabled(key: str) -> bool:
+        return enabled_set is None or key in enabled_set
 
     legends: list[dict] = []
     df = sites.copy()
@@ -239,86 +434,139 @@ def build_illinois_map(
                 cl["Elec_Consumption_MWh_perCapita"], errors="coerce"
             ).round(2)
 
+        # Composite / concentration scores
+        cl = _compute_county_pressure_scores(cl, df, weights=weights["pressure"])
+        cl = _compute_economic_vulnerability_score(cl, weights=weights["economic"])
+        cl = _compute_cumulative_burden_score(cl, weights=weights["cumulative"])
+
         # 1) Main Impact Score layer (default ON)
-        _, html = _add_geojson_choropleth(
-            m=m,
-            gdf=cl,
-            value_col="Impact_Score",
-            layer_name="Community Impact Score (0–100)",
-            palette="RdYlGn_11",
-            show=True,
-            fill_opacity=0.78,
-        )
-        if html:
-            legends.append({"title": "Community Impact Score (higher = more vulnerable)", "html": html})
+        if is_enabled("impact"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Impact_Score",
+                layer_name="Community Impact Score (0–100)",
+                palette="RdYlGn_11",
+                show=True,
+                fill_opacity=0.78,
+            )
+            if html:
+                legends.append({"title": "Community Impact Score (higher = more vulnerable)", "html": html})
 
-        # 2) Poverty (toggle)
-        _, html = _add_geojson_choropleth(
-            m=m,
-            gdf=cl,
-            value_col="Poverty_Rate_Percent",
-            layer_name="County Poverty Rate (%)",
-            palette="YlOrRd_09",
-            show=False,
-            fill_opacity=0.70,
-        )
-        if html:
-            legends.append({"title": "County Poverty Rate (%) (higher = more poverty)", "html": html})
+        # 2) Data center concentration pressure
+        if is_enabled("pressure"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Pressure_Score",
+                layer_name="Data Center Pressure Score",
+                palette="Oranges_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "Data Center Pressure Score (higher = more concentration pressure)", "html": html})
 
-        # 3) Minority (toggle)
-        _, html = _add_geojson_choropleth(
-            m=m,
-            gdf=cl,
-            value_col="Pct_Minority",
-            layer_name="County Minority Population (%)",
-            palette="Purples_09",
-            show=False,
-            fill_opacity=0.70,
-        )
-        if html:
-            legends.append({"title": "County Minority Population (%) (higher = more minority population)", "html": html})
+        # 3) Economic Vulnerability 2.0
+        if is_enabled("economic"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Economic_Vulnerability_Score",
+                layer_name="Economic Vulnerability 2.0 (0-100)",
+                palette="YlOrBr_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "Economic Vulnerability 2.0 (higher = higher vulnerability)", "html": html})
 
-        # 4) AQI hotspots
-        _, html = _add_geojson_choropleth(
-            m=m,
-            gdf=cl,
-            value_col="AQI_P90",
-            layer_name="Air Quality Hotspots (AQI 90th %ile)",
-            palette="YlOrRd_09",
-            show=False,
-            fill_opacity=0.75,
-        )
-        if html:
-            legends.append({"title": "90th Percentile AQI (higher = worse air)", "html": html})
+        # 4) Cumulative Air + Energy Burden
+        if is_enabled("cumulative"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Cumulative_Burden_Score",
+                layer_name="Cumulative Burden (Air + Energy)",
+                palette="RdPu_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "Cumulative Burden (higher = greater combined burden)", "html": html})
 
-        # 5) Ozone hotspots
-        _, html = _add_geojson_choropleth(
-            m=m,
-            gdf=cl,
-            value_col="Ozone_Days",
-            layer_name="Ozone Hotspots (Days per Year)",
-            palette="PuRd_09",
-            show=False,
-            fill_opacity=0.75,
-        )
-        if html:
-            legends.append({"title": "Ozone Days (higher = more ozone days)", "html": html})
+        # 5) Poverty (toggle)
+        if is_enabled("poverty"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Poverty_Rate_Percent",
+                layer_name="County Poverty Rate (%)",
+                palette="YlOrRd_09",
+                show=False,
+                fill_opacity=0.70,
+            )
+            if html:
+                legends.append({"title": "County Poverty Rate (%) (higher = more poverty)", "html": html})
 
-        # 6) PM2.5 hotspots
-        _, html = _add_geojson_choropleth(
-            m=m,
-            gdf=cl,
-            value_col="PM25_Days",
-            layer_name="PM2.5 Hotspots (Days per Year)",
-            palette="BuPu_09",
-            show=False,
-            fill_opacity=0.75,
-        )
-        if html:
-            legends.append({"title": "PM2.5 Days (higher = more PM2.5 days)", "html": html})
+        # 6) Minority (toggle)
+        if is_enabled("minority"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Pct_Minority",
+                layer_name="County Minority Population (%)",
+                palette="Purples_09",
+                show=False,
+                fill_opacity=0.70,
+            )
+            if html:
+                legends.append({"title": "County Minority Population (%) (higher = more minority population)", "html": html})
 
-        # 7) Energy Burden (LEAD)
-        if "Energy_Burden_PctIncome_disp" in cl.columns:
+        # 7) AQI hotspots
+        if is_enabled("aqi"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="AQI_P90",
+                layer_name="Air Quality Hotspots (AQI 90th %ile)",
+                palette="YlOrRd_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "90th Percentile AQI (higher = worse air)", "html": html})
+
+        # 8) Ozone hotspots
+        if is_enabled("ozone"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="Ozone_Days",
+                layer_name="Ozone Hotspots (Days per Year)",
+                palette="PuRd_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "Ozone Days (higher = more ozone days)", "html": html})
+
+        # 9) PM2.5 hotspots
+        if is_enabled("pm25"):
+            _, html = _add_geojson_choropleth(
+                m=m,
+                gdf=cl,
+                value_col="PM25_Days",
+                layer_name="PM2.5 Hotspots (Days per Year)",
+                palette="BuPu_09",
+                show=False,
+                fill_opacity=0.75,
+            )
+            if html:
+                legends.append({"title": "PM2.5 Days (higher = more PM2.5 days)", "html": html})
+
+        # 10) Energy Burden (LEAD)
+        if is_enabled("energy_burden") and "Energy_Burden_PctIncome_disp" in cl.columns:
             _, html = _add_geojson_choropleth(
                 m=m,
                 gdf=cl,
@@ -331,8 +579,8 @@ def build_illinois_map(
             if html:
                 legends.append({"title": "Energy Burden (% of income) (higher = higher burden)", "html": html})
 
-        # 8) Avg Annual Household Energy Cost (LEAD)
-        if "Avg_Annual_Energy_Cost_USD_disp" in cl.columns:
+        # 11) Avg Annual Household Energy Cost (LEAD)
+        if is_enabled("avg_energy_cost") and "Avg_Annual_Energy_Cost_USD_disp" in cl.columns:
             _, html = _add_geojson_choropleth(
                 m=m,
                 gdf=cl,
@@ -345,8 +593,8 @@ def build_illinois_map(
             if html:
                 legends.append({"title": "Avg Annual Household Energy Cost ($) (higher = higher cost)", "html": html})
 
-        # 9) Electricity consumption per capita (Energy Profiles)
-        if "Elec_Consumption_MWh_perCapita_disp" in cl.columns:
+        # 12) Electricity consumption per capita (Energy Profiles)
+        if is_enabled("electricity_use") and "Elec_Consumption_MWh_perCapita_disp" in cl.columns:
             _, html = _add_geojson_choropleth(
                 m=m,
                 gdf=cl,
@@ -360,45 +608,66 @@ def build_illinois_map(
                 legends.append({"title": "Electricity Use (MWh per capita) (higher = higher use)", "html": html})
 
         # Hover tooltips layer
-        tooltip_fg = folium.FeatureGroup(name="County Hover Details", show=True)
-        tooltip_fields: list[str] = []
-        tooltip_aliases: list[str] = []
+        if show_county_tooltips:
+            tooltip_fg = folium.FeatureGroup(name="County Hover Details", show=True)
+            tooltip_fields: list[str] = []
+            tooltip_aliases: list[str] = []
 
-        def _add_field(field: str, alias: str) -> None:
-            if field in cl.columns:
-                tooltip_fields.append(field)
-                tooltip_aliases.append(alias)
+            def _add_field(field: str, alias: str) -> None:
+                if field in cl.columns:
+                    tooltip_fields.append(field)
+                    tooltip_aliases.append(alias)
 
-        _add_field("NAME", "County")
-        _add_field("Impact_Score", "Impact Score (0–100)")
-        _add_field("Poverty_Rate_Percent", "Poverty Rate (%)")
-        _add_field("Pct_Minority", "Minority Population (%)")
+            _add_field("NAME", "County")
+            if is_enabled("impact"):
+                _add_field("Impact_Score", "Impact Score (0–100)")
+            if is_enabled("pressure"):
+                _add_field("Pressure_Score", "Data Center Pressure Score")
+                _add_field("Site_Count_Total", "Site Count (All)")
+                _add_field("Site_Count_Existing", "Site Count (Existing)")
+                _add_field("Site_Count_Proposed", "Site Count (Proposed)")
+                _add_field("Site_Count_Denied", "Site Count (Denied)")
+                _add_field("Site_Count_Inventory", "Site Count (Inventory)")
+            if is_enabled("economic"):
+                _add_field("Economic_Vulnerability_Score", "Economic Vulnerability 2.0")
+            if is_enabled("cumulative"):
+                _add_field("Cumulative_Burden_Score", "Cumulative Burden (Air + Energy)")
+            if is_enabled("poverty"):
+                _add_field("Poverty_Rate_Percent", "Poverty Rate (%)")
+            if is_enabled("minority"):
+                _add_field("Pct_Minority", "Minority Population (%)")
+            if is_enabled("energy_burden"):
+                _add_field("Energy_Burden_PctIncome_disp", "Energy Burden (% income)")
+            if is_enabled("avg_energy_cost"):
+                _add_field("Avg_Annual_Energy_Cost_USD_disp", "Avg Annual Energy Cost ($)")
+            if is_enabled("electricity_use"):
+                _add_field("Elec_Consumption_MWh_perCapita_disp", "Electricity Use (MWh per capita)")
+            if is_enabled("aqi"):
+                _add_field("AQI_P90", "AQI 90th %ile")
+                _add_field("AQI_Median", "AQI Median")
+                _add_field("AQI_Max", "AQI Max")
+            if is_enabled("ozone"):
+                _add_field("Ozone_Days", "Ozone Days")
+            if is_enabled("pm25"):
+                _add_field("PM25_Days", "PM2.5 Days")
+            if is_enabled("aqi") or is_enabled("ozone") or is_enabled("pm25"):
+                _add_field("AQI_Days_Total", "Days with AQI")
 
-        _add_field("Energy_Burden_PctIncome_disp", "Energy Burden (% income)")
-        _add_field("Avg_Annual_Energy_Cost_USD_disp", "Avg Annual Energy Cost ($)")
-        _add_field("Elec_Consumption_MWh_perCapita_disp", "Electricity Use (MWh per capita)")
+            if tooltip_fields:
+                folium.GeoJson(
+                    cl,
+                    name="County Details",
+                    style_function=lambda _: {"fillOpacity": 0, "color": "transparent"},
+                    tooltip=folium.GeoJsonTooltip(
+                        fields=tooltip_fields,
+                        aliases=tooltip_aliases,
+                        localize=True,
+                        sticky=True,
+                        labels=True,
+                    ),
+                ).add_to(tooltip_fg)
 
-        _add_field("AQI_P90", "AQI 90th %ile")
-        _add_field("AQI_Median", "AQI Median")
-        _add_field("AQI_Max", "AQI Max")
-        _add_field("Ozone_Days", "Ozone Days")
-        _add_field("PM25_Days", "PM2.5 Days")
-        _add_field("AQI_Days_Total", "Days with AQI")
-
-        folium.GeoJson(
-            cl,
-            name="County Details",
-            style_function=lambda _: {"fillOpacity": 0, "color": "transparent"},
-            tooltip=folium.GeoJsonTooltip(
-                fields=tooltip_fields,
-                aliases=tooltip_aliases,
-                localize=True,
-                sticky=True,
-                labels=True,
-            ),
-        ).add_to(tooltip_fg)
-
-        tooltip_fg.add_to(m)
+                tooltip_fg.add_to(m)
 
     # --- Impact clusters layer ---
     impact_clusters = folium.FeatureGroup(name="Impact Clusters", show=True)
