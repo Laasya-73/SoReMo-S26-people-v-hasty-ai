@@ -10,3 +10,5 @@ geopandas==1.0.1
 shapely==2.0.6
 pyproj==3.7.0
 matplotlib
+branca==0.8.1
+pyxlsb==1.0.10

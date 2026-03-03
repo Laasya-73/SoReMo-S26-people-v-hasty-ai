@@ -1,103 +1,217 @@
 # SoReMo S26 | The People v. Hasty AI
-## Illinois Data Center Map (v1)
 
-This repo contains the initial technical build for the SoReMo project **The People v. Hasty AI**.
+## Illinois Data Center Impact & Burden Mapping Platform
 
-Right now, the project focuses on an **interactive Illinois map** that helps us visualize existing and proposed data centers and quickly see what communities and impact signals are “at stake”. This is meant to support both:
-- the written report narrative
-- the interactive visualization tool we will demo and expand over time
+This repository contains the interactive mapping engine for the SoReMo research project  
+**“The People v. Hasty AI Development.”**
+
+The platform analyzes where AI-related data centers are concentrated in Illinois and evaluates which communities may carry higher environmental, economic, and energy burdens as infrastructure expands.
+
+Rather than simply plotting sites, this project integrates:
+
+- Site-level infrastructure data  
+- County-level demographic indicators  
+- Air quality exposure metrics  
+- Energy burden and consumption data  
+- Composite scoring models  
+- Scenario-based footprint comparison  
+
+The result is a transparent, adjustable, and research-oriented spatial decision-support tool.
 
 ---
 
-## What is implemented (current status)
+## Project Goal
 
-### 1) Interactive Illinois map (Folium)
-We generate an interactive map using OpenStreetMap as the base layer.
+This map answers:
 
-**Layers you can toggle on/off:**
-- **Existing** data centers
-- **Proposed / Under Dev** (proposed, under development, under construction)
-- **Denied** (Naperville Lucent site)
-- **Clusters** (dashed circle overlays to highlight concentration zones)
+> Where are Illinois data centers concentrated, and which communities may carry higher environmental and economic burden today and under future growth?
 
-Each site has a popup that includes:
-- operator
-- location
-- surroundings snapshot
-- community and consent signals
-- likely “annoyance threshold” stressors
-- sources (links)
+It connects physical infrastructure to community vulnerability and environmental exposure patterns.
 
-The map can be exported as an HTML file.
+---
 
-### 2) Streamlit web app
-A small Streamlit app displays the same map interactively and adds:
-- a **filter** by layer (existing, proposed, denied)
-- **jump views** (Illinois, Chicago core, Elk Grove cluster, DeKalb cluster, Naperville denied site)
+## What the Audience Sees
 
-### 3) County context and environmental overlays
-The map now includes optional contextual layers to help interpret potential community impact:
+The interactive interface includes:
 
-County-level overlays (toggleable):
+- Site markers (existing, proposed, denied, infrastructure context)  
+- Toggleable county overlays  
+- Sidebar legends  
+- Scenario switch (current footprint vs planned growth)  
+- Adjustable scoring weights  
+- Transparency panel showing formulas and data coverage  
+- Performance mode for smoother rendering  
 
-- Community Impact Score (poverty + minority composite index)
-- County poverty rate (%)
-- Minority population (%)
-- Air quality hotspot indicators
-- AQI 90th percentile
-- Ozone days per year
-- PM2.5 days per year
-- Energy Burden
-- Average annual household energy cost
-- Electricity Use (MWh per capita)
+---
 
-These layers allow early exploratory analysis of possible environmental justice patterns around data center locations.
+## Core Data Inputs
 
-Hovering over counties displays detailed contextual metrics.
+**Sites**  
+`data/processed/il_sites_enhanced.csv`
 
-### 4) Sidebar legends instead of map legends (NEW)
-Map legends are now rendered in the Streamlit sidebar instead of directly on the map. This improves readability and prevents legends from covering map regions.
+**County socioeconomic indicators**  
+`data/processed/il_county_stats_enhanced.csv`
 
-The sidebar legends correspond exactly to the active choropleth layers.
+**Illinois county boundaries**  
+`data/boundaries/IL_County_Boundaries.shp`
 
-### 5) AQI data integration
+**Air quality**  
+`data/raw/annual_aqi_by_county_2025.csv`
 
-County air quality data is now automatically merged from:
+**Energy burden (LEAD Tool)**  
+`data/raw/LEADTool_Data Counties.csv`
 
-```bash
-data/raw/annual_aqi_by_county_2025.csv
-```
+**Energy consumption profiles**  
+`data/raw/2016cityandcountyenergyprofiles.xlsb`
 
-Latest available year is detected dynamically if multiple years exist.
+---
 
-Metrics currently used:
-- AQI 90th percentile
-- Median AQI
-- Max AQI
-- Ozone days
-- PM2.5 days
-- Total AQI reporting days
+## Site Layers (Point Markers)
 
-This helps contextualize environmental exposure near proposed infrastructure.
+- Existing Data Centers  
+- Proposed / Under Development  
+- Rejected or Withdrawn Proposals  
+- Additional Infrastructure Context  
 
-### 6) Energy and Infrastructure Burden Layers
+Each popup includes:
 
-Energy vulnerability context has been added using two datasets:
+- Status classification  
+- County context indicators  
+- Surroundings snapshot  
+- Community signals  
+- Stressors  
+- Source documentation  
 
-```bash
-data/raw/2016cityandcountyenergyprofiles.xlsb
-data/raw/LEADTool_Data Counties.csv
-```
+---
 
-LEAD Tool county dataset:
-- Energy burden (% of household income)
-- Average annual household energy cost
-- Household-level economic indicators
+## County Choropleth Layers
 
-County energy consumption profiles:
-- Electricity consumption per capita (MWh)
+### Core Context Indicators
 
-These layers help explore how energy-intensive infrastructure may intersect with existing community energy burdens.
+- Poverty rate  
+- Minority population percentage  
+- AQI 90th percentile  
+- Ozone exposure days  
+- PM2.5 exposure days  
+- Energy burden  
+- Average annual household energy cost  
+- Electricity consumption per capita  
+
+---
+
+## Composite Scoring Layers
+
+Three structured indices have been introduced to move beyond raw indicators.
+
+### 1. Data Center Pressure Score
+
+Measures infrastructure accumulation intensity per county.
+
+Weighted counts of:
+
+- Existing sites  
+- Proposed sites  
+- Denied projects  
+- Inventory or contextual sites  
+
+This helps identify concentration patterns.
+
+### 2. Economic Vulnerability 2.0
+
+Measures structural vulnerability.
+
+Combines:
+
+- Poverty rate  
+- Minority population share  
+- Inverse median income  
+- Housing cost indicators  
+- Energy burden  
+
+This identifies counties already under socioeconomic strain.
+
+### 3. Cumulative Burden Score
+
+Measures combined environmental and energy stress.
+
+Combines:
+
+- AQI  
+- Ozone days  
+- PM2.5 days  
+- Energy burden  
+- Electricity intensity  
+
+This layer connects environmental exposure and infrastructure energy dynamics.
+
+---
+
+## Scenario Mode
+
+Two footprint modes are available:
+
+### Current Footprint
+
+Only existing data centers are counted.
+
+### Planned Growth
+
+Includes existing + proposed + denied + inventory context.
+
+This enables comparison between:
+
+- Present burden  
+- Projected pressure under expansion  
+
+A pressure delta table highlights counties with the largest projected change.
+
+---
+
+## Transparency Panel
+
+The transparency panel displays:
+
+- Exact composite score formulas  
+- Current weight settings  
+- Data vintage (e.g., latest AQI year detected automatically)  
+- County metric coverage percentage  
+- Top counties by projected pressure delta  
+
+This ensures interpretability and research accountability.
+
+---
+
+## Performance Optimizations
+
+Because multiple county overlays can slow rendering, the system includes:
+
+- Cached site loading  
+- Cached county-merge pipeline  
+- Cached rendered map HTML  
+- Adjustable geometry simplification  
+- Optional disabling of county hover tooltips  
+- Performance mode with reduced overlays  
+
+These optimizations maintain usability while preserving analytical depth.
+
+---
+
+## Pipeline Overview
+
+1. Streamlit app loads all datasets.  
+2. County shapefiles are geometrically simplified.  
+3. County datasets are merged and cleaned.  
+4. Composite scores are computed.  
+5. Folium layers are constructed.  
+6. The interactive map is rendered in Streamlit.  
+7. Legends are generated dynamically.  
+8. Optional static HTML export is created.  
+
+**Core logic files:**
+
+- `app/streamlit_app.py` — application orchestration  
+- `src/mapping/build_map.py` — map builder and scoring logic  
+- `src/make_map.py` — static export engine  
 
 ---
 
@@ -115,11 +229,6 @@ These layers help explore how energy-intensive infrastructure may intersect with
 
 **Additional dependency:**
 - pyxlsb (for reading energy profile XLSB datasets)
-
-Planned later:
-- census tract overlays
-- environmental justice datasets
-- infrastructure proximity analysis
 
 ---
 
@@ -155,36 +264,36 @@ SoReMo-S26-people-v-hasty-ai/
 
 ## How to run locally
 
-### Step 1: Clone the repo
+#### Step 1: Clone the repo
 
 ```bash
 git clone https://github.com/Laasya-73/SoReMo-S26-people-v-hasty-ai.git
 cd SoReMo-S26-people-v-hasty-ai
 ```
 
-### Step 2: Create a virtual environment
+#### Step 2: Create a virtual environment
 
-#### Windows PowerShell:
+##### Windows PowerShell:
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-#### Mac/Linux:
+##### Mac/Linux:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 ```
 
-### Step 3: Install dependencies
+#### Step 3: Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Option A: Build the HTML map (fastest)
+### Option A: Build the HTML map (fastest)
 
 This generates an HTML file you can open in any browser.
 
@@ -199,7 +308,7 @@ This produces:
 
 Open ```viewer.html``` (by double clicking the file or dragging it into a browser) for the cleanest presentation.
 
-## Option B: Run the Streamlit interactive app
+### Option B: Run the Streamlit interactive app
 
 This runs a local app in your browser with filters and jump views.
 
@@ -210,21 +319,6 @@ streamlit run app/streamlit_app.py
 Streamlit will print a local URL, usually:
 
 ```http://localhost:8501```
-
-
-## Notebook option
-If you prefer running in Jupyter:
-
-Open:
-
-```notebooks/01_build_map_folium.ipynb```
-
-This notebook:
-
-- loads the CSV
-- validates schema
-- builds the map inline
-- exports the HTML
 
 ---
 
@@ -247,3 +341,15 @@ sys.path.append(str(REPO_ROOT))
 ### 2) Git line endings warning (LF will be replaced by CRLF)
 
 This is normal on Windows and does not break the project.
+
+---
+
+## Research Direction
+
+This tool is evolving toward a broader environmental and community impact analysis framework. Future directions include:
+
+- Water usage overlays  
+- Infrastructure capacity modeling  
+- Zoning and permitting layers  
+- Census tract-level environmental justice mapping  
+- Policy scenario simulations  
