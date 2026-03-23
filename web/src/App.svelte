@@ -2754,6 +2754,16 @@
     height: 100%;
     min-height: 100%;
     overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  :global(html::-webkit-scrollbar),
+  :global(body::-webkit-scrollbar),
+  :global(#app::-webkit-scrollbar) {
+    width: 0;
+    height: 0;
+    display: none;
   }
 
   :global(body) {
@@ -2833,12 +2843,12 @@
   }
 
   .layout.home-theme {
-    --mobile-nav-bg: linear-gradient(140deg, rgba(214, 236, 248, 0.96) 0%, rgba(210, 242, 240, 0.94) 100%);
-    --mobile-nav-border: #a9c9e8;
+    --mobile-nav-bg: linear-gradient(145deg, rgba(122, 205, 235, 0.94) 0%, rgba(109, 220, 214, 0.9) 100%);
+    --mobile-nav-border: #7abbe2;
     --mobile-nav-icon: #0b6f97;
     --mobile-nav-shadow: 0 5px 16px rgba(24, 90, 140, 0.2);
-    --mobile-topbar-bg: linear-gradient(180deg, #eaf3fd 0%, #e6f2fb 100%);
-    --mobile-topbar-border: rgba(146, 190, 224, 0.5);
+    --mobile-topbar-bg: linear-gradient(180deg, rgba(148, 211, 241, 0.36) 0%, rgba(129, 223, 220, 0.24) 100%);
+    --mobile-topbar-border: rgba(102, 181, 218, 0.42);
     background:
       radial-gradient(circle at 12% 18%, rgba(30, 138, 205, 0.14) 0%, rgba(30, 138, 205, 0) 30%),
       radial-gradient(circle at 24% 74%, rgba(27, 175, 165, 0.12) 0%, rgba(27, 175, 165, 0) 34%),
@@ -3108,6 +3118,11 @@
   }
 
   .layout.high-contrast.home-theme {
+    --mobile-nav-bg: linear-gradient(145deg, rgba(115, 198, 232, 0.96) 0%, rgba(99, 214, 210, 0.92) 100%);
+    --mobile-nav-border: #68b6de;
+    --mobile-nav-icon: #0a5e86;
+    --mobile-topbar-bg: linear-gradient(180deg, rgba(132, 205, 238, 0.38) 0%, rgba(118, 220, 217, 0.26) 100%);
+    --mobile-topbar-border: rgba(94, 172, 210, 0.44);
     background:
       radial-gradient(circle at 12% 18%, rgba(24, 148, 207, 0.2) 0%, rgba(24, 148, 207, 0) 32%),
       radial-gradient(circle at 24% 74%, rgba(28, 175, 165, 0.18) 0%, rgba(28, 175, 165, 0) 36%),
@@ -3877,6 +3892,9 @@
   }
 
   .panel,
+  .layout,
+  .content,
+  .workspace,
   .pad,
   .home-workspace,
   .registry-workspace {
@@ -3885,6 +3903,9 @@
   }
 
   .panel::-webkit-scrollbar,
+  .layout::-webkit-scrollbar,
+  .content::-webkit-scrollbar,
+  .workspace::-webkit-scrollbar,
   .pad::-webkit-scrollbar,
   .home-workspace::-webkit-scrollbar,
   .registry-workspace::-webkit-scrollbar {
