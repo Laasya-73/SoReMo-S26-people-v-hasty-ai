@@ -2198,23 +2198,25 @@
   class:registry-theme={workspace===WORKSPACE.REGISTRY}
   class:panel-open={mobilePanelOpen}
 >
-  <button
-    class="mobile-nav-toggle"
-    type="button"
-    on:click={toggleMobilePanel}
-    aria-label={mobilePanelOpen ? "Hide workspace sidebar" : "Show workspace sidebar"}
-    aria-expanded={mobilePanelOpen}
-  >
-    {#if mobilePanelOpen}
-      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
-      </svg>
-    {:else}
-      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
-      </svg>
-    {/if}
-  </button>
+  <div class="mobile-topbar">
+    <button
+      class="mobile-nav-toggle"
+      type="button"
+      on:click={toggleMobilePanel}
+      aria-label={mobilePanelOpen ? "Hide workspace sidebar" : "Show workspace sidebar"}
+      aria-expanded={mobilePanelOpen}
+    >
+      {#if mobilePanelOpen}
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+        </svg>
+      {:else}
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+        </svg>
+      {/if}
+    </button>
+  </div>
   {#if mobilePanelOpen}
     <button class="mobile-nav-backdrop" type="button" on:click={closeMobilePanel} aria-label="Close workspace sidebar"></button>
   {/if}
@@ -2761,6 +2763,8 @@
     --mobile-nav-border: #b6cdea;
     --mobile-nav-icon: #114c7a;
     --mobile-nav-shadow: 0 4px 14px rgba(18, 58, 99, 0.14);
+    --mobile-topbar-bg: linear-gradient(180deg, #edf4fd 0%, #eaf2fb 100%);
+    --mobile-topbar-border: rgba(156, 189, 223, 0.5);
     height: 100vh;
     height: 100dvh;
     min-height: 100vh;
@@ -2780,6 +2784,10 @@
     z-index: 1;
   }
 
+  .mobile-topbar {
+    display: none;
+  }
+
   .mobile-nav-toggle,
   .mobile-nav-backdrop {
     display: none;
@@ -2788,10 +2796,8 @@
   .mobile-nav-toggle {
     align-items: center;
     justify-content: center;
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    z-index: 42;
+    position: relative;
+    z-index: 33;
     width: 42px;
     height: 42px;
     padding: 0;
@@ -2823,6 +2829,8 @@
     --mobile-nav-border: #a9c9e8;
     --mobile-nav-icon: #0b6f97;
     --mobile-nav-shadow: 0 5px 16px rgba(24, 90, 140, 0.2);
+    --mobile-topbar-bg: linear-gradient(180deg, #eaf3fd 0%, #e6f2fb 100%);
+    --mobile-topbar-border: rgba(146, 190, 224, 0.5);
     background:
       radial-gradient(circle at 12% 18%, rgba(30, 138, 205, 0.14) 0%, rgba(30, 138, 205, 0) 30%),
       radial-gradient(circle at 24% 74%, rgba(27, 175, 165, 0.12) 0%, rgba(27, 175, 165, 0) 34%),
@@ -2836,6 +2844,8 @@
     --mobile-nav-border: #a5c2e1;
     --mobile-nav-icon: #1a3f72;
     --mobile-nav-shadow: 0 5px 16px rgba(20, 72, 122, 0.2);
+    --mobile-topbar-bg: linear-gradient(180deg, #e8f1fc 0%, #e4eefb 100%);
+    --mobile-topbar-border: rgba(151, 182, 217, 0.55);
     background: linear-gradient(180deg, #e9f1fc 0%, #e6effa 100%);
   }
 
@@ -2844,6 +2854,8 @@
     --mobile-nav-border: #a9c6e7;
     --mobile-nav-icon: #4a3f92;
     --mobile-nav-shadow: 0 5px 16px rgba(31, 87, 144, 0.2);
+    --mobile-topbar-bg: linear-gradient(180deg, #edf5ff 0%, #e7f1ff 100%);
+    --mobile-topbar-border: rgba(155, 184, 220, 0.55);
     background:
       radial-gradient(circle at 82% 18%, rgba(40, 176, 172, 0.16), transparent 34%),
       linear-gradient(180deg, #edf5ff 0%, #e3eeff 100%);
@@ -2854,6 +2866,8 @@
     --mobile-nav-border: #a5c8e7;
     --mobile-nav-icon: #0d7a71;
     --mobile-nav-shadow: 0 5px 16px rgba(24, 92, 140, 0.22);
+    --mobile-topbar-bg: linear-gradient(180deg, #eaf3ff 0%, #e4eefc 100%);
+    --mobile-topbar-border: rgba(146, 187, 212, 0.55);
     background:
       radial-gradient(circle at 80% 80%, rgba(35, 118, 210, 0.14), transparent 34%),
       linear-gradient(180deg, #eaf3ff 0%, #e1ebfb 100%);
@@ -2864,6 +2878,8 @@
     --mobile-nav-border: #afc8e6;
     --mobile-nav-icon: #2a4fa8;
     --mobile-nav-shadow: 0 5px 16px rgba(28, 84, 134, 0.18);
+    --mobile-topbar-bg: linear-gradient(180deg, #eef5ff 0%, #e9f2ff 100%);
+    --mobile-topbar-border: rgba(160, 186, 220, 0.52);
     background:
       radial-gradient(circle at 80% 12%, rgba(118, 190, 229, 0.13), transparent 34%),
       linear-gradient(180deg, #eef5ff 0%, #e8f1ff 100%);
@@ -4211,17 +4227,21 @@
       overflow: hidden;
     }
 
-    .mobile-nav-toggle {
-      display: inline-flex;
-      position: relative;
-      top: auto;
-      left: auto;
+    .mobile-topbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
       grid-column: 1;
       grid-row: 1;
-      justify-self: end;
-      align-self: start;
-      margin: 8px 20px 2px 0;
-      z-index: 33;
+      padding: 8px 20px 6px;
+      background: var(--mobile-topbar-bg);
+      border-bottom: 1px solid var(--mobile-topbar-border);
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.5);
+      z-index: 30;
+    }
+
+    .mobile-nav-toggle {
+      display: inline-flex;
     }
 
     .content {
@@ -4295,8 +4315,8 @@
   }
 
   @media (max-width: 768px) {
-    .mobile-nav-toggle {
-      margin-right: 16px;
+    .mobile-topbar {
+      padding: 8px 16px 6px;
     }
 
     .panel {
@@ -4323,8 +4343,11 @@
   }
 
   @media (max-width: 430px) {
+    .mobile-topbar {
+      padding: 6px 14px 5px;
+    }
+
     .mobile-nav-toggle {
-      margin: 6px 14px 2px 0;
       width: 40px;
       height: 40px;
       border-radius: 11px;
@@ -4422,8 +4445,8 @@
   }
 
   @media (max-width: 390px) {
-    .mobile-nav-toggle {
-      margin-right: 12px;
+    .mobile-topbar {
+      padding: 6px 12px 5px;
     }
 
     .panel {
