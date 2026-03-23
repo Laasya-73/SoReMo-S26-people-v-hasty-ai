@@ -4153,8 +4153,22 @@
       min-height: 100vh;
       min-height: 100dvh;
       grid-template-columns: 1fr;
-      grid-template-rows: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
       overflow: hidden;
+    }
+
+    .mobile-nav-toggle {
+      display: inline-flex;
+      position: relative;
+      top: auto;
+      left: auto;
+      margin: 10px 0 0 10px;
+      z-index: 33;
+    }
+
+    .content {
+      grid-row: 2;
+      min-height: 0;
     }
 
     .panel {
@@ -4175,10 +4189,6 @@
       transform: translateX(0);
     }
 
-    .mobile-nav-toggle {
-      display: inline-flex;
-    }
-
     .mobile-nav-backdrop {
       display: block;
       position: fixed;
@@ -4190,11 +4200,6 @@
       background: rgba(10, 25, 43, 0.34);
       backdrop-filter: blur(1.5px);
       cursor: pointer;
-    }
-
-    .home-workspace,
-    .pad {
-      padding-top: 64px;
     }
 
     .home-grid {
