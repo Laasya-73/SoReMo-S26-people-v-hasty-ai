@@ -4162,7 +4162,11 @@
       position: relative;
       top: auto;
       left: auto;
-      margin: 10px 0 0 10px;
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: end;
+      align-self: start;
+      margin: 8px 20px 2px 0;
       z-index: 33;
     }
 
@@ -4237,6 +4241,10 @@
   }
 
   @media (max-width: 768px) {
+    .mobile-nav-toggle {
+      margin-right: 16px;
+    }
+
     .panel {
       padding: 14px;
       max-height: none;
@@ -4262,8 +4270,7 @@
 
   @media (max-width: 430px) {
     .mobile-nav-toggle {
-      top: 10px;
-      left: 10px;
+      margin: 6px 14px 2px 0;
       width: 40px;
       height: 40px;
       border-radius: 11px;
@@ -4361,6 +4368,10 @@
   }
 
   @media (max-width: 390px) {
+    .mobile-nav-toggle {
+      margin-right: 12px;
+    }
+
     .panel {
       padding: 10px;
       max-height: none;
