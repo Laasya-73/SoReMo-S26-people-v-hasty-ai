@@ -272,6 +272,10 @@
   let isMobileViewport = false;
   let onPopState;
   let onResize;
+  let homeWorkspaceEl;
+  let homeBgHeight = "100svh";
+  let homeBgResizeObserver;
+  let homeBgObservedEl;
   let mapEl, map, overlay;
   let currentStyleUrl = BASEMAP_STYLES.light;
   let loading = true, error = "";
@@ -564,6 +568,15 @@
   function openWorkspace(nextWorkspace) {
     navigateWorkspace(nextWorkspace);
     if (isMobileViewport) mobilePanelOpen = false;
+  }
+
+  function updateHomeBackgroundHeight() {
+    if (!homeWorkspaceEl) return;
+    const scrollHeight = Number(homeWorkspaceEl.scrollHeight) || 0;
+    const clientHeight = Number(homeWorkspaceEl.clientHeight) || 0;
+    const viewportHeight = typeof window !== "undefined" ? Number(window.innerHeight) || 0 : 0;
+    const next = Math.max(scrollHeight, clientHeight, viewportHeight);
+    homeBgHeight = `${Math.max(0, Math.ceil(next + 120))}px`;
   }
 
   function applyNarrativeStep(stepKey, toast = true) {
@@ -2130,8 +2143,14 @@
   onMount(async () => {
     try {
       syncViewportMode();
-      onResize = () => syncViewportMode();
+      onResize = () => {
+        syncViewportMode();
+        if (workspace === WORKSPACE.HOME) updateHomeBackgroundHeight();
+      };
       window.addEventListener("resize", onResize, { passive: true });
+      if (typeof ResizeObserver !== "undefined") {
+        homeBgResizeObserver = new ResizeObserver(() => updateHomeBackgroundHeight());
+      }
       const initialWorkspace = workspaceFromPath(window.location.pathname);
       workspace = initialWorkspace;
       applyWorkspaceTabMeta(initialWorkspace);
@@ -2180,6 +2199,7 @@
   onDestroy(() => {
     if (onPopState) window.removeEventListener("popstate", onPopState);
     if (onResize) window.removeEventListener("resize", onResize);
+    if (homeBgResizeObserver) homeBgResizeObserver.disconnect();
     clearTimeout(mapToastTimer);
     clearNarrativeAutoplayTimer();
     if (overlay) overlay.finalize();
@@ -2187,6 +2207,17 @@
   });
 
   $: applyWorkspaceTabMeta(workspace);
+  $: if (homeWorkspaceEl && homeBgResizeObserver) {
+    if (homeBgObservedEl !== homeWorkspaceEl) {
+      if (homeBgObservedEl) homeBgResizeObserver.unobserve(homeBgObservedEl);
+      homeBgResizeObserver.observe(homeWorkspaceEl);
+      homeBgObservedEl = homeWorkspaceEl;
+    }
+  }
+  $: if (workspace === WORKSPACE.HOME) {
+    homeWorkspaceEl;
+    setTimeout(updateHomeBackgroundHeight, 0);
+  }
 </script>
 
 <main
@@ -2593,7 +2624,7 @@
     {#if routeLoadError}<div class="status error route">{routeLoadError}</div>{/if}
     {#if mapToast && workspace===WORKSPACE.MAP}<div class="status toast">{mapToast}</div>{/if}
 
-    <section class:active={workspace===WORKSPACE.HOME} class="workspace pad home-workspace">
+    <section class:active={workspace===WORKSPACE.HOME} class="workspace pad home-workspace" bind:this={homeWorkspaceEl} style={`--home-bg-height:${homeBgHeight};`}>
       <div class="home-project-bg" aria-hidden="true">
         <span class="home-bg-mesh"></span>
         <span class="home-bg-wave wave-1"></span>
@@ -2725,6 +2756,12 @@
 </main>
 
 <style>
+  :global(*),
+  :global(*::before),
+  :global(*::after) {
+    box-sizing: border-box;
+  }
+
   :global(:root) {
     --font-sans: "Plus Jakarta Sans", "Space Grotesk", sans-serif;
     --text-main: #0f223a;
@@ -2766,8 +2803,10 @@
     --mobile-topbar-bg: linear-gradient(180deg, #edf4fd 0%, #eaf2fb 100%);
     --mobile-topbar-border: rgba(156, 189, 223, 0.5);
     height: 100vh;
+    height: 100svh;
     height: 100dvh;
     min-height: 100vh;
+    min-height: 100svh;
     min-height: 100dvh;
     width: 100%;
     max-width: 100%;
@@ -2825,7 +2864,7 @@
   }
 
   .layout.home-theme {
-    --mobile-nav-bg: linear-gradient(140deg, rgba(234, 242, 251, 0.94) 0%, rgba(232, 247, 250, 0.92) 100%);
+    --mobile-nav-bg: linear-gradient(140deg, rgba(214, 236, 248, 0.96) 0%, rgba(210, 242, 240, 0.94) 100%);
     --mobile-nav-border: #a9c9e8;
     --mobile-nav-icon: #0b6f97;
     --mobile-nav-shadow: 0 5px 16px rgba(24, 90, 140, 0.2);
@@ -2840,7 +2879,7 @@
   }
 
   .layout.map-theme {
-    --mobile-nav-bg: linear-gradient(140deg, rgba(232, 241, 252, 0.93) 0%, rgba(224, 238, 250, 0.91) 100%);
+    --mobile-nav-bg: linear-gradient(140deg, rgba(215, 229, 248, 0.96) 0%, rgba(210, 224, 243, 0.94) 100%);
     --mobile-nav-border: #a5c2e1;
     --mobile-nav-icon: #1a3f72;
     --mobile-nav-shadow: 0 5px 16px rgba(20, 72, 122, 0.2);
@@ -2850,7 +2889,7 @@
   }
 
   .layout.brief-theme {
-    --mobile-nav-bg: linear-gradient(140deg, rgba(235, 243, 255, 0.94) 0%, rgba(229, 238, 253, 0.92) 100%);
+    --mobile-nav-bg: linear-gradient(140deg, rgba(223, 229, 250, 0.96) 0%, rgba(220, 227, 247, 0.94) 100%);
     --mobile-nav-border: #a9c6e7;
     --mobile-nav-icon: #4a3f92;
     --mobile-nav-shadow: 0 5px 16px rgba(31, 87, 144, 0.2);
@@ -2862,7 +2901,7 @@
   }
 
   .layout.studio-theme {
-    --mobile-nav-bg: linear-gradient(140deg, rgba(232, 246, 252, 0.94) 0%, rgba(228, 240, 252, 0.92) 100%);
+    --mobile-nav-bg: linear-gradient(140deg, rgba(212, 241, 244, 0.96) 0%, rgba(211, 230, 246, 0.94) 100%);
     --mobile-nav-border: #a5c8e7;
     --mobile-nav-icon: #0d7a71;
     --mobile-nav-shadow: 0 5px 16px rgba(24, 92, 140, 0.22);
@@ -2874,7 +2913,7 @@
   }
 
   .layout.registry-theme {
-    --mobile-nav-bg: linear-gradient(140deg, rgba(238, 245, 255, 0.94) 0%, rgba(232, 241, 255, 0.92) 100%);
+    --mobile-nav-bg: linear-gradient(140deg, rgba(219, 231, 248, 0.96) 0%, rgba(216, 226, 245, 0.94) 100%);
     --mobile-nav-border: #afc8e6;
     --mobile-nav-icon: #2a4fa8;
     --mobile-nav-shadow: 0 5px 16px rgba(28, 84, 134, 0.18);
@@ -3092,6 +3131,39 @@
     --status-bg: #091d35;
     --status-toast: #056f84;
     background: #dce9fb;
+  }
+
+  .layout.high-contrast.home-theme {
+    background:
+      radial-gradient(circle at 12% 18%, rgba(24, 148, 207, 0.2) 0%, rgba(24, 148, 207, 0) 32%),
+      radial-gradient(circle at 24% 74%, rgba(28, 175, 165, 0.18) 0%, rgba(28, 175, 165, 0) 36%),
+      radial-gradient(circle at 82% 22%, rgba(39, 171, 175, 0.16) 0%, rgba(39, 171, 175, 0) 34%),
+      radial-gradient(circle at 82% 78%, rgba(231, 164, 76, 0.16) 0%, rgba(231, 164, 76, 0) 40%),
+      linear-gradient(140deg, #e7f2ff 0%, #e6f1ff 42%, #e2f3fa 100%);
+  }
+
+  .layout.high-contrast.map-theme {
+    background:
+      radial-gradient(circle at 78% 14%, rgba(128, 190, 232, 0.17), transparent 36%),
+      linear-gradient(180deg, #e8f1fc 0%, #e4eefb 100%);
+  }
+
+  .layout.high-contrast.brief-theme {
+    background:
+      radial-gradient(circle at 82% 18%, rgba(38, 174, 169, 0.2), transparent 36%),
+      linear-gradient(180deg, #e6f1ff 0%, #ddeaff 100%);
+  }
+
+  .layout.high-contrast.studio-theme {
+    background:
+      radial-gradient(circle at 80% 80%, rgba(35, 118, 210, 0.2), transparent 36%),
+      linear-gradient(180deg, #e4efff 0%, #dbe9fe 100%);
+  }
+
+  .layout.high-contrast.registry-theme {
+    background:
+      radial-gradient(circle at 80% 12%, rgba(118, 190, 229, 0.17), transparent 34%),
+      linear-gradient(180deg, #e9f2ff 0%, #e3edff 100%);
   }
 
   .layout.high-contrast .panel {
@@ -3551,6 +3623,7 @@
     position: relative;
     min-height: 0;
     overflow: hidden;
+    overflow-x: clip;
     isolation: isolate;
     min-width: 0;
   }
@@ -3558,6 +3631,8 @@
   .workspace {
     display: none;
     height: 100%;
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
   }
 
@@ -3787,6 +3862,7 @@
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
+    isolation: isolate;
     background:
       radial-gradient(circle at 82% 12%, rgba(118, 190, 229, 0.14), transparent 34%),
       radial-gradient(circle at 20% 82%, rgba(130, 178, 228, 0.1), transparent 38%),
@@ -3827,9 +3903,10 @@
   }
 
   .home-project-bg {
-    position: fixed;
-    inset: 0;
-    min-height: 100dvh;
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: var(--home-bg-height, 100%);
+    min-height: 100%;
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
@@ -4219,8 +4296,10 @@
   @media (max-width: 1024px) {
     .layout {
       height: 100vh;
+      height: 100svh;
       height: 100dvh;
       min-height: 100vh;
+      min-height: 100svh;
       min-height: 100dvh;
       grid-template-columns: 1fr;
       grid-template-rows: auto minmax(0, 1fr);
@@ -4233,10 +4312,10 @@
       align-items: center;
       grid-column: 1;
       grid-row: 1;
-      padding: 8px 20px 6px;
+      padding: calc(env(safe-area-inset-top, 0px) + 8px) 20px 6px;
       background: var(--mobile-topbar-bg);
       border-bottom: 1px solid var(--mobile-topbar-border);
-      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.5);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
       z-index: 30;
     }
 
@@ -4316,7 +4395,7 @@
 
   @media (max-width: 768px) {
     .mobile-topbar {
-      padding: 8px 16px 6px;
+      padding: calc(env(safe-area-inset-top, 0px) + 8px) 16px 6px;
     }
 
     .panel {
@@ -4344,7 +4423,7 @@
 
   @media (max-width: 430px) {
     .mobile-topbar {
-      padding: 6px 14px 5px;
+      padding: calc(env(safe-area-inset-top, 0px) + 6px) 14px 5px;
     }
 
     .mobile-nav-toggle {
@@ -4446,7 +4525,7 @@
 
   @media (max-width: 390px) {
     .mobile-topbar {
-      padding: 6px 12px 5px;
+      padding: calc(env(safe-area-inset-top, 0px) + 6px) 12px 5px;
     }
 
     .panel {
