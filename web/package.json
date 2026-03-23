@@ -1,0 +1,23 @@
+{
+  "name": "soremo-il-impact-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@deck.gl/core": "^9.1.13",
+    "@deck.gl/layers": "^9.1.13",
+    "@deck.gl/mapbox": "^9.1.13",
+    "jspdf": "^2.5.2",
+    "maplibre-gl": "^5.3.0",
+    "svelte": "^4.2.19"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
+    "vite": "^5.4.12"
+  }
+}

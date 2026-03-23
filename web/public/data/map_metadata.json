@@ -1,0 +1,242 @@
+{
+  "generated_at_utc": "2026-03-23T03:16:35.383433+00:00",
+  "latest_aqi_year": 2025,
+  "weights": {
+    "pressure": {
+      "existing": 1.0,
+      "proposed": 1.5,
+      "denied": 0.5,
+      "inventory": 0.75
+    },
+    "economic": {
+      "poverty": 0.3,
+      "minority": 0.25,
+      "income": 0.2,
+      "housing": 0.1,
+      "energy": 0.15
+    },
+    "cumulative": {
+      "aqi": 0.3,
+      "ozone": 0.2,
+      "pm25": 0.2,
+      "energy": 0.2,
+      "electricity": 0.1
+    }
+  },
+  "datacenter_registry": {
+    "illinois_count": 141,
+    "global_count": 5258,
+    "sources": [
+      "PeeringDB facilities API",
+      "OpenStreetMap Overpass (data_center tags)",
+      "SoReMo curated Illinois site list"
+    ]
+  },
+  "county_layers": {
+    "impact": {
+      "label": "Community Impact Score",
+      "property": "Impact_Score"
+    },
+    "pressure": {
+      "label": "Data Center Pressure Score",
+      "property_current": "Pressure_Score_Current",
+      "property_planned": "Pressure_Score_Planned"
+    },
+    "economic": {
+      "label": "Economic Vulnerability 2.0",
+      "property": "Economic_Vulnerability_Score"
+    },
+    "cumulative": {
+      "label": "Cumulative Burden (Air + Energy)",
+      "property": "Cumulative_Burden_Score"
+    },
+    "poverty": {
+      "label": "County Poverty Rate (%)",
+      "property": "Poverty_Rate_Percent"
+    },
+    "minority": {
+      "label": "County Minority Population (%)",
+      "property": "Pct_Minority"
+    },
+    "aqi": {
+      "label": "Air Quality (AQI P90)",
+      "property": "AQI_P90"
+    },
+    "ozone": {
+      "label": "Ozone Days",
+      "property": "Ozone_Days"
+    },
+    "pm25": {
+      "label": "PM2.5 Days",
+      "property": "PM25_Days"
+    },
+    "energy_burden": {
+      "label": "Energy Burden (% income)",
+      "property": "Energy_Burden_PctIncome_disp"
+    },
+    "avg_energy_cost": {
+      "label": "Avg Annual Household Energy Cost ($)",
+      "property": "Avg_Annual_Energy_Cost_USD"
+    },
+    "electricity_use": {
+      "label": "Electricity Use (MWh per capita)",
+      "property": "Elec_Consumption_MWh_perCapita_disp"
+    },
+    "water_index": {
+      "label": "Water Stress Index (Aqueduct, 0-100)",
+      "property": "Water_Stress_Index"
+    },
+    "water_stress": {
+      "label": "Baseline Water Stress (Aqueduct, 0-5)",
+      "property": "Aqueduct_BWS_Score"
+    },
+    "water_drought": {
+      "label": "Drought Risk (Aqueduct, 0-5)",
+      "property": "Aqueduct_Drought_Score"
+    },
+    "water_groundwater": {
+      "label": "Groundwater Table Decline (Aqueduct, 0-5)",
+      "property": "Aqueduct_GWDecline_Score"
+    },
+    "water_power_risk": {
+      "label": "Water Risk for Electric Power (Aqueduct, 0-5)",
+      "property": "Aqueduct_OverallPowerRisk_Score"
+    },
+    "grid_clean_share": {
+      "label": "Grid Clean Share (%)",
+      "property": "Grid_Clean_Share_Pct"
+    },
+    "grid_fossil_share": {
+      "label": "Grid Fossil Share (%)",
+      "property": "Grid_Fossil_Share_Pct"
+    },
+    "grid_carbon_intensity": {
+      "label": "Grid Carbon Intensity (kg CO2/MWh)",
+      "property": "Grid_Carbon_Intensity_kg_per_MWh"
+    },
+    "grid_co2_100mw": {
+      "label": "Estimated CO2 for 100 MW Load (kt/yr)",
+      "property": "Grid_Est_CO2_kt_per_100MWyr"
+    },
+    "dc_carbon_exposure": {
+      "label": "Data Center Carbon Exposure (pressure x kg CO2/MWh)",
+      "property": "DC_Carbon_Exposure_Index"
+    },
+    "heat_climate_index": {
+      "label": "Heat + Climate Stress Index (0-100)",
+      "property": "Heat_Climate_Stress_Index"
+    },
+    "heat_cdd_recent": {
+      "label": "NOAA Cooling Degree Days (5-yr avg)",
+      "property": "NOAA_CDD_Recent5yr"
+    },
+    "heat_tmax_summer": {
+      "label": "NOAA Summer Max Temp (5-yr avg, deg F)",
+      "property": "NOAA_Tmax_Summer_Recent5yr_F"
+    },
+    "heat_fema_risk": {
+      "label": "FEMA Heat Wave Risk Score",
+      "property": "HWAV_RISKS"
+    },
+    "heat_fema_loss_pctile": {
+      "label": "FEMA Heat Loss-Rate Percentile",
+      "property": "HWAV_ALR_NPCTL"
+    },
+    "heat_feedback": {
+      "label": "Data Center Heat Feedback (pressure x heat index)",
+      "property": "DC_Heat_Feedback_Index"
+    },
+    "noise_community_index": {
+      "label": "Noise + Community Impact Index (0-100)",
+      "property": "Noise_Community_Impact_Index"
+    },
+    "noise_faa_exposure": {
+      "label": "FAA Airport Noise Exposure Index (0-100)",
+      "property": "FAA_Noise_Exposure_Index"
+    },
+    "noise_airport_density": {
+      "label": "Airport Density (count per 1000 km2)",
+      "property": "FAA_Airport_Density_per_1000km2"
+    },
+    "noise_ops_total": {
+      "label": "Airport Operations Proxy (annual)",
+      "property": "FAA_Airport_Operations_Total"
+    },
+    "noise_chicago_311": {
+      "label": "Chicago 311 Noise Complaints (avg per year, recent 3 years)",
+      "property": "Chicago_311_Noise_AnnualAvg_Recent3yr"
+    },
+    "noise_tri_facility_count": {
+      "label": "EPA TRI Active Industrial Facilities (count)",
+      "property": "EPA_TRI_Active_Facility_Count"
+    },
+    "noise_tri_pressure": {
+      "label": "EPA TRI Industrial Pressure Index (0-100)",
+      "property": "EPA_TRI_Industrial_Pressure_Index"
+    },
+    "noise_overlap": {
+      "label": "Data Center Noise-Community Overlap (pressure x noise impact)",
+      "property": "DC_Noise_Community_Overlap_Index"
+    },
+    "justice_index": {
+      "label": "Social & Environmental Justice Index (0-100)",
+      "property": "Social_Environmental_Justice_Index"
+    },
+    "justice_ejscreen": {
+      "label": "EPA EJScreen Justice Index (0-100)",
+      "property": "EJScreen_Justice_Index"
+    },
+    "justice_pollution": {
+      "label": "EPA EJScreen Pollution Burden (0-100)",
+      "property": "EJScreen_Pollution_Burden_Index"
+    },
+    "justice_lowincome": {
+      "label": "EPA EJScreen Low-Income Population (%)",
+      "property": "EJScreen_Pop_Weighted_LowIncome_Pct"
+    },
+    "justice_minority": {
+      "label": "EPA EJScreen Minority Population (%)",
+      "property": "EJScreen_Pop_Weighted_Minority_Pct"
+    },
+    "justice_svi_overall": {
+      "label": "CDC SVI Overall Percentile",
+      "property": "CDC_SVI_Overall_Pctl"
+    },
+    "justice_svi_housing_transport": {
+      "label": "CDC SVI Housing & Transportation Percentile",
+      "property": "CDC_SVI_Theme4_HousingTransport_Pctl"
+    },
+    "landcover_urban_builtup": {
+      "label": "Land Cover: Urban/Built-Up (%)",
+      "property": "LandCover_UrbanBuiltUp_Pct"
+    },
+    "landcover_agriculture": {
+      "label": "Land Cover: Agricultural (%)",
+      "property": "LandCover_Agricultural_Pct"
+    },
+    "landcover_forested": {
+      "label": "Land Cover: Forested (%)",
+      "property": "LandCover_Forested_Pct"
+    },
+    "landcover_wetland": {
+      "label": "Land Cover: Wetland (%)",
+      "property": "LandCover_Wetland_Pct"
+    },
+    "zoning_allowance": {
+      "label": "Zoning Allowance Index (Industrial+Commercial share, %)",
+      "property": "Zoning_Allowance_Index"
+    },
+    "zoning_annoyance_threshold": {
+      "label": "Zoning Annoyance Threshold Index (0-100)",
+      "property": "Zoning_Annoyance_Threshold_Index"
+    },
+    "zoning_residential_nearby": {
+      "label": "Sites Near Residential Zoning (500m, % of county sites)",
+      "property": "Chicago_Zoning_Residential_Nearby500m_Share_Pct"
+    },
+    "landuse_zoning_coverage": {
+      "label": "Land Use/Zoning Data Coverage (%)",
+      "property": "LandUse_Zoning_Data_Coverage_Pct"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoReMo | Illinois Data Center Impact Map</title>
+    <link rel="icon" type="image/svg+xml" href="/icons/tab-home.svg" />
+    <script>
+      (function () {
+        const path = window.location.pathname || "/";
+        const workspaceByPath = {
+          "/": "home",
+          "/map": "map",
+          "/briefing": "briefing",
+          "/studio": "studio",
+          "/registry": "registry"
+        };
+        const titleByWorkspace = {
+          home: "SoReMo | Illinois Data Center Impact Map",
+          map: "Illinois Map | SoReMo '26",
+          briefing: "County Intelligence Briefing | SoReMo '26",
+          studio: "Impact Scenario Studio | SoReMo '26",
+          registry: "Data Center Registry | SoReMo '26"
+        };
+        const workspace = workspaceByPath[path] || "home";
+        const iconHref = "/icons/tab-" + workspace + ".svg?v=20260323b";
+        document.title = titleByWorkspace[workspace] || titleByWorkspace.home;
+
+        let icon = document.querySelector("link[rel='icon']");
+        if (!icon) {
+          icon = document.createElement("link");
+          icon.setAttribute("rel", "icon");
+          document.head.appendChild(icon);
+        }
+        icon.setAttribute("type", "image/svg+xml");
+        icon.setAttribute("href", iconHref);
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

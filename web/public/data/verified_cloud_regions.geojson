@@ -1,0 +1,284 @@
+{
+  "type": "FeatureCollection",
+  "name": "verified_cloud_regions",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "aws-us-east-1",
+        "region_name": "AWS us-east-1 (N. Virginia)",
+        "provider_family": "Amazon AWS",
+        "city": "Ashburn",
+        "state": "VA",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://aws.amazon.com/about-aws/global-infrastructure/regions_az/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-77.4874, 39.0438]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "aws-us-east-2",
+        "region_name": "AWS us-east-2 (Ohio)",
+        "provider_family": "Amazon AWS",
+        "city": "Columbus",
+        "state": "OH",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://aws.amazon.com/about-aws/global-infrastructure/regions_az/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-83.0103, 39.9612]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "aws-us-west-2",
+        "region_name": "AWS us-west-2 (Oregon)",
+        "provider_family": "Amazon AWS",
+        "city": "Boardman",
+        "state": "OR",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://aws.amazon.com/about-aws/global-infrastructure/regions_az/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-119.7012, 45.8399]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "aws-eu-west-1",
+        "region_name": "AWS eu-west-1 (Ireland)",
+        "provider_family": "Amazon AWS",
+        "city": "Dublin",
+        "state": "",
+        "country": "IE",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://aws.amazon.com/about-aws/global-infrastructure/regions_az/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.2603, 53.3498]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "azure-east-us",
+        "region_name": "Azure East US",
+        "provider_family": "Microsoft Azure",
+        "city": "Boydton",
+        "state": "VA",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-78.3897, 36.6676]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "azure-east-us-2",
+        "region_name": "Azure East US 2",
+        "provider_family": "Microsoft Azure",
+        "city": "Richmond area",
+        "state": "VA",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-77.4360, 37.5407]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "azure-central-us",
+        "region_name": "Azure Central US",
+        "provider_family": "Microsoft Azure",
+        "city": "Des Moines",
+        "state": "IA",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-93.6250, 41.5868]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "azure-west-europe",
+        "region_name": "Azure West Europe",
+        "provider_family": "Microsoft Azure",
+        "city": "Amsterdam area",
+        "state": "",
+        "country": "NL",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [4.9041, 52.3676]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "gcp-us-central1",
+        "region_name": "Google Cloud us-central1 (Iowa)",
+        "provider_family": "Google Cloud",
+        "city": "Council Bluffs",
+        "state": "IA",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://cloud.google.com/about/locations"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-95.8608, 41.2619]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "gcp-us-east1",
+        "region_name": "Google Cloud us-east1 (South Carolina)",
+        "provider_family": "Google Cloud",
+        "city": "Moncks Corner",
+        "state": "SC",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://cloud.google.com/about/locations"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-79.9876, 33.1960]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "gcp-us-west1",
+        "region_name": "Google Cloud us-west1 (Oregon)",
+        "provider_family": "Google Cloud",
+        "city": "The Dalles",
+        "state": "OR",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://cloud.google.com/about/locations"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-121.1787, 45.5946]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "gcp-europe-west1",
+        "region_name": "Google Cloud europe-west1 (Belgium)",
+        "provider_family": "Google Cloud",
+        "city": "St. Ghislain",
+        "state": "",
+        "country": "BE",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://cloud.google.com/about/locations"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.8170, 50.4500]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "meta-dekalb-il",
+        "region_name": "Meta DeKalb Data Center",
+        "provider_family": "Meta",
+        "city": "DeKalb",
+        "state": "IL",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://datacenters.atmeta.com/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-88.7500, 41.8840]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "meta-altoona-ia",
+        "region_name": "Meta Altoona Data Center",
+        "provider_family": "Meta",
+        "city": "Altoona",
+        "state": "IA",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://datacenters.atmeta.com/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-93.4655, 41.6452]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "meta-prineville-or",
+        "region_name": "Meta Prineville Data Center",
+        "provider_family": "Meta",
+        "city": "Prineville",
+        "state": "OR",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://datacenters.atmeta.com/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-120.8520, 44.2998]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "meta-gallatin-tn",
+        "region_name": "Meta Gallatin Data Center",
+        "provider_family": "Meta",
+        "city": "Gallatin",
+        "state": "TN",
+        "country": "US",
+        "source_system": "Official Cloud Region Page",
+        "source_url": "https://datacenters.atmeta.com/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-86.4467, 36.3884]
+      }
+    }
+  ]
+}
