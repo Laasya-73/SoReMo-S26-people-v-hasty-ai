@@ -2197,10 +2197,15 @@
     aria-label={mobilePanelOpen ? "Hide workspace sidebar" : "Show workspace sidebar"}
     aria-expanded={mobilePanelOpen}
   >
-    <span class="hamburger" aria-hidden="true">
-      <span></span><span></span><span></span>
-    </span>
-    <span class="mobile-nav-label">Workspace</span>
+    {#if mobilePanelOpen}
+      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+    {:else}
+      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+    {/if}
   </button>
   {#if mobilePanelOpen}
     <button class="mobile-nav-backdrop" type="button" on:click={closeMobilePanel} aria-label="Close workspace sidebar"></button>
@@ -2770,17 +2775,18 @@
 
   .mobile-nav-toggle {
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     position: fixed;
-    top: 10px;
-    left: 10px;
+    top: 12px;
+    left: 12px;
     z-index: 42;
-    padding: 6px 8px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
     border: 1px solid #b6cdea;
-    border-radius: 10px;
+    border-radius: 12px;
     background: rgba(245, 250, 255, 0.92);
     color: #133a63;
-    font: 700 12px/1.05 var(--font-sans);
     box-shadow: 0 4px 14px rgba(18, 58, 99, 0.14);
     backdrop-filter: blur(5px);
     cursor: pointer;
@@ -2794,22 +2800,10 @@
     transform: translateY(1px);
   }
 
-  .mobile-nav-label {
-    letter-spacing: 0.01em;
-  }
-
-  .mobile-nav-toggle .hamburger {
-    width: 13px;
-    height: 10px;
-    display: inline-grid;
-    align-content: space-between;
-  }
-
-  .mobile-nav-toggle .hamburger span {
-    display: block;
-    height: 1.8px;
-    border-radius: 999px;
-    background: #1c4f80;
+  .mobile-nav-icon {
+    width: 20px;
+    height: 20px;
+    color: #114c7a;
   }
 
   .layout.home-theme {
@@ -4200,7 +4194,7 @@
 
     .home-workspace,
     .pad {
-      padding-top: 56px;
+      padding-top: 64px;
     }
 
     .home-grid {
@@ -4263,15 +4257,11 @@
 
   @media (max-width: 430px) {
     .mobile-nav-toggle {
-      padding: 6px;
-      width: 34px;
-      height: 34px;
-      justify-content: center;
-      border-radius: 9px;
-    }
-
-    .mobile-nav-label {
-      display: none;
+      top: 10px;
+      left: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
     }
 
     .panel {
