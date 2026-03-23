@@ -272,10 +272,6 @@
   let isMobileViewport = false;
   let onPopState;
   let onResize;
-  let homeWorkspaceEl;
-  let homeBgHeight = "100svh";
-  let homeBgResizeObserver;
-  let homeBgObservedEl;
   let mapEl, map, overlay;
   let currentStyleUrl = BASEMAP_STYLES.light;
   let loading = true, error = "";
@@ -568,15 +564,6 @@
   function openWorkspace(nextWorkspace) {
     navigateWorkspace(nextWorkspace);
     if (isMobileViewport) mobilePanelOpen = false;
-  }
-
-  function updateHomeBackgroundHeight() {
-    if (!homeWorkspaceEl) return;
-    const scrollHeight = Number(homeWorkspaceEl.scrollHeight) || 0;
-    const clientHeight = Number(homeWorkspaceEl.clientHeight) || 0;
-    const viewportHeight = typeof window !== "undefined" ? Number(window.innerHeight) || 0 : 0;
-    const next = Math.max(scrollHeight, clientHeight, viewportHeight);
-    homeBgHeight = `${Math.max(0, Math.ceil(next + 120))}px`;
   }
 
   function applyNarrativeStep(stepKey, toast = true) {
@@ -2143,14 +2130,8 @@
   onMount(async () => {
     try {
       syncViewportMode();
-      onResize = () => {
-        syncViewportMode();
-        if (workspace === WORKSPACE.HOME) updateHomeBackgroundHeight();
-      };
+      onResize = () => syncViewportMode();
       window.addEventListener("resize", onResize, { passive: true });
-      if (typeof ResizeObserver !== "undefined") {
-        homeBgResizeObserver = new ResizeObserver(() => updateHomeBackgroundHeight());
-      }
       const initialWorkspace = workspaceFromPath(window.location.pathname);
       workspace = initialWorkspace;
       applyWorkspaceTabMeta(initialWorkspace);
@@ -2199,7 +2180,6 @@
   onDestroy(() => {
     if (onPopState) window.removeEventListener("popstate", onPopState);
     if (onResize) window.removeEventListener("resize", onResize);
-    if (homeBgResizeObserver) homeBgResizeObserver.disconnect();
     clearTimeout(mapToastTimer);
     clearNarrativeAutoplayTimer();
     if (overlay) overlay.finalize();
@@ -2207,17 +2187,6 @@
   });
 
   $: applyWorkspaceTabMeta(workspace);
-  $: if (homeWorkspaceEl && homeBgResizeObserver) {
-    if (homeBgObservedEl !== homeWorkspaceEl) {
-      if (homeBgObservedEl) homeBgResizeObserver.unobserve(homeBgObservedEl);
-      homeBgResizeObserver.observe(homeWorkspaceEl);
-      homeBgObservedEl = homeWorkspaceEl;
-    }
-  }
-  $: if (workspace === WORKSPACE.HOME) {
-    homeWorkspaceEl;
-    setTimeout(updateHomeBackgroundHeight, 0);
-  }
 </script>
 
 <main
@@ -2624,7 +2593,7 @@
     {#if routeLoadError}<div class="status error route">{routeLoadError}</div>{/if}
     {#if mapToast && workspace===WORKSPACE.MAP}<div class="status toast">{mapToast}</div>{/if}
 
-    <section class:active={workspace===WORKSPACE.HOME} class="workspace pad home-workspace" bind:this={homeWorkspaceEl} style={`--home-bg-height:${homeBgHeight};`}>
+    <section class:active={workspace===WORKSPACE.HOME} class="workspace pad home-workspace">
       <div class="home-project-bg" aria-hidden="true">
         <span class="home-bg-mesh"></span>
         <span class="home-bg-wave wave-1"></span>
@@ -2876,6 +2845,11 @@
       radial-gradient(circle at 78% 24%, rgba(35, 164, 168, 0.14) 0%, rgba(35, 164, 168, 0) 34%),
       radial-gradient(circle at 82% 78%, rgba(229, 165, 82, 0.12) 0%, rgba(229, 165, 82, 0) 38%),
       linear-gradient(140deg, #eaf2fb 0%, #edf4fd 42%, #e8f2f8 100%);
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+    overflow: visible;
   }
 
   .layout.map-theme {
@@ -3140,6 +3114,11 @@
       radial-gradient(circle at 82% 22%, rgba(39, 171, 175, 0.16) 0%, rgba(39, 171, 175, 0) 34%),
       radial-gradient(circle at 82% 78%, rgba(231, 164, 76, 0.16) 0%, rgba(231, 164, 76, 0) 40%),
       linear-gradient(140deg, #e7f2ff 0%, #e6f1ff 42%, #e2f3fa 100%);
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+    overflow: visible;
   }
 
   .layout.high-contrast.map-theme {
@@ -3628,12 +3607,24 @@
     min-width: 0;
   }
 
+  .layout.home-theme .content {
+    overflow: visible;
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
   .workspace {
     display: none;
     height: 100%;
     width: 100%;
     max-width: 100%;
     min-width: 0;
+  }
+
+  .layout.home-theme .workspace {
+    height: auto;
+    min-height: 100%;
   }
 
   .workspace.active {
@@ -3869,6 +3860,11 @@
       linear-gradient(180deg, #edf4ff 0%, #e8f1ff 58%, #edf4ff 100%);
   }
 
+  .layout.home-theme .home-workspace {
+    overflow: visible;
+    min-height: 100%;
+  }
+
   .home-workspace > * {
     position: relative;
     z-index: 1;
@@ -3905,7 +3901,7 @@
   .home-project-bg {
     position: absolute;
     inset: 0 0 auto 0;
-    height: var(--home-bg-height, 100%);
+    height: 100%;
     min-height: 100%;
     z-index: 0;
     pointer-events: none;
@@ -4306,6 +4302,14 @@
       overflow: hidden;
     }
 
+    .layout.home-theme {
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+      min-height: 100dvh;
+      overflow: visible;
+    }
+
     .mobile-topbar {
       display: flex;
       justify-content: flex-end;
@@ -4326,6 +4330,13 @@
     .content {
       grid-row: 2;
       min-height: 0;
+    }
+
+    .layout.home-theme .content {
+      min-height: calc(100vh - 56px);
+      min-height: calc(100svh - 56px);
+      min-height: calc(100dvh - 56px);
+      overflow: visible;
     }
 
     .panel {
