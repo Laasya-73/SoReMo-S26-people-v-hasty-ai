@@ -268,7 +268,10 @@
   };
 
   let workspace = WORKSPACE.HOME;
+  let mobilePanelOpen = false;
+  let isMobileViewport = false;
   let onPopState;
+  let onResize;
   let mapEl, map, overlay;
   let currentStyleUrl = BASEMAP_STYLES.light;
   let loading = true, error = "";
@@ -542,6 +545,25 @@
         window.history.pushState({}, "", target);
       }
     }
+  }
+
+  function syncViewportMode() {
+    if (typeof window === "undefined") return;
+    isMobileViewport = window.innerWidth <= 1024;
+    if (!isMobileViewport) mobilePanelOpen = false;
+  }
+
+  function toggleMobilePanel() {
+    mobilePanelOpen = !mobilePanelOpen;
+  }
+
+  function closeMobilePanel() {
+    mobilePanelOpen = false;
+  }
+
+  function openWorkspace(nextWorkspace) {
+    navigateWorkspace(nextWorkspace);
+    if (isMobileViewport) mobilePanelOpen = false;
   }
 
   function applyNarrativeStep(stepKey, toast = true) {
@@ -2107,6 +2129,9 @@
 
   onMount(async () => {
     try {
+      syncViewportMode();
+      onResize = () => syncViewportMode();
+      window.addEventListener("resize", onResize, { passive: true });
       const initialWorkspace = workspaceFromPath(window.location.pathname);
       workspace = initialWorkspace;
       applyWorkspaceTabMeta(initialWorkspace);
@@ -2154,6 +2179,7 @@
 
   onDestroy(() => {
     if (onPopState) window.removeEventListener("popstate", onPopState);
+    if (onResize) window.removeEventListener("resize", onResize);
     clearTimeout(mapToastTimer);
     clearNarrativeAutoplayTimer();
     if (overlay) overlay.finalize();
@@ -2163,7 +2189,22 @@
   $: applyWorkspaceTabMeta(workspace);
 </script>
 
-<main class="layout high-contrast" class:home-theme={workspace===WORKSPACE.HOME}>
+<main class="layout high-contrast" class:home-theme={workspace===WORKSPACE.HOME} class:panel-open={mobilePanelOpen}>
+  <button
+    class="mobile-nav-toggle"
+    type="button"
+    on:click={toggleMobilePanel}
+    aria-label={mobilePanelOpen ? "Hide workspace sidebar" : "Show workspace sidebar"}
+    aria-expanded={mobilePanelOpen}
+  >
+    <span class="hamburger" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
+    <span class="mobile-nav-label">Workspace</span>
+  </button>
+  {#if mobilePanelOpen}
+    <button class="mobile-nav-backdrop" type="button" on:click={closeMobilePanel} aria-label="Close workspace sidebar"></button>
+  {/if}
   <aside class="panel">
     <h1>SoReMo '26</h1>
     <p>
@@ -2173,11 +2214,11 @@
 
     <section class="card">
       <h3>Workspace</h3>
-      <button class:active={workspace===WORKSPACE.HOME} on:click={() => navigateWorkspace(WORKSPACE.HOME)}>Home</button>
-      <button class:active={workspace===WORKSPACE.MAP} on:click={() => navigateWorkspace(WORKSPACE.MAP)}>Illinois Map</button>
-      <button class:active={workspace===WORKSPACE.BRIEF} on:click={() => navigateWorkspace(WORKSPACE.BRIEF)}>County Intelligence Briefing</button>
-      <button class:active={workspace===WORKSPACE.STUDIO} on:click={() => navigateWorkspace(WORKSPACE.STUDIO)}>Impact Scenario Studio</button>
-      <button class:active={workspace===WORKSPACE.REGISTRY} on:click={() => navigateWorkspace(WORKSPACE.REGISTRY)}>Data Center Registry</button>
+      <button class:active={workspace===WORKSPACE.HOME} on:click={() => openWorkspace(WORKSPACE.HOME)}>Home</button>
+      <button class:active={workspace===WORKSPACE.MAP} on:click={() => openWorkspace(WORKSPACE.MAP)}>Illinois Map</button>
+      <button class:active={workspace===WORKSPACE.BRIEF} on:click={() => openWorkspace(WORKSPACE.BRIEF)}>County Intelligence Briefing</button>
+      <button class:active={workspace===WORKSPACE.STUDIO} on:click={() => openWorkspace(WORKSPACE.STUDIO)}>Impact Scenario Studio</button>
+      <button class:active={workspace===WORKSPACE.REGISTRY} on:click={() => openWorkspace(WORKSPACE.REGISTRY)}>Data Center Registry</button>
     </section>
 
     {#if workspace===WORKSPACE.MAP}
@@ -2584,28 +2625,28 @@
 
       <h3 class="home-workspace-title">Open a Workspace</h3>
       <div class="home-grid">
-        <button class="home-card" on:click={() => navigateWorkspace(WORKSPACE.MAP)}>
+        <button class="home-card" on:click={() => openWorkspace(WORKSPACE.MAP)}>
           <div class="home-card-top">
             <b>Illinois Map</b>
           </div>
           <span>Interactive county layers, scenario toggles, hotspots, and county zoom explorer.</span>
           <em>Explore spatial patterns</em>
         </button>
-        <button class="home-card" on:click={() => navigateWorkspace(WORKSPACE.BRIEF)}>
+        <button class="home-card" on:click={() => openWorkspace(WORKSPACE.BRIEF)}>
           <div class="home-card-top">
             <b>County Intelligence Briefing</b>
           </div>
           <span>Generate county briefs with scenario context and export .md/.pdf outputs.</span>
           <em>Create narrative evidence briefs</em>
         </button>
-        <button class="home-card" on:click={() => navigateWorkspace(WORKSPACE.STUDIO)}>
+        <button class="home-card" on:click={() => openWorkspace(WORKSPACE.STUDIO)}>
           <div class="home-card-top">
             <b>Impact Scenario Studio</b>
           </div>
           <span>Run what-if simulations and compare projected pressure before policy decisions.</span>
           <em>Test adjustments and tradeoffs</em>
         </button>
-        <button class="home-card" on:click={() => navigateWorkspace(WORKSPACE.REGISTRY)}>
+        <button class="home-card" on:click={() => openWorkspace(WORKSPACE.REGISTRY)}>
           <div class="home-card-top">
             <b>Data Center Registry</b>
           </div>
@@ -2720,6 +2761,55 @@
   .layout > * {
     position: relative;
     z-index: 1;
+  }
+
+  .mobile-nav-toggle,
+  .mobile-nav-backdrop {
+    display: none;
+  }
+
+  .mobile-nav-toggle {
+    align-items: center;
+    gap: 6px;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 42;
+    padding: 6px 8px;
+    border: 1px solid #b6cdea;
+    border-radius: 10px;
+    background: rgba(245, 250, 255, 0.92);
+    color: #133a63;
+    font: 700 12px/1.05 var(--font-sans);
+    box-shadow: 0 4px 14px rgba(18, 58, 99, 0.14);
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+  }
+
+  .mobile-nav-toggle:hover {
+    background: rgba(239, 247, 255, 0.96);
+  }
+
+  .mobile-nav-toggle:active {
+    transform: translateY(1px);
+  }
+
+  .mobile-nav-label {
+    letter-spacing: 0.01em;
+  }
+
+  .mobile-nav-toggle .hamburger {
+    width: 13px;
+    height: 10px;
+    display: inline-grid;
+    align-content: space-between;
+  }
+
+  .mobile-nav-toggle .hamburger span {
+    display: block;
+    height: 1.8px;
+    border-radius: 999px;
+    background: #1c4f80;
   }
 
   .layout.home-theme {
@@ -3673,9 +3763,9 @@
   }
 
   .home-project-bg {
-    position: absolute;
-    inset: -8% -6% -12% -6%;
-    min-height: calc(100% + 220px);
+    position: fixed;
+    inset: 0;
+    min-height: 100dvh;
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
@@ -4069,13 +4159,48 @@
       min-height: 100vh;
       min-height: 100dvh;
       grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: minmax(0, 1fr);
       overflow: hidden;
     }
 
     .panel {
-      max-height: 52vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(86vw, 380px);
+      max-height: none;
       min-height: 0;
+      z-index: 35;
+      transform: translateX(-104%);
+      transition: transform 200ms ease;
+      box-shadow: 10px 0 32px rgba(15, 44, 74, 0.22);
+    }
+
+    .layout.panel-open .panel {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-toggle {
+      display: inline-flex;
+    }
+
+    .mobile-nav-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 34;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      background: rgba(10, 25, 43, 0.34);
+      backdrop-filter: blur(1.5px);
+      cursor: pointer;
+    }
+
+    .home-workspace,
+    .pad {
+      padding-top: 56px;
     }
 
     .home-grid {
@@ -4115,7 +4240,7 @@
   @media (max-width: 768px) {
     .panel {
       padding: 14px;
-      max-height: 50vh;
+      max-height: none;
     }
 
     .pad {
@@ -4137,9 +4262,21 @@
   }
 
   @media (max-width: 430px) {
+    .mobile-nav-toggle {
+      padding: 6px;
+      width: 34px;
+      height: 34px;
+      justify-content: center;
+      border-radius: 9px;
+    }
+
+    .mobile-nav-label {
+      display: none;
+    }
+
     .panel {
       padding: 10px;
-      max-height: 46vh;
+      max-height: none;
     }
 
     .panel h1 {
@@ -4231,7 +4368,7 @@
   @media (max-width: 390px) {
     .panel {
       padding: 10px;
-      max-height: 45vh;
+      max-height: none;
     }
 
     .panel h1 {
