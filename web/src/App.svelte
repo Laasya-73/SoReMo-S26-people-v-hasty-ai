@@ -37,7 +37,7 @@
   };
   const TAB_ICON_VERSION = "20260323b";
   const SCENARIOS = [
-    { key: "planned", label: "Planned buildout (existing + proposed + inventory + denied)" },
+    { key: "planned", label: "Planned buildout (existing + proposed + denied)" },
     { key: "current", label: "Current footprint (existing only)" }
   ];
   const FOCUS = ["Balanced overview", "Environmental stress", "Economic vulnerability", "Public hearing prep"];
@@ -45,10 +45,10 @@
     {
       key: "where_infrastructure",
       label: "Where data centers are now/planned",
-      summary: "Shows existing, proposed, denied, and inventory footprint with pressure scoring.",
+      summary: "Shows existing, proposed, denied, and registry footprint with pressure scoring.",
       scenario: "planned",
       countyLayer: "pressure",
-      visibility: { existing: true, proposed: true, denied: true, inventory: true, registry: false, outlines: true }
+      visibility: { existing: true, proposed: true, denied: true, registry: false, outlines: true }
     },
     {
       key: "environmental_stress",
@@ -56,7 +56,7 @@
       summary: "Shows baseline county stress context before additional AI infrastructure burden.",
       scenario: "planned",
       countyLayer: "cumulative",
-      visibility: { existing: true, proposed: true, denied: false, inventory: false, registry: false, outlines: true }
+      visibility: { existing: true, proposed: true, denied: false, registry: false, outlines: true }
     },
     {
       key: "community_exposure",
@@ -64,7 +64,7 @@
       summary: "Shows social and environmental justice context of potentially affected communities.",
       scenario: "planned",
       countyLayer: "justice_index",
-      visibility: { existing: true, proposed: true, denied: false, inventory: false, registry: false, outlines: true }
+      visibility: { existing: true, proposed: true, denied: false, registry: false, outlines: true }
     },
     {
       key: "ai_added_burden",
@@ -72,7 +72,7 @@
       summary: "Shows multi-factor annoyance burden and counties exceeding threshold X.",
       scenario: "planned",
       countyLayer: "annoyance_threshold",
-      visibility: { existing: true, proposed: true, denied: true, inventory: true, registry: false, outlines: true }
+      visibility: { existing: true, proposed: true, denied: true, registry: false, outlines: true }
     }
   ];
   const ANNOYANCE_COMPONENTS = [
@@ -103,7 +103,6 @@
     existing: [24, 166, 119, 230],
     proposed: [49, 109, 214, 230],
     denied: [214, 62, 88, 235],
-    inventory: [147, 88, 220, 220],
     registry: [242, 155, 29, 230]
   };
   const PRESSURE_STATUS_META = {
@@ -115,10 +114,6 @@
       label: "Proposed sites",
       help: "Pipeline projects likely to add future pressure if approved and built."
     },
-    inventory: {
-      label: "Inventory sites",
-      help: "Sites in inventory/watchlist with moderate likelihood of activation."
-    },
     denied: {
       label: "Denied sites",
       help: "Denied projects included as lower but non-zero planning signal."
@@ -127,10 +122,9 @@
   const PRESSURE_WEIGHT_RATIONALE = {
     existing: "1.0 is the baseline multiplier for currently operating sites (confirmed active footprint).",
     proposed: "1.5 is higher to reflect likely near-term growth pressure if projects move forward.",
-    inventory: "0.75 is lower because inventory/watchlist projects are less certain than proposed.",
     denied: "0.5 keeps denied projects as low residual planning signal, not active build pressure."
   };
-  const DEFAULT_PRESSURE_WEIGHTS = { existing: 1, proposed: 1.5, inventory: 0.75, denied: 0.5 };
+  const DEFAULT_PRESSURE_WEIGHTS = { existing: 1, proposed: 1.5, denied: 0.5 };
   const PRESSURE_WEIGHT_LIMITS = { min: 0, max: 3, step: 0.05 };
   const PRESSURE_WEIGHT_PROFILES = {
     baseline: {
@@ -139,17 +133,17 @@
     },
     cautious: {
       label: "Cautious permitting",
-      weights: { existing: 1.1, proposed: 1.1, inventory: 0.5, denied: 0.2 }
+      weights: { existing: 1.1, proposed: 1.1, denied: 0.2 }
     },
     growthHeavy: {
       label: "Fast-growth assumption",
-      weights: { existing: 1, proposed: 1.9, inventory: 1, denied: 0.6 }
+      weights: { existing: 1, proposed: 1.9, denied: 0.6 }
     }
   };
   const COUNTY_LAYERS = {
     none: { label: "No county fill", prop: null, unit: "", help: "Turns off county shading so you can focus on site points and boundaries only." },
     impact: { label: "Community Impact Score", prop: "Impact_Score", unit: "score", help: "Composite social-context signal (poverty + minority share) for community sensitivity.", colors: [[255, 242, 246], [253, 205, 221], [249, 134, 180], [197, 27, 125], [122, 1, 119]] },
-    pressure: { label: "Data Center Pressure Score", propCurrent: "Pressure_Score_Current", propPlanned: "Pressure_Score_Planned", unit: "score", help: "Weighted pressure from existing, proposed, inventory, and denied sites for the selected scenario.", colors: [[239, 243, 255], [189, 215, 231], [107, 174, 214], [49, 130, 189], [8, 81, 156]] },
+    pressure: { label: "Data Center Pressure Score", propCurrent: "Pressure_Score_Current", propPlanned: "Pressure_Score_Planned", unit: "score", help: "Weighted pressure from existing, proposed, and denied sites for the selected scenario.", colors: [[239, 243, 255], [189, 215, 231], [107, 174, 214], [49, 130, 189], [8, 81, 156]] },
     annoyance_threshold: { label: "Annoyance Threshold Score (0-100)", prop: null, unit: "score", help: "Composite annoyance score from AQI, water stress, energy burden, and social vulnerability. Higher means more likely to exceed local tolerance threshold.", colors: [[255, 247, 251], [236, 226, 240], [208, 209, 230], [166, 189, 219], [54, 144, 192]] },
     economic: { label: "Economic Vulnerability 2.0", prop: "Economic_Vulnerability_Score", unit: "score", help: "County-level affordability and socioeconomic sensitivity indicator.", colors: [[247, 252, 245], [199, 233, 192], [116, 196, 118], [35, 139, 69], [0, 68, 27]] },
     cumulative: { label: "Cumulative Burden (Air + Energy)", prop: "Cumulative_Burden_Score", unit: "score", help: "Combined exposure signal from air-quality and energy-burden indicators.", colors: [[255, 247, 236], [254, 217, 142], [254, 153, 41], [217, 95, 14], [127, 39, 4]] },
@@ -263,7 +257,6 @@
   const PRESSURE_SEGMENT_COLORS = {
     existing: "#1d9d77",
     proposed: "#2c72d6",
-    inventory: "#9c63d7",
     denied: "#db5068"
   };
 
@@ -287,7 +280,7 @@
   let narrativeAutoplayTimer;
   let countyOpacity = 0.75;
   let siteRadius = 8;
-  let showExisting = true, showProposed = true, showDenied = true, showInventory = false, showRegistry = true, showOutlines = true;
+  let showExisting = true, showProposed = true, showDenied = true, showRegistry = true, showOutlines = true;
   let annoyanceThreshold = DEFAULT_ANNOYANCE_THRESHOLD;
   let showAnnoyanceOverlay = true;
   let mapZoomCounty = "";
@@ -317,10 +310,9 @@
 
   let briefScenario = "planned", briefFocus = "Balanced overview", briefOnlyWithSites = true, briefCounty = "", briefData = null, briefText = "";
   let studioScenario = "planned", studioOnlyWithSites = true, studioCounty = "", studioData = null, studioText = "";
-  let retireExisting = 0, addProposed = 0, cancelProposed = 0, addInventory = 0, removeInventory = 0, addDenied = 0;
+  let retireExisting = 0, addProposed = 0, cancelProposed = 0, addDenied = 0;
   let pressureWeightExisting = DEFAULT_PRESSURE_WEIGHTS.existing;
   let pressureWeightProposed = DEFAULT_PRESSURE_WEIGHTS.proposed;
-  let pressureWeightInventory = DEFAULT_PRESSURE_WEIGHTS.inventory;
   let pressureWeightDenied = DEFAULT_PRESSURE_WEIGHTS.denied;
   let selectedPressureProfile = "baseline";
   let lastBriefAutoSignature = "";
@@ -374,7 +366,6 @@
     return {
       existing: normalizePressureWeight(source.existing, DEFAULT_PRESSURE_WEIGHTS.existing),
       proposed: normalizePressureWeight(source.proposed, DEFAULT_PRESSURE_WEIGHTS.proposed),
-      inventory: normalizePressureWeight(source.inventory, DEFAULT_PRESSURE_WEIGHTS.inventory),
       denied: normalizePressureWeight(source.denied, DEFAULT_PRESSURE_WEIGHTS.denied)
     };
   }
@@ -382,7 +373,6 @@
   function setPressureWeights(weights) {
     pressureWeightExisting = normalizePressureWeight(weights?.existing, DEFAULT_PRESSURE_WEIGHTS.existing);
     pressureWeightProposed = normalizePressureWeight(weights?.proposed, DEFAULT_PRESSURE_WEIGHTS.proposed);
-    pressureWeightInventory = normalizePressureWeight(weights?.inventory, DEFAULT_PRESSURE_WEIGHTS.inventory);
     pressureWeightDenied = normalizePressureWeight(weights?.denied, DEFAULT_PRESSURE_WEIGHTS.denied);
   }
 
@@ -392,13 +382,12 @@
     return {
       existing: normalizePressureWeight(profile.weights.existing, DEFAULT_PRESSURE_WEIGHTS.existing),
       proposed: normalizePressureWeight(profile.weights.proposed, DEFAULT_PRESSURE_WEIGHTS.proposed),
-      inventory: normalizePressureWeight(profile.weights.inventory, DEFAULT_PRESSURE_WEIGHTS.inventory),
       denied: normalizePressureWeight(profile.weights.denied, DEFAULT_PRESSURE_WEIGHTS.denied)
     };
   }
 
   function pressureWeightsEqual(a, b) {
-    const keys = ["existing", "proposed", "inventory", "denied"];
+    const keys = ["existing", "proposed", "denied"];
     return keys.every((key) => Math.abs(Number(a?.[key] || 0) - Number(b?.[key] || 0)) < 0.001);
   }
 
@@ -456,7 +445,6 @@
     showExisting = parseBoolParam(params.get("existing"), showExisting);
     showProposed = parseBoolParam(params.get("proposed"), showProposed);
     showDenied = parseBoolParam(params.get("denied"), showDenied);
-    showInventory = parseBoolParam(params.get("inventory"), showInventory);
     showRegistry = parseBoolParam(params.get("registry"), showRegistry);
     showOutlines = parseBoolParam(params.get("outlines"), showOutlines);
     annoyanceThreshold = clamp(params.get("annoyance_x"), 0, 100, annoyanceThreshold);
@@ -477,7 +465,6 @@
     params.set("existing", showExisting ? "1" : "0");
     params.set("proposed", showProposed ? "1" : "0");
     params.set("denied", showDenied ? "1" : "0");
-    params.set("inventory", showInventory ? "1" : "0");
     params.set("registry", showRegistry ? "1" : "0");
     params.set("outlines", showOutlines ? "1" : "0");
     params.set("annoyance_x", String(Math.round(Number(annoyanceThreshold))));
@@ -575,7 +562,6 @@
     showExisting = step.visibility.existing;
     showProposed = step.visibility.proposed;
     showDenied = step.visibility.denied;
-    showInventory = step.visibility.inventory;
     showRegistry = step.visibility.registry;
     showOutlines = step.visibility.outlines;
     if (step.key === "ai_added_burden") {
@@ -704,13 +690,64 @@
 
   function scenarioSites(s) {
     if (!sites?.features) return [];
-    const core = sites.features.filter((f) => f.properties?.status_class !== "registry");
+    const core = sites.features.filter((f) => {
+      const status = String(f?.properties?.status_class || "");
+      return status !== "registry" && status !== "inventory";
+    });
     return core.filter((f) => (s === "current" ? f.properties?.status_class === "existing" : true));
+  }
+
+  function normalizeSiteKeyPart(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function roundedCoordKey(feature) {
+    const [lng, lat] = feature?.geometry?.coordinates || [];
+    const nLng = Number(lng);
+    const nLat = Number(lat);
+    if (!Number.isFinite(nLng) || !Number.isFinite(nLat)) return "";
+    return `${nLng.toFixed(4)},${nLat.toFixed(4)}`;
+  }
+
+  function registryDedupKey(feature) {
+    const p = feature?.properties || {};
+    const name = normalizeSiteKeyPart(p.name);
+    const operator = normalizeSiteKeyPart(p.operator);
+    const county = normalizeSiteKeyPart(p.County_Name || p.county || "");
+    const coord = roundedCoordKey(feature);
+    if (name || operator) return `${name}|${operator}|${county}|${coord}`;
+    return `coord:${coord}|${county}`;
+  }
+
+  function asRegistryFeature(feature, sourceType) {
+    return {
+      ...feature,
+      properties: {
+        ...(feature?.properties || {}),
+        status_class: "registry",
+        registry_source_type: sourceType
+      }
+    };
   }
 
   function registrySites() {
     if (!sites?.features) return [];
-    return sites.features.filter((f) => f.properties?.status_class === "registry");
+    const registryRaw = sites.features.filter((f) => f.properties?.status_class === "registry");
+    const inventoryRaw = sites.features.filter((f) => f.properties?.status_class === "inventory");
+    const seen = new Set();
+    const merged = [];
+    const pushIfNew = (feature, sourceType) => {
+      const key = registryDedupKey(feature);
+      if (key && seen.has(key)) return;
+      if (key) seen.add(key);
+      merged.push(asRegistryFeature(feature, sourceType));
+    };
+    for (const f of registryRaw) pushIfNew(f, "registry");
+    for (const f of inventoryRaw) pushIfNew(f, "inventory");
+    return merged;
   }
 
   function visibleMapSites() {
@@ -719,7 +756,6 @@
       if (s === "existing") return showExisting;
       if (s === "proposed") return showProposed;
       if (s === "denied") return showDenied;
-      if (s === "inventory") return showInventory;
       return false;
     });
     const reg = showRegistry ? registrySites() : [];
@@ -732,22 +768,21 @@
     for (const f of sFeatures) {
       const g = String(f.properties?.GEOID || "").padStart(5, "0");
       if (!g) continue;
-      if (!m.has(g)) m.set(g, { existing: 0, proposed: 0, denied: 0, inventory: 0, total: 0, score: 0 });
+      if (!m.has(g)) m.set(g, { existing: 0, proposed: 0, denied: 0, total: 0, score: 0 });
       const r = m.get(g);
       const s = f.properties?.status_class;
       if (s === "existing") r.existing += 1;
       if (s === "proposed") r.proposed += 1;
       if (s === "denied") r.denied += 1;
-      if (s === "inventory") r.inventory += 1;
       r.total += 1;
     }
     for (const r of m.values()) {
-      r.score = Number((r.existing * w.existing + r.proposed * w.proposed + r.denied * w.denied + r.inventory * w.inventory).toFixed(2));
+      r.score = Number((r.existing * w.existing + r.proposed * w.proposed + r.denied * w.denied).toFixed(2));
     }
     return m;
   }
 
-  const row0 = (m, g) => m.get(g) || { existing: 0, proposed: 0, denied: 0, inventory: 0, total: 0, score: 0 };
+  const row0 = (m, g) => m.get(g) || { existing: 0, proposed: 0, denied: 0, total: 0, score: 0 };
   const countyFeature = (g) => counties?.features?.find((f) => String(f.properties?.GEOID) === String(g));
 
   function pressureSummaryForScenario(scenario) {
@@ -1140,9 +1175,9 @@
     if (!counties?.features?.length) return "Watchlist will populate after county data loads.";
     if (alerts?.length) return "";
     const w = pressureWeights();
-    const weightTotal = Number((w.existing + w.proposed + w.inventory + w.denied).toFixed(2));
+    const weightTotal = Number((w.existing + w.proposed + w.denied).toFixed(2));
     if (weightTotal === 0) {
-      return "No alerts because all Assumption Lab weights are 0 (existing, proposed, inventory, denied). Increase at least one weight above 0 to reactivate watchlist scoring.";
+      return "No alerts because all Assumption Lab weights are 0 (existing, proposed, denied). Increase at least one weight above 0 to reactivate watchlist scoring.";
     }
     const isBaselineMode = pressureWeightsEqual(pressureWeights(), pressureWeightsForProfile("baseline"));
     const plannedValues = isBaselineMode
@@ -1211,19 +1246,18 @@
     return {
       existing: normalizePressureWeight(pressureWeightExisting, DEFAULT_PRESSURE_WEIGHTS.existing),
       proposed: normalizePressureWeight(pressureWeightProposed, DEFAULT_PRESSURE_WEIGHTS.proposed),
-      inventory: normalizePressureWeight(pressureWeightInventory, DEFAULT_PRESSURE_WEIGHTS.inventory),
       denied: normalizePressureWeight(pressureWeightDenied, DEFAULT_PRESSURE_WEIGHTS.denied)
     };
   }
 
   function pressureWeightSignature() {
     const w = pressureWeights();
-    return `${w.existing}|${w.proposed}|${w.inventory}|${w.denied}`;
+    return `${w.existing}|${w.proposed}|${w.denied}`;
   }
 
   function pressureFormulaDetails(counts) {
     const weights = pressureWeights();
-    const order = ["existing", "proposed", "inventory", "denied"];
+    const order = ["existing", "proposed", "denied"];
     const items = order.map((key) => {
       const count = Number(counts?.[key] || 0);
       const weight = Number(weights?.[key] || 0);
@@ -1248,7 +1282,7 @@
       items: itemsWithShare,
       total,
       expression,
-      equation: `Pressure Score = (Existing x ${weightFmt(weights.existing)}) + (Proposed x ${weightFmt(weights.proposed)}) + (Inventory x ${weightFmt(weights.inventory)}) + (Denied x ${weightFmt(weights.denied)})`,
+      equation: `Pressure Score = (Existing x ${weightFmt(weights.existing)}) + (Proposed x ${weightFmt(weights.proposed)}) + (Denied x ${weightFmt(weights.denied)})`,
       explainer: "Higher score means greater modeled county pressure from data center footprint and pipeline mix.",
       rationale: order.map((key) => ({
         key,
@@ -1443,7 +1477,6 @@
             countyOpacity,
             pressureWeightExisting,
             pressureWeightProposed,
-            pressureWeightInventory,
             pressureWeightDenied,
             ...breaks
           ]
@@ -1503,7 +1536,7 @@
       getRadius: siteRadius,
       updateTriggers: {
         getRadius: [siteRadius],
-        getFillColor: [mapScenario, showExisting, showProposed, showDenied, showInventory, showRegistry]
+        getFillColor: [mapScenario, showExisting, showProposed, showDenied, showRegistry]
       },
       radiusMinPixels: 4,
       radiusMaxPixels: 18,
@@ -1518,8 +1551,11 @@
     if (!object) return null;
     const p = object.properties || {};
     if (p.status_class) {
+      const statusLabel = p.status_class === "registry"
+        ? (p.registry_source_type === "inventory" ? "registry (merged inventory)" : "registry")
+        : p.status_class;
       return {
-        html: `<div><b>${p.name || "Site"}</b><br/>Status: ${p.status_class}<br/>Operator: ${p.operator || "Unknown"}<br/>County: ${p.County_Name || "N/A"}<br/>Source: ${p.data_source || "N/A"}</div>`,
+        html: `<div><b>${p.name || "Site"}</b><br/>Status: ${statusLabel}<br/>Operator: ${p.operator || "Unknown"}<br/>County: ${p.County_Name || "N/A"}<br/>Source: ${p.data_source || "N/A"}</div>`,
         style: { backgroundColor: "#0f172a", color: "#fff", borderRadius: "10px", padding: "10px", fontFamily: "Space Grotesk, sans-serif" }
       };
     }
@@ -1677,7 +1713,7 @@
     briefText =
       `# County Intelligence Briefing: ${countyName}\n\n` +
       `Scenario: ${briefData.scenario}\n\n` +
-      `- Active pressure: ${rA.score} (existing=${rA.existing}, proposed=${rA.proposed}, denied=${rA.denied}, inventory=${rA.inventory})\n` +
+      `- Active pressure: ${rA.score} (existing=${rA.existing}, proposed=${rA.proposed}, denied=${rA.denied})\n` +
       `- Current vs planned: ${rC.score} -> ${rP.score} (delta ${delta >= 0 ? "+" : ""}${delta})\n` +
       `- Poverty: ${fmt(p.Poverty_Rate_Percent, "pct")} | Minority: ${fmt(p.Pct_Minority, "pct")} | AQI P90: ${fmt(p.AQI_P90, "aqi")}\n` +
       `- Heat context: index ${fmt(p.Heat_Climate_Stress_Index, "score")} | FEMA heat-wave risk ${fmt(p.HWAV_RISKS, "score")} | NOAA CDD ${fmt(p.NOAA_CDD_Recent5yr, "cdd")} | summer Tmax ${fmt(p.NOAA_Tmax_Summer_Recent5yr_F, "degf")}\n` +
@@ -1721,11 +1757,10 @@
     const p = {
       existing: Math.max(b.existing - Number(retireExisting), 0),
       proposed: Math.max(b.proposed - Number(cancelProposed), 0) + Number(addProposed),
-      inventory: Math.max(b.inventory - Number(removeInventory), 0) + Number(addInventory),
       denied: b.denied + Number(addDenied)
     };
-    p.total = p.existing + p.proposed + p.inventory + p.denied;
-    p.score = Number((p.existing * w.existing + p.proposed * w.proposed + p.denied * w.denied + p.inventory * w.inventory).toFixed(2));
+    p.total = p.existing + p.proposed + p.denied;
+    p.score = Number((p.existing * w.existing + p.proposed * w.proposed + p.denied * w.denied).toFixed(2));
     const countyName = c.properties?.County_Name || `${c.properties?.NAME || "Unknown"} County`;
     const delta = Number((p.score - b.score).toFixed(2));
     const pressureValues = pressureValuesForScenario(studioScenario);
@@ -1820,7 +1855,7 @@
       baselineFormulaLines.map((line) => `- Baseline ${line}\n`).join("") +
       `Projected weighted points: ${projectedFormula.expression} (total ${projectedFormula.total})\n\n` +
       projectedFormulaLines.map((line) => `- Projected ${line}\n`).join("") +
-      `Inputs:\n- Retire existing: ${retireExisting}\n- Add proposed: ${addProposed}\n- Cancel proposed: ${cancelProposed}\n- Add inventory: ${addInventory}\n- Remove inventory: ${removeInventory}\n- Add denied: ${addDenied}\n`;
+      `Inputs:\n- Retire existing: ${retireExisting}\n- Add proposed: ${addProposed}\n- Cancel proposed: ${cancelProposed}\n- Add denied: ${addDenied}\n`;
   }
 
   function downloadText(fileName, text, type = "text/plain;charset=utf-8") {
@@ -1980,7 +2015,7 @@
 
   $: {
     sites;
-    pressureWeightExisting; pressureWeightProposed; pressureWeightInventory; pressureWeightDenied;
+    pressureWeightExisting; pressureWeightProposed; pressureWeightDenied;
     pressureSummaryCurrent = summarize(scenarioSites("current"));
     pressureSummaryPlanned = summarize(scenarioSites("planned"));
   }
@@ -2034,7 +2069,7 @@
   $: annoyanceExceedingSet = new Set(annoyanceExceeding.map((x) => String(x.geoid)));
   $: {
     counties;
-    pressureWeightExisting; pressureWeightProposed; pressureWeightInventory; pressureWeightDenied;
+    pressureWeightExisting; pressureWeightProposed; pressureWeightDenied;
     annoyanceThreshold; annoyanceByGeoid;
     const baselineMode = pressureWeightsEqual(pressureWeights(), pressureWeightsForProfile("baseline"));
     watchlistModeLabel = baselineMode ? "Recommended baseline" : "Custom Assumption Lab weights";
@@ -2095,15 +2130,15 @@
 
   $: if (mapQueryReady && workspace === WORKSPACE.MAP) {
     mapScenario; countyLayer; baseStyle; countyOpacity; siteRadius;
-    showExisting; showProposed; showDenied; showInventory; showRegistry; showOutlines; mapZoomCounty;
+    showExisting; showProposed; showDenied; showRegistry; showOutlines; mapZoomCounty;
     layeredNarrativeStep; annoyanceThreshold; showAnnoyanceOverlay;
     writeMapStateToUrl(true);
   }
 
   // Critical fix: explicit dependencies for map updates.
   $: if (overlay && counties && sites) {
-    mapScenario; countyLayer; showExisting; showProposed; showDenied; showInventory; showRegistry; showOutlines; countyOpacity; siteRadius; selectedCounty;
-    pressureWeightExisting; pressureWeightProposed; pressureWeightInventory; pressureWeightDenied;
+    mapScenario; countyLayer; showExisting; showProposed; showDenied; showRegistry; showOutlines; countyOpacity; siteRadius; selectedCounty;
+    pressureWeightExisting; pressureWeightProposed; pressureWeightDenied;
     annoyanceThreshold; showAnnoyanceOverlay; annoyanceExceeding.length;
     overlay.setProps({ layers: layers(), getTooltip: tooltip });
   }
@@ -2248,35 +2283,6 @@
           </select>
         </label>
       </section>
-      <section class="card narrative-card">
-        <div class="narrative-head">
-          <h3>Layered Narrative</h3>
-          <p class="mini-note narrative-intro">Follow a simple 4-step story: where data centers are, current county stress, who may be affected, and the added burden from AI growth.</p>
-        </div>
-        <label>Narrative step
-          <select bind:value={layeredNarrativeStep} on:change={(e) => applyNarrativeStep(e.currentTarget.value, true)}>
-            {#each LAYERED_NARRATIVE_STEPS as step}
-              <option value={step.key}>{step.label}</option>
-            {/each}
-          </select>
-        </label>
-        <div class="narrative-current">
-          <div class="narrative-current-title">{LAYERED_NARRATIVE_STEPS.find((x) => x.key === layeredNarrativeStep)?.label || "Step"}</div>
-          <p class="mini-note narrative-current-summary">{LAYERED_NARRATIVE_STEPS.find((x) => x.key === layeredNarrativeStep)?.summary || ""}</p>
-        </div>
-        <label class="narrative-slider">Autoplay interval (seconds)
-          <input type="range" min="3" max="12" step="1" bind:value={narrativeAutoplaySeconds}/>
-        </label>
-        <div class="narrative-status-row">
-          <div class="narrative-status-chip"><b>Status</b><span>{narrativeAutoplay ? "Running" : "Paused"}</span></div>
-          <div class="narrative-status-chip"><b>Step interval</b><span>{Number(narrativeAutoplaySeconds).toFixed(0)}s</span></div>
-        </div>
-        <div class="narrative-actions">
-          <button class="cta" on:click={startNarrativeAutoplay} disabled={narrativeAutoplay}>Start Autoplay</button>
-          <button class="ghost" on:click={() => stopNarrativeAutoplay(true)} disabled={!narrativeAutoplay}>Pause Autoplay</button>
-          <button class="ghost" on:click={nextNarrativeStepManual}>Next Step</button>
-        </div>
-      </section>
       <section class="card">
         <h3>County Layer</h3>
         <select bind:value={countyLayer}>
@@ -2312,6 +2318,35 @@
           </div>
         {/if}
       </section>
+      <section class="card narrative-card">
+        <div class="narrative-head">
+          <h3>Layered Narrative</h3>
+          <p class="mini-note narrative-intro">Follow a simple 4-step story: where data centers are, current county stress, who may be affected, and the added burden from AI growth.</p>
+        </div>
+        <label>Narrative step
+          <select bind:value={layeredNarrativeStep} on:change={(e) => applyNarrativeStep(e.currentTarget.value, true)}>
+            {#each LAYERED_NARRATIVE_STEPS as step}
+              <option value={step.key}>{step.label}</option>
+            {/each}
+          </select>
+        </label>
+        <div class="narrative-current">
+          <div class="narrative-current-title">{LAYERED_NARRATIVE_STEPS.find((x) => x.key === layeredNarrativeStep)?.label || "Step"}</div>
+          <p class="mini-note narrative-current-summary">{LAYERED_NARRATIVE_STEPS.find((x) => x.key === layeredNarrativeStep)?.summary || ""}</p>
+        </div>
+        <label class="narrative-slider">Autoplay interval (seconds)
+          <input type="range" min="3" max="12" step="1" bind:value={narrativeAutoplaySeconds}/>
+        </label>
+        <div class="narrative-status-row">
+          <div class="narrative-status-chip"><b>Status</b><span>{narrativeAutoplay ? "Running" : "Paused"}</span></div>
+          <div class="narrative-status-chip"><b>Step interval</b><span>{Number(narrativeAutoplaySeconds).toFixed(0)}s</span></div>
+        </div>
+        <div class="narrative-actions">
+          <button class="cta" on:click={startNarrativeAutoplay} disabled={narrativeAutoplay}>Start Autoplay</button>
+          <button class="ghost" on:click={() => stopNarrativeAutoplay(true)} disabled={!narrativeAutoplay}>Pause Autoplay</button>
+          <button class="ghost" on:click={nextNarrativeStepManual}>Next Step</button>
+        </div>
+      </section>
       <section class="card">
         <h3>Annoyance Threshold</h3>
         <p class="mini-note">Annoyance Score = AQI level + Water stress + Energy burden + Social vulnerability (equal-weight percentile blend).</p>
@@ -2340,10 +2375,9 @@
         <label><input type="checkbox" bind:checked={showExisting}/> Existing</label>
         <label><input type="checkbox" bind:checked={showProposed}/> Proposed</label>
         <label><input type="checkbox" bind:checked={showDenied}/> Denied</label>
-        <label><input type="checkbox" bind:checked={showInventory}/> Inventory</label>
-        <label><input type="checkbox" bind:checked={showRegistry}/> Registry (all known IL)</label>
+        <label><input type="checkbox" bind:checked={showRegistry}/> Registry</label>
         <label><input type="checkbox" bind:checked={showOutlines}/> County outlines</label>
-        <p class="mini-note">Registry points are reference-only and are excluded from pressure scoring formulas.</p>
+        <p class="mini-note">Registry points include merged inventory records (deduplicated) and are excluded from pressure scoring formulas.</p>
         <label>Point size
           <input type="range" min="4" max="16" step="1" bind:value={siteRadius}/>
         </label>
@@ -2392,12 +2426,6 @@
             <input class="weight-number" type="number" min={PRESSURE_WEIGHT_LIMITS.min} max={PRESSURE_WEIGHT_LIMITS.max} step={PRESSURE_WEIGHT_LIMITS.step} bind:value={pressureWeightProposed}/>
           </div>
         </label>
-        <label>Inventory sites
-          <div class="weight-control">
-            <input type="range" min={PRESSURE_WEIGHT_LIMITS.min} max={PRESSURE_WEIGHT_LIMITS.max} step={PRESSURE_WEIGHT_LIMITS.step} bind:value={pressureWeightInventory}/>
-            <input class="weight-number" type="number" min={PRESSURE_WEIGHT_LIMITS.min} max={PRESSURE_WEIGHT_LIMITS.max} step={PRESSURE_WEIGHT_LIMITS.step} bind:value={pressureWeightInventory}/>
-          </div>
-        </label>
         <label>Denied sites
           <div class="weight-control">
             <input type="range" min={PRESSURE_WEIGHT_LIMITS.min} max={PRESSURE_WEIGHT_LIMITS.max} step={PRESSURE_WEIGHT_LIMITS.step} bind:value={pressureWeightDenied}/>
@@ -2405,8 +2433,7 @@
           </div>
         </label>
         <p class="equation-mini">
-          <b>Live formula:</b> Existing x {weightFmt(pressureWeightExisting)} + Proposed x {weightFmt(pressureWeightProposed)} +
-          Inventory x {weightFmt(pressureWeightInventory)} + Denied x {weightFmt(pressureWeightDenied)}
+          <b>Live formula:</b> Existing x {weightFmt(pressureWeightExisting)} + Proposed x {weightFmt(pressureWeightProposed)} + Denied x {weightFmt(pressureWeightDenied)}
         </p>
         <div class="assumption-guide">
           <p><b>How to choose weights</b></p>
@@ -2414,7 +2441,7 @@
             <li>Start with <b>Recommended baseline</b>.</li>
             <li>Increase <b>Proposed</b> if you expect approvals/construction soon; reduce it for conservative planning.</li>
             <li>Keep <b>Existing</b> near 1.0 for current footprint pressure unless operations are unusually intensive.</li>
-            <li>Keep <b>Inventory</b> and <b>Denied</b> lower when project certainty is low.</li>
+            <li>Keep <b>Denied</b> lower when project certainty is low.</li>
             <li>After edits, click <b>Generate County Brief</b> or <b>Run Simulation</b> to compare outcomes.</li>
           </ol>
         </div>
@@ -2426,14 +2453,14 @@
         <div class="mini-note watchlist-help">
           <span class="info-pill">i</span>
           <div class="watchlist-help-lines">
-            <p class="formula-line"><b>Planned pressure = (Existing x {weightFmt(pressureWeightExisting)}) + (Proposed x {weightFmt(pressureWeightProposed)}) + (Inventory x {weightFmt(pressureWeightInventory)}) + (Denied x {weightFmt(pressureWeightDenied)})</b></p>
+            <p class="formula-line"><b>Planned pressure = (Existing x {weightFmt(pressureWeightExisting)}) + (Proposed x {weightFmt(pressureWeightProposed)}) + (Denied x {weightFmt(pressureWeightDenied)})</b></p>
             <p class="formula-line"><b>Current pressure = (Existing x {weightFmt(pressureWeightExisting)})</b></p>
             <p class="formula-line"><b>Delta = Planned pressure - Current pressure</b></p>
             <p class="formula-line">Larger positive delta means larger projected increase.</p>
           </div>
         </div>
         <p class="mini-note"><b>Mode:</b> {watchlistModeLabel}</p>
-        <p class="mini-note"><b>Weights:</b> E {weightFmt(pressureWeightExisting)} | P {weightFmt(pressureWeightProposed)} | I {weightFmt(pressureWeightInventory)} | D {weightFmt(pressureWeightDenied)}</p>
+        <p class="mini-note"><b>Weights:</b> E {weightFmt(pressureWeightExisting)} | P {weightFmt(pressureWeightProposed)} | D {weightFmt(pressureWeightDenied)}</p>
         {#if countyWatchlist.length}
           <ul class="watchlist">
             {#each countyWatchlist.slice(0, 6) as item}
@@ -2553,8 +2580,6 @@
         <label>Retire existing<input type="number" min="0" bind:value={retireExisting}/></label>
         <label>Add proposed<input type="number" min="0" bind:value={addProposed}/></label>
         <label>Cancel proposed<input type="number" min="0" bind:value={cancelProposed}/></label>
-        <label>Add inventory<input type="number" min="0" bind:value={addInventory}/></label>
-        <label>Remove inventory<input type="number" min="0" bind:value={removeInventory}/></label>
         <label>Add denied<input type="number" min="0" bind:value={addDenied}/></label>
         {#if studioOptions.length === 0}
           <p class="mini-note">No counties available for this setup. Adjust filters or scenario.</p>
