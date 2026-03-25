@@ -341,6 +341,19 @@
     return n.toFixed(2);
   };
 
+  function statusLabelWithHint(statusClass, registrySourceType = "") {
+    const s = String(statusClass || "").toLowerCase();
+    if (s === "existing") return "existing (operating now)";
+    if (s === "proposed") return "proposed (planned/in development)";
+    if (s === "denied") return "denied (proposal rejected)";
+    if (s === "registry") {
+      return registrySourceType === "inventory"
+        ? "registry (reference list, includes merged inventory)"
+        : "registry (reference list)";
+    }
+    return s || "unknown";
+  }
+
   const parseBoolParam = (raw, fallback) => {
     if (raw === "1" || raw === "true") return true;
     if (raw === "0" || raw === "false") return false;
@@ -1551,9 +1564,7 @@
     if (!object) return null;
     const p = object.properties || {};
     if (p.status_class) {
-      const statusLabel = p.status_class === "registry"
-        ? (p.registry_source_type === "inventory" ? "registry (merged inventory)" : "registry")
-        : p.status_class;
+      const statusLabel = statusLabelWithHint(p.status_class, p.registry_source_type);
       return {
         html: `<div><b>${p.name || "Site"}</b><br/>Status: ${statusLabel}<br/>Operator: ${p.operator || "Unknown"}<br/>County: ${p.County_Name || "N/A"}<br/>Source: ${p.data_source || "N/A"}</div>`,
         style: { backgroundColor: "#0f172a", color: "#fff", borderRadius: "10px", padding: "10px", fontFamily: "Space Grotesk, sans-serif" }
@@ -2372,10 +2383,10 @@
       </section>
       <section class="card">
         <h3>Site Layers</h3>
-        <label><input type="checkbox" bind:checked={showExisting}/> Existing</label>
-        <label><input type="checkbox" bind:checked={showProposed}/> Proposed</label>
-        <label><input type="checkbox" bind:checked={showDenied}/> Denied</label>
-        <label><input type="checkbox" bind:checked={showRegistry}/> Registry</label>
+        <label><input type="checkbox" bind:checked={showExisting}/> Existing (operating now)</label>
+        <label><input type="checkbox" bind:checked={showProposed}/> Proposed (planned/in development)</label>
+        <label><input type="checkbox" bind:checked={showDenied}/> Denied (proposal rejected)</label>
+        <label><input type="checkbox" bind:checked={showRegistry}/> Registry (reference list)</label>
         <label><input type="checkbox" bind:checked={showOutlines}/> County outlines</label>
         <p class="mini-note">Registry points include merged inventory records (deduplicated) and are excluded from pressure scoring formulas.</p>
         <label>Point size
@@ -2526,7 +2537,7 @@
         <section class="card selected">
           <h3>Selected Site</h3>
           <p><b>{selectedSite.name}</b></p>
-          <p>Status: {selectedSite.status_class}</p>
+          <p>Status: {statusLabelWithHint(selectedSite.status_class, selectedSite.registry_source_type)}</p>
           <p>Operator: {selectedSite.operator || "N/A"}</p>
           <p>County: {selectedSite.County_Name || "N/A"}</p>
           <p>Source: {selectedSite.data_source || "N/A"}</p>
