@@ -348,8 +348,8 @@
     if (s === "denied") return "denied (proposal rejected)";
     if (s === "registry") {
       return registrySourceType === "inventory"
-        ? "registry (reference list, includes merged inventory)"
-        : "registry (reference list)";
+        ? "registry (all known sites in IL, includes merged inventory)"
+        : "registry (all known sites in IL)";
     }
     return s || "unknown";
   }
@@ -2386,9 +2386,9 @@
         <label><input type="checkbox" bind:checked={showExisting}/> Existing (operating now)</label>
         <label><input type="checkbox" bind:checked={showProposed}/> Proposed (planned/in development)</label>
         <label><input type="checkbox" bind:checked={showDenied}/> Denied (proposal rejected)</label>
-        <label><input type="checkbox" bind:checked={showRegistry}/> Registry (reference list)</label>
+        <label><input type="checkbox" bind:checked={showRegistry}/> Registry (all known sites in IL)</label>
         <label><input type="checkbox" bind:checked={showOutlines}/> County outlines</label>
-        <p class="mini-note">Registry points include merged inventory records (deduplicated) and are excluded from pressure scoring formulas.</p>
+        <p class="mini-note">Registry points show all known sites in IL (including merged, deduplicated inventory records) and are excluded from pressure scoring formulas.</p>
         <label>Point size
           <input type="range" min="4" max="16" step="1" bind:value={siteRadius}/>
         </label>
