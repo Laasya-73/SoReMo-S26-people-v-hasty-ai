@@ -3,7 +3,6 @@
 
   export let studioData = null;
   export let canRun = false;
-  export let onDownloadMarkdown = () => {};
   export let onDownloadPdf = () => {};
 
   const fmtWeight = (v) => {
@@ -13,10 +12,11 @@
   };
 </script>
 
-<h2>Impact Scenario Studio</h2>
-{#if studioData}
-  <p><b>County:</b> {studioData.countyName}</p>
-  <p><b>Base scenario:</b> {studioData.scenario}</p>
+<div class="studio-export-root" data-studio-export>
+  <h2>Impact Scenario Studio</h2>
+  {#if studioData}
+    <p><b>County:</b> {studioData.countyName}</p>
+    <p><b>Base scenario:</b> {studioData.scenario}</p>
 
   <section class="summary">
     <p><b>Baseline pressure:</b> {studioData.baseline.score}</p>
@@ -123,15 +123,15 @@
     </div>
   </section>
 
-  <div class="row">
-    <button on:click={onDownloadMarkdown}>Download Note (.md)</button>
-    <button on:click={onDownloadPdf}>Download Note (.pdf)</button>
-  </div>
-{:else if canRun}
-  <p>Set controls and click Run Simulation.</p>
-{:else}
-  <p>No county options are available for this scenario and filter setup.</p>
-{/if}
+    <div class="row" data-pdf-exclude>
+      <button on:click={onDownloadPdf}>Download Note (.pdf)</button>
+    </div>
+  {:else if canRun}
+    <p>Set controls and click Run Simulation.</p>
+  {:else}
+    <p>No county options are available for this scenario and filter setup.</p>
+  {/if}
+</div>
 
 <style>
   h2 {
@@ -402,6 +402,11 @@
     .row {
       gap: 8px;
     }
+  }
+
+  .studio-export-root {
+    width: 100%;
+    min-width: 0;
   }
 
   @media (max-width: 390px) {

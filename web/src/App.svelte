@@ -292,6 +292,7 @@
   let mapQueryReady = false;
   let lastMapLayerSignature = "";
   let jsPdfPromise;
+  let html2canvasPromise;
   let metricSeriesCache = {};
   let peerMetricStatsCache = {};
   let selectedCountyIndicators = [];
@@ -1877,7 +1878,7 @@
     URL.revokeObjectURL(url);
   }
 
-  async function downloadPDF(fileName, title, text) {
+  async function downloadTextPDF(fileName, title, text) {
     if (!jsPdfPromise) jsPdfPromise = import("jspdf");
     const { jsPDF } = await jsPdfPromise;
     const doc = new jsPDF({ unit: "pt", format: "letter" });
@@ -1891,6 +1892,61 @@
       if (y > h - m) { doc.addPage(); y = m; }
       doc.text(line, m, y); y += 14;
     }
+    doc.save(fileName);
+  }
+
+  async function downloadElementPDF(fileName, element) {
+    if (!element) throw new Error("Export target not found.");
+    if (!jsPdfPromise) jsPdfPromise = import("jspdf");
+    if (!html2canvasPromise) html2canvasPromise = import("html2canvas");
+    const [{ jsPDF }, html2canvasMod] = await Promise.all([jsPdfPromise, html2canvasPromise]);
+    const html2canvas = html2canvasMod.default || html2canvasMod;
+    if (document.fonts?.ready) {
+      try { await document.fonts.ready; } catch {}
+    }
+    const scale = Math.min(2.5, Math.max(1.5, window.devicePixelRatio || 1.8));
+    const canvas = await html2canvas(element, {
+      scale,
+      backgroundColor: "#edf5ff",
+      useCORS: true,
+      logging: false,
+      windowWidth: Math.max(document.documentElement.clientWidth, element.scrollWidth),
+      windowHeight: Math.max(document.documentElement.clientHeight, element.scrollHeight),
+      onclone: (doc) => {
+        doc.querySelectorAll("[data-pdf-exclude]").forEach((node) => node.remove());
+      }
+    });
+
+    const doc = new jsPDF({ unit: "pt", format: "letter" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 18;
+    const usableW = pageW - margin * 2;
+    const usableH = pageH - margin * 2;
+    const pagePxHeight = Math.max(1, Math.round((usableH * canvas.width) / usableW));
+
+    let renderedPx = 0;
+    let pageIndex = 0;
+    while (renderedPx < canvas.height) {
+      const slicePx = Math.min(pagePxHeight, canvas.height - renderedPx);
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = slicePx;
+      const ctx = pageCanvas.getContext("2d");
+      if (!ctx) break;
+      ctx.fillStyle = "#edf5ff";
+      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+      ctx.drawImage(canvas, 0, renderedPx, canvas.width, slicePx, 0, 0, canvas.width, slicePx);
+
+      const imgData = pageCanvas.toDataURL("image/png");
+      const imgH = (slicePx * usableW) / canvas.width;
+      if (pageIndex > 0) doc.addPage();
+      doc.addImage(imgData, "PNG", margin, margin, usableW, imgH, undefined, "FAST");
+
+      renderedPx += slicePx;
+      pageIndex += 1;
+    }
+
     doc.save(fileName);
   }
 
@@ -1911,7 +1967,16 @@
 
   async function downloadBriefPdf() {
     if (!briefData || !briefText) return;
-    await downloadPDF(`${briefFileBase()}_impact_brief.pdf`, `County Intelligence Briefing - ${briefData.countyName}`, briefText);
+    const exportRoot = document.querySelector(".workspace.active [data-brief-export]");
+    if (exportRoot) {
+      try {
+        await downloadElementPDF(`${briefFileBase()}_impact_brief.pdf`, exportRoot);
+        return;
+      } catch (err) {
+        console.error("DOM PDF export failed, falling back to text PDF.", err);
+      }
+    }
+    await downloadTextPDF(`${briefFileBase()}_impact_brief.pdf`, `County Intelligence Briefing - ${briefData.countyName}`, briefText);
   }
 
   function downloadStudioMarkdown() {
@@ -1921,7 +1986,16 @@
 
   async function downloadStudioPdf() {
     if (!studioData || !studioText) return;
-    await downloadPDF(`${studioFileBase()}_scenario_note.pdf`, `Impact Scenario Studio - ${studioData.countyName}`, studioText);
+    const exportRoot = document.querySelector(".workspace.active [data-studio-export]");
+    if (exportRoot) {
+      try {
+        await downloadElementPDF(`${studioFileBase()}_scenario_note.pdf`, exportRoot);
+        return;
+      } catch (err) {
+        console.error("DOM PDF export failed for studio, falling back to text PDF.", err);
+      }
+    }
+    await downloadTextPDF(`${studioFileBase()}_scenario_note.pdf`, `Impact Scenario Studio - ${studioData.countyName}`, studioText);
   }
 
   async function downloadPresentationPackPdf() {
@@ -2723,7 +2797,6 @@
           briefData={briefData}
           briefFocus={briefFocus}
           canGenerate={canBuildBrief}
-          onDownloadMarkdown={downloadBriefMarkdown}
           onDownloadPdf={downloadBriefPdf}
         />
       {:else}
@@ -2737,7 +2810,6 @@
           this={StudioWorkspaceComponent}
           studioData={studioData}
           canRun={canRunStudio}
-          onDownloadMarkdown={downloadStudioMarkdown}
           onDownloadPdf={downloadStudioPdf}
         />
       {:else}

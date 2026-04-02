@@ -4,7 +4,6 @@
   export let briefData = null;
   export let briefFocus = "Balanced overview";
   export let canGenerate = false;
-  export let onDownloadMarkdown = () => {};
   export let onDownloadPdf = () => {};
 
   const fmtWeight = (v) => {
@@ -23,10 +22,11 @@
   };
 </script>
 
-<h2>County Intelligence Briefing</h2>
-{#if briefData}
-  <p><b>County:</b> {briefData.countyName}</p>
-  <p><b>Scenario:</b> {briefData.scenario}</p>
+<div class="brief-export-root" data-brief-export>
+  <h2>County Intelligence Briefing</h2>
+  {#if briefData}
+    <p><b>County:</b> {briefData.countyName}</p>
+    <p><b>Scenario:</b> {briefData.scenario}</p>
 
   <section class="summary">
     <p><b>Active pressure:</b> {briefData.active.score} from {briefData.active.total} records.</p>
@@ -161,15 +161,15 @@
     <p class="total">Active scenario total pressure score: <b>{briefData.pressureFormula?.total}</b></p>
   </section>
 
-  <div class="row">
-    <button on:click={onDownloadMarkdown}>Download Brief (.md)</button>
-    <button on:click={onDownloadPdf}>Download Brief (.pdf)</button>
-  </div>
-{:else if canGenerate}
-  <p>Select settings and click Generate County Brief.</p>
-{:else}
-  <p>No county options are currently available for this filter setup.</p>
-{/if}
+    <div class="row" data-pdf-exclude>
+      <button on:click={onDownloadPdf}>Download Brief (.pdf)</button>
+    </div>
+  {:else if canGenerate}
+    <p>Select settings and click Generate County Brief.</p>
+  {:else}
+    <p>No county options are currently available for this filter setup.</p>
+  {/if}
+</div>
 
 <style>
   h2 {
@@ -640,6 +640,11 @@
       width: 18px;
       height: 18px;
     }
+  }
+
+  .brief-export-root {
+    width: 100%;
+    min-width: 0;
   }
 
   @media (max-width: 390px) {
