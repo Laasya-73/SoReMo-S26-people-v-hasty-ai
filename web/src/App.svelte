@@ -2403,6 +2403,18 @@
           </div>
         {/if}
       </section>
+      <section class="card">
+        <h3>Site Layers</h3>
+        <label><input type="checkbox" bind:checked={showExisting}/> Existing (operating now)</label>
+        <label><input type="checkbox" bind:checked={showProposed}/> Proposed (planned/in development)</label>
+        <label><input type="checkbox" bind:checked={showDenied}/> Denied (proposal rejected)</label>
+        <label><input type="checkbox" bind:checked={showRegistry}/> Registry (all known sites in IL)</label>
+        <label><input type="checkbox" bind:checked={showOutlines}/> County outlines</label>
+        <p class="mini-note">Registry points show all known sites in IL (including merged, deduplicated inventory records) and are excluded from pressure scoring formulas.</p>
+        <label>Point size
+          <input type="range" min="4" max="16" step="1" bind:value={siteRadius}/>
+        </label>
+      </section>
       <section class="card narrative-card">
         <div class="narrative-head">
           <h3>Layered Narrative</h3>
@@ -2453,36 +2465,6 @@
           </ul>
         {:else}
           <p class="mini-note">No counties exceed the current threshold.</p>
-        {/if}
-      </section>
-      <section class="card">
-        <h3>Site Layers</h3>
-        <label><input type="checkbox" bind:checked={showExisting}/> Existing (operating now)</label>
-        <label><input type="checkbox" bind:checked={showProposed}/> Proposed (planned/in development)</label>
-        <label><input type="checkbox" bind:checked={showDenied}/> Denied (proposal rejected)</label>
-        <label><input type="checkbox" bind:checked={showRegistry}/> Registry (all known sites in IL)</label>
-        <label><input type="checkbox" bind:checked={showOutlines}/> County outlines</label>
-        <p class="mini-note">Registry points show all known sites in IL (including merged, deduplicated inventory records) and are excluded from pressure scoring formulas.</p>
-        <label>Point size
-          <input type="range" min="4" max="16" step="1" bind:value={siteRadius}/>
-        </label>
-      </section>
-      <section class="card">
-        <h3>County Explorer</h3>
-        <label>Zoom to county
-          <select bind:value={mapZoomCounty} on:change={() => zoomToCounty(mapZoomCounty)} disabled={mapCountyOptions.length === 0}>
-            <option value="" disabled>Select a county</option>
-            {#each mapCountyOptions as c}
-              <option value={c.geoid}>{c.name}</option>
-            {/each}
-            {#if mapCountyOptions.length === 0}
-              <option value="">No counties loaded</option>
-            {/if}
-          </select>
-        </label>
-        <button class="ghost" on:click={() => zoomToCounty(mapZoomCounty)} disabled={!mapZoomCounty}>Zoom to County</button>
-        {#if mapCountyOptions.length === 0}
-          <p class="mini-note">County boundaries are still loading.</p>
         {/if}
       </section>
       <section class="card assumption-lab">
@@ -2569,6 +2551,24 @@
               {/each}
             </ul>
           {/if}
+        {/if}
+      </section>
+      <section class="card">
+        <h3>County Explorer</h3>
+        <label>Zoom to county
+          <select bind:value={mapZoomCounty} on:change={() => zoomToCounty(mapZoomCounty)} disabled={mapCountyOptions.length === 0}>
+            <option value="" disabled>Select a county</option>
+            {#each mapCountyOptions as c}
+              <option value={c.geoid}>{c.name}</option>
+            {/each}
+            {#if mapCountyOptions.length === 0}
+              <option value="">No counties loaded</option>
+            {/if}
+          </select>
+        </label>
+        <button class="ghost" on:click={() => zoomToCounty(mapZoomCounty)} disabled={!mapZoomCounty}>Zoom to County</button>
+        {#if mapCountyOptions.length === 0}
+          <p class="mini-note">County boundaries are still loading.</p>
         {/if}
       </section>
       <section class="card">
