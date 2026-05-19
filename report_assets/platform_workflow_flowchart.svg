@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="560" viewBox="0 0 1600 560" role="img" aria-labelledby="title desc">
+  <title id="title">SoReMo Platform Workflow</title>
+  <desc id="desc">A workflow diagram showing movement from the home workspace to the Illinois map workspace, county intelligence briefing, impact scenario studio, data center registry, and policy or community outputs.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#3f3f3f"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #d8d8d8; stroke-width: 1.4; }
+      .arrow { fill: none; stroke: #3f3f3f; stroke-width: 1.7; marker-end: url(#arrow); }
+      .text { font-family: Arial, Helvetica, sans-serif; font-size: 23px; fill: #151515; text-anchor: middle; }
+      .small { font-family: Arial, Helvetica, sans-serif; font-size: 21px; fill: #151515; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="560" fill="#ffffff"/>
+
+  <rect class="box" x="28" y="230" width="255" height="118"/>
+  <text class="text" x="155.5" y="272">
+    <tspan x="155.5" dy="0">Home Workspace</tspan>
+    <tspan x="155.5" dy="27">Project purpose +</tspan>
+    <tspan x="155.5" dy="27">navigation</tspan>
+  </text>
+
+  <rect class="box" x="350" y="230" width="325" height="118"/>
+  <text class="text" x="512.5" y="272">
+    <tspan x="512.5" dy="0">Illinois Map Workspace</tspan>
+    <tspan x="512.5" dy="27">Footprint + county stress</tspan>
+    <tspan x="512.5" dy="27">layers</tspan>
+  </text>
+
+  <rect class="box" x="742" y="44" width="348" height="118"/>
+  <text class="text" x="916" y="86">
+    <tspan x="916" dy="0">County Intelligence Briefing</tspan>
+    <tspan x="916" dy="27">County-specific narrative +</tspan>
+    <tspan x="916" dy="27">benchmarks</tspan>
+  </text>
+
+  <rect class="box" x="742" y="230" width="348" height="118"/>
+  <text class="text" x="916" y="272">
+    <tspan x="916" dy="0">Impact Scenario Studio</tspan>
+    <tspan x="916" dy="27">Weight/assumption testing</tspan>
+    <tspan x="916" dy="27">+ delta</tspan>
+  </text>
+
+  <rect class="box" x="742" y="408" width="348" height="118"/>
+  <text class="small" x="916" y="434">
+    <tspan x="916" dy="0">Data Center Registry</tspan>
+    <tspan x="916" dy="26">Explorer</tspan>
+    <tspan x="916" dy="26">Illinois + US/Global</tspan>
+    <tspan x="916" dy="26">comparative coverage</tspan>
+  </text>
+
+  <rect class="box" x="1158" y="230" width="414" height="118"/>
+  <text class="text" x="1365" y="272">
+    <tspan x="1365" dy="0">Policy/Community Outputs</tspan>
+    <tspan x="1365" dy="27">Briefs, watchlists, decision</tspan>
+    <tspan x="1365" dy="27">prompts</tspan>
+  </text>
+
+  <path class="arrow" d="M283 289 H350"/>
+  <path class="arrow" d="M574 230 C630 164 675 102 742 103"/>
+  <path class="arrow" d="M675 289 H742"/>
+  <path class="arrow" d="M574 348 C630 413 675 466 742 467"/>
+
+  <path class="arrow" d="M1090 103 C1138 112 1197 180 1264 230"/>
+  <path class="arrow" d="M1090 289 H1158"/>
+  <path class="arrow" d="M1090 467 C1142 464 1198 400 1263 348"/>
+
+  <path class="arrow" d="M654 231 C704 205 718 205 762 230"/>
+  <path class="arrow" d="M763 348 C712 373 696 373 652 348"/>
+</svg>

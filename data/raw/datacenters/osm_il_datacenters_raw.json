@@ -1,0 +1,271 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-03-23T02:51:10Z",
+    "timestamp_areas_base": "2026-03-22T16:41:46Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+    {
+      "type": "way",
+      "id": 128499684,
+      "center": {
+        "lat": 41.9942413,
+        "lon": -87.961935
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "2200",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Busse Road",
+        "building": "data_center",
+        "building:levels": "3",
+        "building:use": "industrial",
+        "name": "Digital Realty CH1",
+        "operator": "Digital Realty",
+        "operator:wikidata": "Q5275969",
+        "ref": "CH1",
+        "source": "bing",
+        "telecom": "data_center",
+        "website": "https://www.digitalrealty.com/data-centers/americas/chicago/ch1"
+      }
+    },
+    {
+      "type": "way",
+      "id": 138260136,
+      "center": {
+        "lat": 40.0952591,
+        "lon": -88.2420314
+      },
+      "tags": {
+        "addr:city": "Champaign",
+        "addr:housenumber": "1725",
+        "addr:postcode": "61820",
+        "addr:state": "IL",
+        "addr:street": "South Oak Street",
+        "alt_name": "Blue Waters",
+        "building": "data_center",
+        "name": "NCSA Petascale Computing Facility",
+        "short_name": "NPCF",
+        "telecom": "data_center"
+      }
+    },
+    {
+      "type": "way",
+      "id": 174242795,
+      "center": {
+        "lat": 42.0007751,
+        "lon": -87.9507686
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "1800",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Nicholas Boulevard",
+        "building": "data_center",
+        "name": "EdgeConneX CHI01",
+        "operator": "EdgeConneX",
+        "operator:wikidata": "Q115477226",
+        "ref": "CHI01",
+        "telecom": "data_center"
+      }
+    },
+    {
+      "type": "way",
+      "id": 377032058,
+      "center": {
+        "lat": 42.0014952,
+        "lon": -87.9525624
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "2021",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Lunt Avenue",
+        "building": "data_center",
+        "building:levels": "2",
+        "name": "EdgeConneX CHI02",
+        "operator": "EdgeConneX",
+        "operator:wikidata": "Q115477226",
+        "ref": "CHI02",
+        "telecom": "data_center",
+        "website": "https://www.edgeconnex.com/locations/americas/chicago-il/"
+      }
+    },
+    {
+      "type": "way",
+      "id": 377032061,
+      "center": {
+        "lat": 42.001221,
+        "lon": -87.9551997
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "1905",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Lunt Avenue",
+        "building": "data_center",
+        "building:levels": "4",
+        "name": "Equinix Chicago CH3",
+        "operator": "Equinix",
+        "operator:wikidata": "Q851641",
+        "ref": "CH3",
+        "telecom": "data_center",
+        "website": "https://www.equinix.com/data-centers/americas-colocation/united-states-colocation/chicago-data-centers/ch3"
+      }
+    },
+    {
+      "type": "way",
+      "id": 377212693,
+      "center": {
+        "lat": 41.9742269,
+        "lon": -87.9671756
+      },
+      "tags": {
+        "addr:city": "Wood Dale",
+        "addr:housenumber": "341",
+        "addr:postcode": "60191",
+        "addr:state": "IL",
+        "addr:street": "Haynes Drive",
+        "building": "data_center",
+        "building:levels": "2",
+        "name": "Element Critical CH2",
+        "operator": "Element Critical",
+        "ref": "CH2",
+        "telecom": "data_center",
+        "website": "https://elementcritical.com/data-centers/chicago-two/"
+      }
+    },
+    {
+      "type": "way",
+      "id": 377345296,
+      "center": {
+        "lat": 41.9920884,
+        "lon": -87.9580136
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "2425",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Busse Road",
+        "building": "data_center",
+        "building:levels": "2",
+        "name": "Centersquare Elk Grove Village Data Center Campus ORD2",
+        "operator": "Centersquare",
+        "operator:wikidata": "Q127304226",
+        "ref": "ORD2",
+        "telecom": "data_center",
+        "website": "https://centersquaredc.com/data-centers/chicago#elkgrovevillage-ord2"
+      }
+    },
+    {
+      "type": "way",
+      "id": 383545769,
+      "center": {
+        "lat": 41.9936612,
+        "lon": -87.973521
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "800",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Devon Avenue",
+        "building": "data_center",
+        "building:levels": "3",
+        "name": "Skybox Chicago I",
+        "operator": "Skybox",
+        "ref": "Chicago I",
+        "telecom": "data_center",
+        "website": "https://www.skyboxdatacenters.com/locations/skybox-chicago"
+      }
+    },
+    {
+      "type": "way",
+      "id": 713428715,
+      "center": {
+        "lat": 41.9943531,
+        "lon": -87.9649422
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "1400",
+        "addr:state": "IL",
+        "addr:street": "Devon Avenue",
+        "building": "data_center",
+        "name": "Digital Realty CH3",
+        "operator": "Digital Realty",
+        "operator:wikidata": "Q5275969",
+        "ref": "CH3",
+        "telecom": "data_center",
+        "website": "https://www.digitalrealty.com/data-centers/americas/chicago/ch3"
+      }
+    },
+    {
+      "type": "way",
+      "id": 713433204,
+      "center": {
+        "lat": 41.9945332,
+        "lon": -87.9577513
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "2299",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Busse Road",
+        "building": "data_center",
+        "name": "Digital Realty CH2",
+        "operator": "Digital Realty",
+        "operator:wikidata": "Q5275969",
+        "ref": "CH2",
+        "telecom": "data_center",
+        "website": "https://www.digitalrealty.nl/data-centers/americas/chicago/ch2"
+      }
+    },
+    {
+      "type": "way",
+      "id": 863162820,
+      "center": {
+        "lat": 41.9991244,
+        "lon": -87.9577647
+      },
+      "tags": {
+        "addr:city": "Elk Grove Village",
+        "addr:housenumber": "1925",
+        "addr:postcode": "60007",
+        "addr:state": "IL",
+        "addr:street": "Busse Road",
+        "building": "data_center",
+        "name": "Stream Chicago II",
+        "operator": "Stream",
+        "ref": "Chicago II",
+        "telecom": "data_center",
+        "website": "https://www.streamdatacenters.com/datacenters/chicago-ii/"
+      }
+    },
+    {
+      "type": "way",
+      "id": 863162822,
+      "center": {
+        "lat": 42.006856,
+        "lon": -87.9651767
+      },
+      "tags": {
+        "building": "data_center",
+        "name": "STACK Chicago CHI01",
+        "operator": "Stack Infrastructure",
+        "operator:wikidata": "Q115477173",
+        "ref": "CHI01",
+        "telecom": "data_center",
+        "website": "https://www.stackinfra.com/locations/chicago/?data_center=chi01"
+      }
+    }
+  ]
+}

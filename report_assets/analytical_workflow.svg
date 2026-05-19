@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="840" viewBox="0 0 1600 840" role="img" aria-labelledby="title desc">
+  <title id="title">SoReMo '26 Analytical Workflow</title>
+  <desc id="desc">A four-stage workflow diagram showing how the platform moves from infrastructure footprint mapping to baseline stress context, population vulnerability, and incremental burden comparison under growth scenarios.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7fbff"/>
+      <stop offset="0.55" stop-color="#edf7fb"/>
+      <stop offset="1" stop-color="#f8fbf7"/>
+    </linearGradient>
+    <linearGradient id="stageFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef7ff"/>
+    </linearGradient>
+    <linearGradient id="outcomeFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8f6ff"/>
+      <stop offset="1" stop-color="#eefdf8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#12365c" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="10" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#2367a2"/>
+    </marker>
+    <style>
+      .title { font: 700 46px Arial, Helvetica, sans-serif; fill: #0f2f55; }
+      .subtitle { font: 400 24px Arial, Helvetica, sans-serif; fill: #355f86; }
+      .label { font: 700 19px Arial, Helvetica, sans-serif; fill: #17406b; letter-spacing: 0.5px; }
+      .stage-title { font: 700 28px Arial, Helvetica, sans-serif; fill: #0f2f55; }
+      .stage-body { font: 400 21px Arial, Helvetica, sans-serif; fill: #31577e; }
+      .small { font: 700 17px Arial, Helvetica, sans-serif; fill: #2367a2; }
+      .tiny { font: 400 17px Arial, Helvetica, sans-serif; fill: #42698b; }
+      .caption { font: 400 18px Arial, Helvetica, sans-serif; fill: #3d607f; }
+      .pillText { font: 700 19px Arial, Helvetica, sans-serif; fill: #17406b; }
+      .workspace { font: 600 18px Arial, Helvetica, sans-serif; fill: #17406b; }
+      .connector { stroke: #2367a2; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .soft-line { stroke: #8ab7dc; stroke-width: 2.5; fill: none; stroke-dasharray: 7 8; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="840" rx="0" fill="url(#bg)"/>
+  <path d="M62 170 C360 156 640 160 862 210 S1316 288 1536 158" class="soft-line" opacity="0.45"/>
+  <path d="M72 722 C390 594 744 642 1008 704 S1368 786 1530 638" class="soft-line" opacity="0.45"/>
+
+  <text x="70" y="88" class="title">SoReMo '26 Analytical Workflow</text>
+  <text x="70" y="126" class="subtitle">From descriptive mapping to structured burden comparison</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="182" width="214" height="344" rx="22" fill="#ffffff" stroke="#b7d3eb" stroke-width="2"/>
+    <rect x="94" y="210" width="166" height="42" rx="21" fill="#e8f3ff" stroke="#a7cae9"/>
+    <text x="177" y="238" text-anchor="middle" class="pillText">Inputs</text>
+    <text x="104" y="298" class="stage-body">
+      <tspan x="104" dy="0">Curated facility</tspan>
+      <tspan x="104" dy="29">records</tspan>
+      <tspan x="104" dy="56">County context</tspan>
+      <tspan x="104" dy="29">datasets</tspan>
+      <tspan x="104" dy="56">User scenario</tspan>
+      <tspan x="104" dy="29">assumptions</tspan>
+    </text>
+  </g>
+
+  <path d="M284 354 H346" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="350" y="174" width="260" height="360" rx="24" fill="url(#stageFill)" stroke="#a9cde9" stroke-width="2"/>
+    <circle cx="392" cy="218" r="26" fill="#2166ac"/>
+    <text x="392" y="227" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#ffffff">1</text>
+    <text x="430" y="210" class="label">INFRASTRUCTURE</text>
+    <text x="430" y="236" class="label">FOOTPRINT</text>
+    <text x="382" y="300" class="stage-title">Where are</text>
+    <text x="382" y="334" class="stage-title">sites located?</text>
+    <text x="382" y="392" class="stage-body">
+      <tspan x="382" dy="0">Existing, proposed,</tspan>
+      <tspan x="382" dy="29">denied, and registry</tspan>
+      <tspan x="382" dy="29">data center sites.</tspan>
+    </text>
+    <rect x="382" y="474" width="196" height="34" rx="17" fill="#eaf5ff" stroke="#b2d1ea"/>
+    <text x="480" y="497" text-anchor="middle" class="small">Illinois Map</text>
+  </g>
+
+  <path d="M610 354 H666" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="670" y="174" width="260" height="360" rx="24" fill="url(#stageFill)" stroke="#a9cde9" stroke-width="2"/>
+    <circle cx="712" cy="218" r="26" fill="#238b8d"/>
+    <text x="712" y="227" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#ffffff">2</text>
+    <text x="750" y="210" class="label">BASELINE STRESS</text>
+    <text x="750" y="236" class="label">CONTEXT</text>
+    <text x="702" y="300" class="stage-title">What burdens</text>
+    <text x="702" y="334" class="stage-title">already exist?</text>
+    <text x="702" y="392" class="stage-body">
+      <tspan x="702" dy="0">Air quality, water</tspan>
+      <tspan x="702" dy="29">stress, energy burden,</tspan>
+      <tspan x="702" dy="29">and heat signals.</tspan>
+    </text>
+    <rect x="702" y="474" width="196" height="34" rx="17" fill="#e9f7f7" stroke="#a6d4d5"/>
+    <text x="800" y="497" text-anchor="middle" class="small">Layer Overlays</text>
+  </g>
+
+  <path d="M930 354 H986" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="990" y="174" width="260" height="360" rx="24" fill="url(#stageFill)" stroke="#a9cde9" stroke-width="2"/>
+    <circle cx="1032" cy="218" r="26" fill="#2b7bba"/>
+    <text x="1032" y="227" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#ffffff">3</text>
+    <text x="1070" y="210" class="label">POPULATION</text>
+    <text x="1070" y="236" class="label">VULNERABILITY</text>
+    <text x="1022" y="300" class="stage-title">Who is likely</text>
+    <text x="1022" y="334" class="stage-title">to be exposed?</text>
+    <text x="1022" y="392" class="stage-body">
+      <tspan x="1022" dy="0">Demographic, social,</tspan>
+      <tspan x="1022" dy="29">economic, and justice</tspan>
+      <tspan x="1022" dy="29">context by county.</tspan>
+    </text>
+    <rect x="1022" y="474" width="196" height="34" rx="17" fill="#eaf5ff" stroke="#b2d1ea"/>
+    <text x="1120" y="497" text-anchor="middle" class="small">County Brief</text>
+  </g>
+
+  <path d="M1250 354 H1306" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="1310" y="174" width="220" height="360" rx="24" fill="url(#stageFill)" stroke="#a9cde9" stroke-width="2"/>
+    <circle cx="1352" cy="218" r="26" fill="#1e5d92"/>
+    <text x="1352" y="227" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#ffffff">4</text>
+    <text x="1390" y="210" class="label">GROWTH</text>
+    <text x="1390" y="236" class="label">DELTA</text>
+    <text x="1342" y="300" class="stage-title">What changes</text>
+    <text x="1342" y="334" class="stage-title">under growth?</text>
+    <text x="1342" y="392" class="stage-body">
+      <tspan x="1342" dy="0">Scenario weights,</tspan>
+      <tspan x="1342" dy="29">pressure delta, and</tspan>
+      <tspan x="1342" dy="29">threshold flags.</tspan>
+    </text>
+    <rect x="1342" y="474" width="156" height="34" rx="17" fill="#eaf5ff" stroke="#b2d1ea"/>
+    <text x="1420" y="497" text-anchor="middle" class="small">Scenario Studio</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="350" y="596" width="1180" height="142" rx="24" fill="url(#outcomeFill)" stroke="#9bcbe4" stroke-width="2"/>
+    <text x="390" y="652" class="stage-title">Policy-facing interpretation</text>
+    <text x="390" y="690" class="stage-body">County hotspot review, evidence-backed briefing, and structured comparison of current versus planned burden.</text>
+    <text x="390" y="716" class="caption">Output: map evidence + county narrative + scenario notes for decisions and presentations.</text>
+  </g>
+
+  <path d="M1420 534 C1420 572 1306 596 1238 596" class="connector"/>
+
+  <g>
+    <text x="70" y="626" class="label">Workspace Flow</text>
+    <rect x="70" y="652" width="214" height="42" rx="10" fill="#ffffff" stroke="#b7d3eb"/>
+    <text x="177" y="679" text-anchor="middle" class="workspace">Illinois Map</text>
+    <rect x="70" y="704" width="214" height="42" rx="10" fill="#ffffff" stroke="#b7d3eb"/>
+    <text x="177" y="731" text-anchor="middle" class="workspace">County Briefing</text>
+    <rect x="70" y="756" width="214" height="42" rx="10" fill="#ffffff" stroke="#b7d3eb"/>
+    <text x="177" y="783" text-anchor="middle" class="workspace">Scenario Studio</text>
+  </g>
+
+  <text x="70" y="816" class="caption">Figure. The platform layers location, baseline stress, vulnerability, and scenario change to move from mapping to burden comparison.</text>
+</svg>

@@ -1,0 +1,183 @@
+          Interactive analysis of AI data
+          center impacts in Illinois
+
+
+
+
+People v. AI
+                                                     Introduction
+
+
+
+This project evaluates environmental, social, and economic impacts of
+accelerated AI data center development across Illinois using an
+interactive research platform.
+
+
+It operationalizes an Annoyance Threshold metric and delivers visual
+tools for evidence‑based community engagement, permitting, and
+policy decisions.
+01
+Project
+Overview
+                                                 Title & Abstract
+
+
+
+The People v. Hasty AI Development maps existing, proposed, and
+denied data centers to assess multi‑dimensional impacts.
+
+
+The platform integrates spatial data, surveys, and county stress
+indicators to enable interactive, policy‑relevant analysis.
+Objectives &
+Scope
+Quantify site and county impacts and deﬁne
+the Annoyance Threshold linking exposure to
+harm.
+
+
+
+Develop a reproducible, scalable framework
+for permitting assessment and public
+engagement across Illinois and beyond.
+                            Stakeholders & Audience
+
+
+
+Primary: local residents, municipal ofﬁcials, regulators, and utility
+planners.
+
+
+Secondary: researchers, NGOs, investors, and tech ﬁrms seeking
+transparent impact assessment and mitigation pathways.
+ Community Impacts
+
+
+
+
+02
+                             Environmental Concerns
+
+
+
+Assess water consumption, heat emissions, land‑use change, and grid
+load with spatial and temporal indicators.
+
+
+Visualize environmental risk hotspots to guide siting, permitting, and
+mitigation strategies.
+                                            Social Well‑being
+
+
+
+Measure noise, trafﬁc, housing pressure, and perceived nuisance via
+surveys and administrative data.
+
+
+Deﬁne the Annoyance Threshold as a composite index signaling
+measurable declines in community quality of life.
+      Economic Effects
+Estimate direct jobs, construction spending,
+and ongoing operations against potential tax
+base shifts and local displacement risks.
+
+
+Model ﬁscal trade‑offs to inform equitable
+beneﬁt‑sharing and mitigation strategies for
+impacted communities.
+03
+Methods &
+Metrics
+               Annoyance Threshold Concept
+
+
+
+Deﬁne Annoyance Threshold as the exposure level where complaints
+and health signals rise measurably.
+
+
+Integrate surveys with objective metrics (noise, trafﬁc, heat) into a
+composite index to guide siting and mitigation.
+                                 Data Centers Inventory
+
+
+
+Catalog existing, proposed, and denied Illinois sites with geolocation,
+capacity, permitting status, and utility links.
+
+
+Maintain lifecycle metadata to support scenario analysis and temporal
+impact assessment.
+County Stress
+Indicators
+
+Aggregate county metrics: grid load, water
+stress, housing pressure, unemployment, and
+public health signals.
+
+
+
+Normalize and weight indicators to produce
+a comparative county stress score for
+vulnerability mapping.
+ Findings & Implications
+
+
+
+
+04
+                                      Illinois Case Studies
+
+
+
+Three county proﬁles illustrate outcomes: high impact, adaptive
+planning, and community‑led mitigation.
+
+
+Highlight drivers: utility capacity, governance, socioeconomic
+vulnerability, and stakeholder engagement.
+Interactive Dashboard
+ Map-based ﬁlters, time‑series charts, and
+ scenario simulations enable stakeholder
+ exploration.
+
+
+ Support transparent, exportable metrics for
+ permitting, advocacy, and evidence‑based
+ planning.
+             Global Infrastructure Relevance
+
+
+
+Illinois trends mirror global patterns: siting near cheap power/water
+and uneven community protections.
+
+
+The framework is adaptable for cross‑regional comparisons and
+international policy learning.
+                                                     Conclusions
+
+
+
+The platform links site inventories, Annoyance Thresholds, and county
+stress scores into a reproducible assessment framework.
+
+
+Recommend adaptive permitting, community beneﬁt agreements, and
+dashboard transparency to balance AI infrastructure growth with local
+resilience.
+                                                           Thank you
+                                                                   Do you have any questions?
+                                                                          youremail@freepik.com
+                                                                                +00 000 000 000
+                                                                               yourwebsite.com
+
+
+
+
+CREDITS: This presentation template was created by Slidesgo, and
+includes icons, infographics & images by Freepik
+
+Please keep this slide for attribution
+

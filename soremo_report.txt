@@ -1,0 +1,1380 @@
+1
+     The People v. Hasty AI
+          Protecting the Right to be Annoyed
+
+
+Illinois Institute of Technology: SoReMo S26 Initiative
+
+
+
+
+                                                          2
+Contributors and Project Details
+
+The SoReMo Initiative at Illinois Institute of Technology
+
+This student project was developed under the auspices of the Socially Responsible Modeling,
+Computation, and Design (SoReMo) Initiative at Illinois Tech in the Spring 2026 semester.
+
+SoReMo is a multidisciplinary forum that empowers student fellows to apply technical
+knowledge—in modeling, data science, design, etc.—toward solving pressing societal
+challenges. By connecting student research with a network of faculty advisors and community
+stakeholders, SoReMo ensures that technical innovation is guided by ethics, equity, and
+transparency.
+
+“The People v. Hasty AI” embodies the SoReMo mission by taking the "invisible" data of the
+Illinois AI boom and translating it into actionable insights for the communities most impacted by
+this industrial expansion.
+
+Research Areas/Relevant Topics: Artificial Intelligence (AI) Ethics, Urban Planning,
+Environmental Justice, Public Policy, Data Visualization
+
+
+
+About the Authors
+
+Taylor Washington – Project Lead. M.A.S Artificial Intelligence, B.S. Computer Science, Minor
+in Psychology. Interested in the intersection and implications of humanity and AI.
+Laasya Priya Vemuri – Associate Fellow. M.S. Data Science. Interested in how large-scale AI
+systems operate in real-world environments and how their impacts can be made visible through
+data.
+
+
+
+
+                                                                                                3
+Table of Contents
+Contributors and Project Details.................................................................................................................................3
+    The SoReMo Initiative at Illinois Institute of Technology...................................................................................... 3
+    About the Authors....................................................................................................................................................3
+Table of Contents...........................................................................................................................................................4
+What This Means for YOU.......................................................................................................................................... 5
+Problem Statement........................................................................................................................................................6
+Introduction................................................................................................................................................................... 6
+Background....................................................................................................................................................................8
+Case Studies................................................................................................................................................................... 9
+    From Global Expansion to Local Reality................................................................................................................ 9
+    A Glimpse at an Established Precedent: The Case of South Memphis and xAI.................................................. 10
+    In the Context of Illinois........................................................................................................................................ 14
+    Existing Data Centers in Illinois: Environmental Baselines and Established Infrastructure.................................14
+    Proposed and Under-Development Projects: Negotiation and Uncertainty...........................................................16
+    Denied Development in Illinois: Community Limits and the Annoyance Threshold........................................... 17
+Call to Action............................................................................................................................................................... 17
+    Annoyance Threshold............................................................................................................................................ 17
+    Contacting Representatives....................................................................................................................................18
+         SB 4016.......................................................................................................................................................... 18
+         Instructions..................................................................................................................................................... 19
+         Message template............................................................................................................................................19
+         General............................................................................................................................................................19
+         DeKalb............................................................................................................................................................ 19
+         Elk Grove Village........................................................................................................................................... 20
+         Chicago........................................................................................................................................................... 20
+From Map to Decision: An Explainable County-Level Impact Platform..............................................................21
+    Platform Design and Analytical Methodology...................................................................................................... 21
+         Purpose........................................................................................................................................................... 21
+         Analytical Framing......................................................................................................................................... 21
+         Data and Layer Architecture...........................................................................................................................22
+         Core Quantitative Logic................................................................................................................................. 22
+              Pressure Model........................................................................................................................................ 22
+              Annoyance Threshold Score....................................................................................................................22
+         Workspaces..................................................................................................................................................... 23
+              Home....................................................................................................................................................... 23
+              Illinois Map............................................................................................................................................. 23
+              County Intelligence Briefing................................................................................................................... 24
+              Impact Scenario Studio............................................................................................................................24
+              Data Center Registry Explorer................................................................................................................ 25
+         Usability and Presentation Engineering..........................................................................................................25
+         Methodological Contribution..........................................................................................................................25
+         Limitations and Next Steps.............................................................................................................................26
+    Discussion and Policy Implications....................................................................................................................... 26
+
+                                                                                                                                                                               4
+        Interpreting the Platform Outputs................................................................................................................... 26
+        Why This Matters for Illinois Data Center Governance.................................................................................26
+        Policy Use Cases.............................................................................................................................................27
+        Equity and Environmental Justice Implications............................................................................................. 27
+        Methodological Implications.......................................................................................................................... 27
+        Limits of Interpretation...................................................................................................................................28
+        Recommended Policy Direction..................................................................................................................... 28
+        Broader Significance...................................................................................................................................... 28
+Recommendations....................................................................................................................................................... 28
+    The “Keeler Garden” Green Wall.......................................................................................................................... 29
+    Operational Accountability During Emergency Situations................................................................................... 29
+    Building on SB 4016: Ending “Cross-Subsidy”.................................................................................................... 30
+    Limitations............................................................................................................................................................. 31
+Conclusion: Protecting the Right to be Annoyed..................................................................................................... 32
+Acknowledgments....................................................................................................................................................... 32
+    SoReMo Partnership: Keeler Gardens................................................................................................................... 32
+References.................................................................................................................................................................... 32
+
+
+
+What This Means for YOU
+If you live around a current or proposed data center, this directly impacts your daily life and
+wallet.
+             Finances: You may unknowingly subsidize the massive electrical grid upgrades required
+             by these facilities through "cross-subsidies" on your monthly utility bills.
+             Environment: Data centers can consume millions of gallons of water daily and produce
+             persistent mechanical noise.
+             Agency: Most "hasty" AI projects are negotiated in private; most residents aren’t made
+             aware of their construction.
+This report discusses existing research surrounding all of the above and provides a “Call to
+Action” with specific templates and contact information for your local representatives.
+             Future: We brainstorm a vision for "Win-Win" compromises that ensure your
+             neighborhood benefits from technological growth rather than being sacrificed for it.
+As we will say at many points throughout this journey—you have the right to be "annoyed".
+Especially when your community’s stability is at stake.
+This was built to spread awareness with the hopes of turning that annoyance into action.
+
+
+
+
+                                                                                                                                                                               5
+Problem Statement
+Imagine waking up one morning to find the quiet horizon of your neighborhood replaced by the
+steel skeleton of a massive industrial complex. Or perhaps there is no visible change, yet the
+looming impact remains. The electricity bill has suddenly spiked. The water from the kitchen
+faucet has become unreliable. No one knocked on your door; there was no notice, and no one
+asked for your consent. In the community there now exists an invisible giant—a data center. It
+will impact your daily life while remaining behind windowless walls and nondisclosure
+agreements.
+With the global excitement surrounding artificial intelligence (AI), physical facilities—data
+centers—have been popping up in order to meet this increasing demand. Illinois, as it turns out,
+is one such frontier for this digital infrastructure. But the construction is so fast—so
+“hasty”—that in the pursuit of the quickest, cheapest, solutions, the very communities that host
+these facilities are being taken advantage of.
+While the rest of the world profits from the speed and convenience of AI, residents are left to
+shoulder the weight of their local giant’s physical footprint. Technological progress is only as
+valuable as the stability it provides to the people hosting it, requiring a balance between
+industrial speed and civic responsibility. We must strive for a future where technological
+progress does not come at the expense of community agency, and environmental health. We must
+prioritize a model of mutual success wherein corporate growth and community wellbeing rise
+together.
+
+
+Introduction
+The "annoyance threshold" is a term that seeks to define the "tipping point" of a person or
+group's tolerance towards a particularly bothersome stressor. It can be applied to many different
+contexts: from a legal requirement to a commonly accepted social norm. To contextualize it
+better through example, think of how one is allowed to make ever so much of a ruckus in public
+before their behavior is deemed socially “unacceptable” or “annoying” by those around them.
+For a more formal example, think of how a factory is allowed to release ever so much pollutant
+before they breach a pre-defined legal “limit”. In all cases, we see this idea of being allowed to
+do or emit something bothersome only to a certain, agreed upon or inherently understood, extent.
+Though the annoyance threshold sounds like an abstract concept at first, it is clear that it silently
+appears in our lives on a regular basis. As we will all be there at one point or another, we uphold
+its existence in hopes of making the affected group less “annoyed”. In the context of AI data
+centers, unlike most other industrial infrastructure, this “tipping point” has yet to be legally
+defined at the federal level. This means that in the meantime, it must be defined on a
+state-by-state basis. We have the power to advocate for it at the state level. In order to do so, we
+must first define it. In working towards this definition of the “annoyance threshold”, for this
+project we have chosen to summarize the issue of AI infrastructure into three critical points:
+
+                                                                                                    6
+    1.​ Environment: Environmental Degradation
+    2.​ Social: Lack of Transparency and Community Devaluation
+    3.​ Economic: Stress on the Power Grid
+With the above in mind, we posit that this concept of the "annoyance threshold" must be applied
+to the relationship between these physical facilities and their surrounding communities.
+Decisions are being made in corporate boardrooms and closed-door zoning meetings, leaving
+residents to deal with the fallout. It is not fair for local residents to unknowingly shoulder the
+physical and financial burdens of a global AI race that they themselves never joined.
+This project, “The People v. Hasty AI,” seeks to close this gap by mapping these facilities to the
+real-world stressors of the people living near them.
+
+
+What exactly are we trying to accomplish?
+We want to advocate for more transparency; to bring awareness to impacted communities. We
+believe that by making the "invisible giant" visible, we can shift the power balance back to the
+people.
+As such, this paper will serve as a comprehensive assessment of the true cost of Illinois’s data
+center boom. We will begin by laying the groundwork: examining existing research on the
+stressors inherent to these facilities. This will be followed by a deep-dive of case
+studies—including the successful community opposition in Naperville and the high-profile
+conflict of xAI in Memphis—to illustrate the real-world stakes. We will then present a “Call to
+Action”, of sorts, for specific areas in Illinois (DeKalb, Elk Grove Village, and Chicago) wherein
+we will revisit and flesh out the “annoyance threshold” and provide resources for residents to
+contact their respective representatives. We will emphasize the importance of the new Illinois
+Senate bill, SB 4016—”The POWER Act”— and encourage those interested to look into it
+further.
+To ground this research, we will introduce an interactive data visualization tool that maps these
+facilities against environmental statistics and socioeconomic indicators.
+Finally, we will argue that regulation, rather than being an obstacle to progress, can serve as a
+catalyst for innovation. We will present potential compromises that serve the interests of both the
+company and the community, ensuring that technological growth no longer requires a sacrifice of
+local peace and stability.
+Distributed throughout this document are footnotes containing key points for ease of skimming.
+This project presents a framework for defining the "annoyance threshold" and offers actionable
+recommendations for residents, advocates, and policymakers to reclaim agency in the face of
+“hasty” AI growth.1
+1
+ Defining "Hasty" AI: Industrial expansion that prioritizes corporate speed and “quick, cheap” solutions over
+community consent and environmental health.
+
+                                                                                                                7
+Background
+
+Recent scholarship increasingly recognizes that AI infrastructure is not immaterial. It is deeply
+tied to physical systems from electricity grids and water reserves to regional environmental
+conditions. Researchers studying data center expansion emphasize that AI workloads are rapidly
+becoming a major driver of global electricity demand; on top of this, it is also introducing
+significant water consumption through cooling processes that are rarely visible to the public.
+Estimates suggest that AI-related data center activity could generate tens of millions of tons of
+carbon emissions annually while consuming hundreds of billions of liters of water worldwide,
+highlighting the growing environmental footprint associated with large-scale computation (de
+Vries-Gao; Patel et al.). These findings challenge the popular perception of AI as a purely digital
+technology. We should instead position it as an industrial infrastructure with measurable
+ecological consequences.
+
+Beyond energy use, researchers have begun examining how these environmental impacts
+translate into lived community experiences. Lifecycle analyses show that data centers contribute
+indirectly to air pollution through electricity generation, producing measurable public health
+burdens that may disproportionately affect nearby populations (Han et al.). Social science
+research further argues that community concerns often stem not only from environmental
+exposure but from procedural issues such as limited transparency, restricted access to project
+information, and insufficient local participation in decision-making processes (Sovacool, Upham,
+and Monyei). Policy analyses similarly note that rapid data center expansion in the United States
+frequently occurs faster than governance frameworks can adapt. This creates uncertainty about
+accountability, disclosure, and long-term community protections (Walker and Goldsmith).
+
+Further exacerbating the issue, other sources connect these developments to broader questions of
+environmental and data justice. Researchers argue that technological infrastructures distribute
+benefits and harms unevenly, especially when environmental monitoring data or operational
+disclosures remain inaccessible to affected communities (Vera et al.; Lucivero). At the same
+time, emerging research on energy burden demonstrates that increases in large-scale electricity
+demand can intersect with socioeconomic vulnerability, potentially shifting infrastructure costs
+onto residents through higher energy expenditures (Garland et al.). Together, these studies
+establish a foundation for examining AI data centers not only as technological innovations, but
+as socio-environmental systems whose impacts must be evaluated through environmental
+equality, governance transparency, and economic fairness.
+
+
+
+
+                                                                                                 8
+To the right are graphics taken from Patel et
+al.; in a study titled “The Environmental
+Impact of AI Servers and Sustainable
+Solutions”. While Figure 1 quantifies a global
+energy trajectory that demands haste, Figure 2
+maps the localized footprints (water and
+carbon) that suffer because of it.2
+                                                                               1. (Patel et al.)
+As a pair, they demonstrate the inevitable
+collision between exponential computational
+growth and the finite physical resources of the
+communities that host these facilities. This
+provides a data-driven justification for the
+immediate implementation of our proposed
+“annoyance threshold” as a regulatory                                          2. (Patel et al.)
+
+safeguard.
+
+
+Case Studies
+
+From Global Expansion to Local Reality
+
+AI infrastructure is often discussed at a global scale, framed through innovation, computational
+growth, and economic competitiveness. Yet data centers are ultimately local projects. They
+occupy land, draw electricity and water, alter traffic and construction patterns, and introduce new
+industrial rhythms into surrounding communities. Across the United States, recent development
+trends show that while AI systems appear digital, their impacts are material and geographically
+uneven. Communities experience these projects not as abstract technological progress but
+through everyday environmental conditions, planning decisions, and economic tradeoffs.
+
+To maintain consistency, each of the following cases will be examined through the
+aforementioned three interconnected dimensions: environmental, social, and economic. The
+environmental dimension focuses on physical and operational impacts such as power
+infrastructure expansion, generator emissions, land conversion, lighting, and noise. The social
+dimension considers transparency, participation, and community consent during planning and
+approval processes. The economic dimension evaluates how projects are justified through
+investment and redevelopment narratives while also recognizing potential long-term costs or
+2
+ Environmental Footprint Fact: By 2030, global AI workloads are projected to drive tens of millions of tons of
+carbon emissions and consume hundreds of billions of liters of water.
+
+
+
+
+                                                                                                                 9
+perceived inequities. Together, these dimensions help define the report’s concept of an
+“annoyance threshold”, the point at which cumulative impacts begin to reshape daily community
+experience.
+
+
+
+A Glimpse at an Established Precedent: The Case of South Memphis and xAI
+
+The city of Memphis provides a glimpse at the impact of unregulated AI infrastructure. Dubbed
+xAI’s “Colossus,” this project encapsulates the idea of “hasty” AI expansion, bypassing
+traditional multi-year planning cycles. This speed was achieved at a significant cost to the local
+community of Boxtown in South Memphis. Worse, rather than simply existing as an, admittedly
+unfortunate, addition to the residential background, community members would report tangible
+impacts on their daily lives.
+
+Before examining what’s at stake in Illinois, we will first assess what has already happened in
+Memphis, following the same environmental, social, and economic cascade of impacts.
+
+Figure 3 (credit to Stephen Voss/Redux) is of
+the xAI Colossus data center in Memphis,
+Tennessee, as of May 2025.
+
+Figure 4 (credit to NRDC) overlays a different
+data center site, Meta’s “Hyperion”, onto a
+map of Manhattan. Showing that a single data
+center footprint can swallow nearly a third of
+the island, this image illustrates a scale that is
+difficult to comprehend in isolation.                                3. (Lindwall)
+
+
+This facility—all facilities, for that matter—
+represents a demand for space and energy that
+dwarfs the residential neighborhoods
+surrounding it.
+
+Exemplifying this, when the Memphis
+electrical grid could not immediately meet the
+massive demands of the Colossus facility, xAI
+turned to a "quick and dirty" power source: 18
+mobile natural gas turbines.
+As noted by Cyrus Farivar for Forbes, these
+turbines are roughly 50% less efficient than
+
+
+                                                                                               10
+permanent plants and emit significantly higher                                 4. (Lindwall)
+
+levels of nitrous oxide and formaldehyde.
+
+Using data from public NASA satellites as well as the European Space Agency, researchers at
+the University of Tennessee found that average concentrations of nitrogen oxide have increased
+by 9% in the Boxtown communities—compared to periods prior to June 2024 (when xAI began
+constructing Colossus). Further, average concentrations were found to be up by nearly 79% in
+the area immediately surrounding the facility—when compared to pre-Colossus levels (Chow).3
+Because these turbines were labeled as "temporary," they bypassed the Environmental Protection
+Agency’s (EPA) oversight required for permanent stationary plants.
+
+But what exactly is meant by “temporary”? And how long does this “temporary” last? In
+environmental law, a "temporary" source—often labeled as "temporary-mobile"—is one that
+remains on a site for less than one consecutive year. It’s typically installed by mounting turbines
+onto flatbed trailers or shuffling units until the permitted time elapses. Companies have
+historically evaded the stringent pre-construction permits required for stationary power plants via
+this “temporary” loophole (Environmental Protection Agency; Ireland).
+
+From June 2024 onwards, this strategy in South Memphis has allowed the facility to force
+residents to breathe in pollutants linked to long-term respiratory issues. What follows is a list of
+anecdotal quotes from residents, taken from the 2025 TIME article by Andrew Chow:
+
+
+
+
+3
+ Pollution Spike: Nitrogen oxide concentrations spiked by nearly 79% in the area immediately surrounding the
+xAI Memphis facility compared to pre-construction levels.
+
+                                                                                                               11
+    ●​ One resident suffered her first severe
+       asthma attack in 15 years, describing a
+       smell of gas wafting into her
+       neighborhood that made her feel like
+       her "chest was caving in."
+
+
+    ●​ “Our lives and our lungs are being
+       sacrificed on the altar of their
+       capitalistic exploitation,” noted another
+                                                                             5. (Chow)
+        .
+
+    ●​ And finally: “There is no amount of
+       money that can persuade me to accept
+       pollution killing me and my family.”
+
+
+
+Figures 5 and 6 (credits to Brandon Dill from
+the Washington Post and Stu Boyd II from
+USA Today/Reuters, respectively) picture
+public unrest. The first captures Tennessee
+state representative Justin Pearson speaking at                              6. (Chow)
+a rally against xAI on April 25th, 2025. The
+second is another march, again, against xAI,
+taken June 17th, 2025.
+
+
+In January 2026, the EPA issued a final ruling clarifying that all gas turbines supplying steady
+power to a fixed facility—regardless of whether they are on trailers or intended for short-term
+use—must be permitted as stationary sources under the Clean Air Act (Kerr).
+
+While xAI eventually secured stationary permits for some units in Memphis, it simply
+"copy-pasted" the unpermitted model just across the state line. As of March 2026, the company
+has been operating up to 27 unpermitted "temporary" turbines in Southaven, Mississippi, to
+power the same Colossus supercomputer network (Ireland).4
+
+
+
+4
+ The Loophole Warning: By labeling massive gas turbines as”'temporary-mobile,” companies have successfully
+bypassed EPA oversight required for permanent power plants.
+
+                                                                                                             12
+To suggest that those unhappy with the smog should “just leave” is not a solution; it is a
+normalization of corporate trespassing that treats local well-being as a secondary concern. No
+company should have the unilateral right to degrade a living situation without warrant. No
+person should be forced to make the choice between their homes and health, especially when the
+cause is a corporate third party that moved in without notice. Further, some residents simply do
+not have the financial mobility to uproot their lives, making them captive to whatever pollutants
+the "invisible giant" breathes out. Within this framing, the choice of location for Colossus tells a
+more intentional story. Boxtown is a predominantly Black community with a median income of
+approximately $37,000—less resources to “fight back”. Critics argue it is no coincidence that the
+"biggest supercomputer in the world" was placed in a neighborhood with low political resistance
+and high economic vulnerability (Chow). Accepting this precedent in Memphis normalizes a
+concept that should be unthinkable, putting every community—including those in Illinois—at
+risk of becoming the next site.
+
+The social dimension of the Memphis case is defined by a complete lack of transparency. The
+project was negotiated in secret, leaving the community completely in the dark until the facility
+was operational. This "ask-for-permission-later" approach is deeply disrespectful to a community
+that has already, historically, suffered from environmental hazards. The NAACP and Southern
+Environmental Law Center have since sent separate intent-to-sue notices for violations of the
+Clean Air Act, but the damage to the social fabric is already done (Chow; More Perfect Union;
+Hilt). Residents feel that their agency was traded for corporate speed, setting a dangerous
+precedent where tech companies can bypass local democratic processes as long as they promise
+"innovation”.
+
+While the facility brings investment to the region, it also introduces massive ratepayer risk. If the
+grid requires billions in upgrades to support xAI’s expansion, those costs could be shifted onto
+the very families who are already struggling with the environmental fallout. Despite the outcry,
+the cycle of development continues: plans are already underway for an even larger data center in
+the nearby neighborhood of Whitehaven.
+
+Stepping back briefly, it is important to recognize the wider issue of industrial plants operating
+near residential areas. Abuse of residential zoning in Memphis predates xAI’s Colossus, and
+thus, the entire problem of industrial encroachment cannot be attributed to a single company.
+However, through the global excitement surrounding AI, we are seeing a modern revival of this
+trend toward hasty infrastructure. While we should ideally seek to reform the operations of all
+industries operating in residential areas, this project narrows its focus to the specific expansion of
+AI infrastructure. The "hasty" model observed here is a repeatable strategy that can—and will, if
+left unchecked—be applied to other vulnerable areas.
+
+If Memphis represents this “hasty” model at its most extreme, Illinois represents opportunity.
+Unlike South Memphis, where the industrial footprint is already deeply entrenched, the
+
+
+                                                                                                   13
+expansion in Illinois is (arguably) not yet in an advanced stage. By examining local
+responses—from successful community opposition in Naperville to the rapid industrialization of
+DeKalb—we can provide further context as to how the situation is unfolding in Illinois and,
+ideally, brainstorm what can be done about the problem before it gets out of hand.
+
+
+
+In the Context of Illinois
+
+Illinois provides a particularly useful setting for examining these dynamics because it contains
+examples across the full lifecycle of data center development. Within a single state, operational
+facilities coexist with newly proposed campuses and at least one high-profile rejected project.
+This range allows the analysis to move beyond hypothetical impacts and instead observe how
+expectations, negotiations, and outcomes differ depending on location and community context.
+
+The following case studies therefore shift the discussion from general debates about AI
+infrastructure toward grounded observations drawn from Illinois communities themselves.
+
+
+
+Existing Data Centers in Illinois: Environmental Baselines and Established Infrastructure
+
+Existing facilities provide a baseline for understanding how data centers function once they
+become normalized parts of regional infrastructure.
+
+
+In downtown Chicago, sites such as Digital
+Realty’s ORD10 interconnection hub—figures
+7 and 8—operate within dense commercial
+corridors where large industrial buildings and
+energy infrastructure have long histories.
+
+Public materials emphasize connectivity and
+modernization rather than environmental
+transformation, reflecting how impacts in
+                                                    7. (“350 East Cermak Road in Chicago | Digital Realty (19.5
+urban environments are often absorbed into                                  MW)”)
+existing infrastructure systems (Digital Realty).
+
+Environmental concerns in these settings tend
+to center on operational factors such as
+generator testing, rooftop mechanical systems,
+
+
+
+
+                                                                                                                  14
+and construction        disruptions rather       than                       8. (Google Maps)
+
+land-use change.
+
+
+
+A different pattern appears in suburban and
+regional locations. The Meta data center
+campus in DeKalb—pictured in figure
+9—illustrates how environmental impacts can
+develop incrementally through expansion. City
+communications describing the campus growth
+frame the project primarily through investment
+and development language while implicitly
+signaling increased utility capacity and
+infrastructure coordination (“Meta Expanding                                9. (Google Maps)
+
+DeKalb Data Center”).
+
+
+
+
+Similarly, Elk Grove Village has evolved into a
+concentrated data center cluster where multiple
+facilities operated by companies, such as
+Stream Data Centers, reinforce the area’s
+identity as a connectivity hub (Stream Data
+Centers). See figures 10 and 11.
+
+In these environments, the environmental                                     10. (Google Maps)
+
+question shifts from individual projects to
+cumulative infrastructure demand, including
+repeated construction cycles and sustained
+energy requirements.5
+
+
+
+
+5
+  Cumulative Strain: In suburban hubs like DeKalb and Elk Grove Village, the environmental question has shifted
+from individual projects to the cumulative burden of repeated construction and massive energy demand.
+
+                                                                                                              15
+Socially, existing sites often have limited
+visible public debate, suggesting that once
+infrastructure becomes established,
+development is perceived as routine.
+Economically, municipalities frequently
+present these facilities as indicators of
+technological relevance and regional
+competitiveness, reinforcing acceptance over
+time.
+
+
+                                                                   11. (Google Maps)
+
+
+
+
+Proposed and Under-Development Projects: Negotiation and Uncertainty
+
+Proposed projects reveal impacts more clearly because communities encounter them before
+normalization occurs. The Edged “Project Vector” proposal near the existing Meta campus in
+DeKalb demonstrates how environmental concerns emerge during planning stages. Public
+hearings and local reporting highlight discussions surrounding lighting mitigation, stormwater
+management, and infrastructure integration, indicating attempts to anticipate nuisance impacts
+before construction begins (City of DeKalb, “Edged Development Approved”).
+
+In Minooka, planning materials and community outreach events surrounding a proposed Equinix
+data center show how environmental and economic narratives intersect. Village documents
+emphasize investment potential while residents raise questions about farmland conversion and
+long-term water use (Village of Minooka). Rural proposals such as the CyrusOne campus in
+Sangamon County further illustrate how large projected electrical loads and utility planning
+become central issues when projects enter agricultural landscapes, where industrial infrastructure
+represents a visible shift in land identity (Sangamon County).
+
+Socially, these projects generate structured participation through hearings, open houses, and
+public comment periods, creating clearer records of negotiation between developers and
+residents. Economically, redevelopment proposals in Hoffman Estates and Mount Prospect are
+often framed as adaptive reuse of former corporate campuses, presenting data centers as
+successors to earlier economic eras rather than entirely new industrial activity (“Compass Kicks
+off Development of Its First Campus in Illinois”; “ComEd and CLoudHQ Break Ground on New
+Hyperscale Data Center in Mount Prospect”). These cases highlight uncertainty, where benefits
+remain projected while impacts remain speculative.
+
+
+
+
+                                                                                               16
+Denied Development in Illinois: Community Limits and the Annoyance Threshold
+
+The rejected Karis Critical proposal in Naperville provides an important counterpoint to both
+operational and proposed projects. Located on the former Lucent campus, the proposal
+underwent months of hearings and revisions before the city council ultimately denied the
+conditional use permit in January 2026. News coverage consistently identifies resident concerns
+related to diesel backup generators, air quality, noise, and proximity to homes as central factors
+influencing the decision (Cox; NCTV17 Staff; ABC7 Chicago Staff).
+
+Environmentally, the debate focused on routine operational impacts rather than catastrophic risk,
+demonstrating how cumulative everyday stressors can shape perception. Socially, the extended
+review process and high public turnout reflected sustained community engagement and
+skepticism toward mitigation assurances. Economically, supporters emphasized redevelopment
+and investment potential, while opponents questioned whether benefits justified long-term
+neighborhood impacts.
+
+As a case study, Naperville illustrates that acceptance of AI infrastructure is not inevitable. When
+environmental concerns align with strong social mobilization and uncertain economic tradeoffs,
+communities may determine that a project exceeds their acceptable threshold. The denial
+therefore functions not as an anomaly but as evidence that local governance remains a decisive
+factor in shaping the trajectory of AI development.6
+
+
+
+Call to Action
+
+Annoyance Threshold
+
+It is here that we must revisit this concept of the “annoyance threshold”.7 As previously
+established, this threshold is the silent boundary of our social and legal lives—the point where a
+"ruckus in public" becomes an arrestable offense, or a factory’s exhaust becomes a legal
+violation. It is the "tipping point" where a bothersome activity crosses the line from a nuisance to
+a breach of the community's well-being. While the term may sound subjective, it is a
+well-documented psychological phenomenon. As far back as 1956, researcher Walter Spieth
+demonstrated that an individual's tolerance for noise—and (arguably) by extension, any
+persistent environmental stressor—is not fixed. It is a product of their environment.
+In his study, “Annoyance threshold judgments of bands of noise”, Spieth asked participants to set
+a noise level that would "annoy them if it were present most of the time." The results were stark:
+
+6
+ Community Power: The denial of the Karis Critical proposal in Naperville proves that community mobilization
+and local governance remain decisive factors in stopping “hasty” development.
+7
+ The "Right to be Annoyed": Annoyance is not just a nuisance; it is a clinical psychological signal that a
+boundary of human dignity and community well-being has been crossed.
+
+                                                                                                               17
+those living and working in quiet, stable environments had an annoyance threshold 15 decibels
+lower than those already accustomed to industrial noise.
+
+
+In the context of the Illinois AI boom, this study validates a critical point: a community’s
+"accepted limit" for industrial stress is being artificially inflated. By the time an "invisible giant"
+breaks ground in a quiet community, the industry has already decided that the residents will
+simply learn to be bothered less. We must stop placing the burden on the resident to "adjust" to
+the thrum of cooling fans, the spike in utility bills, or the strain on local water. Instead, the
+burden must be placed on the industry to quiet down. We argue that legislation must recognize
+these thresholds before construction begins, and continue to enforce them throughout the
+facility’s lifespan. We must protect the "right to be annoyed" as a defense of a stable, quiet, and
+affordable community. To be annoyed is to recognize that a boundary has been crossed; we
+cannot let "hasty" infrastructure move that boundary for us.
+
+
+
+Contacting Representatives
+
+The most direct way to protect your community's annoyance threshold is to support Senate Bill
+4016: The POWER Act (Protecting Our Water, Energy, and Ratepayers). Introduced February
+6th, 2026, this legislation is currently moving through the Illinois government and addresses the
+three pillars of our project: environmental degradation, the lack of transparency, and economic
+injustice.
+We format this section by, first, offering more details on the bill itself. This is followed by a basic
+set of instructions and a message template for reaching out to representatives. Finally, we will
+provide potential points of contact for the representatives themselves (based on one’s location).
+While this project focuses on the DeKalb, Elk Grove Village, and Chicago areas, the general idea
+of civic engagement can be applied and adapted to anywhere.
+
+
+SB 4016
+Key provisions included:
+    1.​ Ratepayer Protection: Prevents utility companies from passing the cost of industrial grid
+        upgrades (required for data centers) onto residential electricity bills.
+    2.​ Water Transparency: Mandates that facilities report their annual water consumption,
+        which is currently non-public information in many jurisdictions.
+    3.​ Clean Energy Requirements: Incentivizes "Bring Your Own Power" models to ensure the
+        AI infrastructure doesn't force a return to coal or gas-fired power plants.
+(“SB 4016 104TH GENERAL ASSEMBLY”)
+
+                                                                                                     18
+Instructions
+
+    1.​ Identify your district using the regional lists below.
+    2.​ Contact your representative via email or phone.
+    3.​ Ask them to support SB 4016 using the message template provided.
+
+Note: When contacting them, mention that as a constituent, you are looking for their specific
+stance on SB 4016 as they prepare for the November election. Candidates are often more
+responsive to policy inquiries during an active election year.
+
+
+
+Message template
+
+      "Dear [Senator/Representative], as a resident of [location], I am writing to express
+      my concern over the expansion of data centers in our district. I am specifically
+      worried about [concern] and how this will impact local families. I urge you to
+      support SB 4016 (The POWER Act) to ensure that industrial growth does not come
+      at the expense of our community’s stability and resources."
+
+
+
+General
+
+For residents of Illinois:
+
+The appropriate members of the state Senate can be found using the Illinois Senate District
+Map.
+
+The appropriate members of the state House can be found using the Illinois House District
+Map.
+
+
+
+DeKalb
+
+State Senate (35th District): Dave Syverson – Member of several public health committees.
+
+State Senate (38th District): Sue Rezin – Member of the “AI and Social Media” and "Energy and
+Public Utilities” committees.
+
+State House (70th District): Jeff Keicher – Vocal advocate for local infrastructure and economic
+development. Member of “Artificial Intelligence Subcommittee”.
+
+                                                                                                19
+State House (76th District): Amy Briel
+
+Local Oversight: DeKalb City Council – Contact the Mayor and Aldermen regarding the
+southern "industrial corridor" zoning.
+
+
+
+Elk Grove Village
+
+State Senate (39th District): Don Harmon – Senate President; holds significant influence over
+state energy policy and ComEd agreements.
+
+State Senate (28th District): Laura Murphy
+
+State Senate (24th District): Seth Lewis - Member of “Approp- Pub Safety & Infrastructure”
+committee.
+
+State House (77th District): Norma Hernandez – Representative for Elk Grove and Northlake
+regions. Member of the “Energy & Environment” committee.
+
+State House (56th District): Michelle Mussman – Member of the “Public Health” committee.
+
+State House (48th District): Jennifer Sanalitro
+
+Local Oversight: Elk Grove Village Board of Trustees – The primary authority for Business Park
+expansions.
+
+
+
+Chicago
+
+Chicago City Council: Maria Hadden (49th Ward) – Chair of the Committee on Environmental
+Protection and Energy; oversees the city’s carbon footprint and ComEd franchise agreements.
+
+State Senate (3rd District): Mattie Hunter – Represents the Near South Side and the South Loo
+
+State Senate (13th District): Robert Peters – Encompasses the massive 350 E. Cermak data
+center cluster. Member of the “Approp- Pub Safety & Infrastructure” committee.
+
+State House (6th District): Sonya Harper – Represents the Ashland Avenue corridor (QTS
+clusters) and is a leading voice on environmental justice and community resource protection.
+
+State House (26th District): Kambium (Kam) Buckner – Encompasses the massive 350 E.
+Cermak data center cluster.
+
+
+                                                                                                20
+From Map to Decision: An Explainable County-Level Impact Platform
+
+Platform Design and Analytical Methodology
+
+Live platform: The People v. AI
+GitHub repository: https://github.com/Laasya-73/SoReMo-S26-people-v-hasty-ai.git
+
+
+
+Purpose
+This section documents the ins-and-outs of our data visualization tool; how it evolved from a
+static map into a multi-workspace analytical system for evaluating AI/data center expansion in
+Illinois. The platform is designed to answer the policy question:
+Where are data centers concentrated, what burdens already exist in those counties, and how
+much additional pressure is introduced under alternative growth assumptions?
+
+
+
+Analytical Framing
+The platform is built around two complementary frameworks:
+     Layered Narrative Framework​
+     A guided sequence helps users move from location to consequence:
+          ●​ where data centers are now/planned,
+          ●​ current county stress conditions,
+          ●​ populations likely to be exposed,
+          ●​ projected burden under growth scenarios.
+
+     Annoyance Threshold Framework​
+      A composite burden concept operationalizes “community strain” using cumulative
+     indicators, including:
+           ●​ air quality stress (e.g., AQI-related signal),
+           ●​ water stress,
+           ●​ household energy burden,
+           ●​ social vulnerability-oriented indicators.
+     Counties above a user-defined threshold are flagged for closer review.
+
+
+
+
+                                                                                                 21
+Data and Layer Architecture
+The system integrates curated project records and external datasets into a county-level decision
+context. Key layer families include:
+   ●​ Infrastructure footprint layers: Existing, Proposed, Denied, Registry (all known Illinois
+      sites), County outlines.
+   ●​ Environmental layers: air-quality indicators, water-stress indicator(s), and related stress
+      context.
+   ●​ Community/equity layers: demographic and vulnerability-oriented county indicators.
+   ●​ Energy context layers: county energy-burden and electricity-use context.
+   ●​ Registry expansion layer: global/US infrastructure records for comparative context, with
+      Illinois filtering.
+This architecture allows users to compare facility presence with pre-existing county conditions in
+the same interface.
+
+
+
+Core Quantitative Logic
+
+Pressure Model
+Pressure is modeled as a weighted index so assumptions are explicit and auditable.
+Current Pressure
+
+       Current Pressure = (Existing wE)
+
+Planned Pressure
+
+       Planned Pressure = (Existing wE) + (Proposed wP) + (Denied wD)
+
+Pressure Delta (Change in Pressure)
+
+       ΔPressure = Planned Pressure - Current Pressure
+
+Default weights are exposed to users and can be adjusted in the Scenario Studio (recommended
+baseline, alternative profiles, and custom setup). Registry points are reference coverage and are
+excluded from pressure scoring.
+
+
+
+Annoyance Threshold Score
+We attempt to define the annoyance threshold arithmetically. It combines multiple burden
+dimensions into one interpretable screening signal. In implementation terms, this is an
+
+
+                                                                                                    22
+equal-weight composite of normalized county stress indicators (air, water, energy, and social
+vulnerability context), with threshold-based county flagging for decision attention.
+
+
+
+Workspaces
+
+Home
+The home page serves as the project gateway. It explains the platform’s policy purpose,
+introduces each module, and provides a structured navigation path for first-time users. This
+reduces interpretation error before analysis begins.
+
+
+
+
+                                                 12.
+
+
+
+
+Illinois Map
+This is the main spatial workspace. Users can:
+   ●​ toggle infrastructure layers (Existing, Proposed, Denied, Registry, County outlines),
+   ●​ switch county stress layers,
+   ●​ inspect county and site popups,
+   ●​ follow the Layered Narrative step sequence,
+   ●​ identify counties where infrastructure footprint intersects with elevated stress context.
+The map is optimized for interactive interpretation rather than static display.
+
+
+
+
+                                                 13.
+
+
+
+
+                                                                                                  23
+County Intelligence Briefing
+This module converts county metrics into concise narrative outputs suitable for presentations and
+public-facing documents. Briefs include:
+   ●​ active scenario context,
+   ●​ current vs planned pressure and delta,
+   ●​ percentile-based interpretation (high/moderate/low relative standing),
+   ●​ focused prompts based on selected analytical lens,
+   ●​ exportable files for dissemination.
+This bridges technical outputs and non-technical policy communication.
+
+
+
+
+                                               14.
+
+
+
+
+Impact Scenario Studio
+This workspace is the policy simulation engine. Users modify assumptions and immediately
+observe:
+   ●​ baseline pressure,
+   ●​ projected pressure,
+   ●​ pressure delta,
+   ●​ watchlist alerts for counties with high planned pressure or sharp increase.
+By making formulas and weights visible, the tool supports transparent disagreement and iterative
+policy testing rather than opaque “black box” scoring.
+
+
+
+
+                                                                                               24
+                                                   15.
+
+
+
+
+Data Center Registry Explorer
+This module extends beyond the core Illinois project dataset by integrating broader registry
+coverage (US/global) and provider filtering. It includes:
+   ●​ map + searchable records,
+   ●​ deduplication summaries,
+   ●​ confidence scoring tiers,
+   ●​ source-quality mix indicators,
+   ●​ verified cloud-region layer for authoritative reference points.
+Its role is comparative: it situates Illinois patterns within larger infrastructure geographies while
+preserving traceability of source quality.
+
+
+
+
+                                                   16.
+
+
+
+
+Usability and Presentation Engineering
+The interface was refined for public-facing use:
+   ●​ responsive layouts across desktop/mobile widths,
+   ●​ consistent workspace navigation,
+   ●​ reduced clutter and clearer control labels,
+   ●​ interpretive text where needed to explain metrics and formulas,
+   ●​ export-ready views for reporting and presentation workflows.
+These design decisions are methodological, not cosmetic: readability directly affects whether
+evidence is correctly interpreted.
+
+
+
+Methodological Contribution
+The platform contributes a reproducible, explainable workflow that links:
+
+                                                                                                    25
+   ●​ spatial footprint (where infrastructure is),
+   ●​ county stress baseline (what conditions already exist),
+   ●​ scenario burden projection (what changes under growth assumptions),
+   ●​ action-oriented outputs (briefs, watchlists, and decision prompts).
+This moves the project beyond mapping toward practical decision-support for environmental
+justice and infrastructure governance.
+
+
+
+Limitations and Next Steps
+Current outputs are screening and prioritization tools, not causal attribution models. Limitations
+include source heterogeneity, uneven metadata completeness, and county-level aggregation
+constraints for some variables.
+Future work should strengthen:
+   ●​ time-series trend integration,
+   ●​ utility/grid and emissions granularity,
+   ●​ additional validated source harmonization,
+   ●​ uncertainty communication for composite thresholds.
+
+
+
+Discussion and Policy Implications
+
+Interpreting the Platform Outputs
+The platform’s results should be read as decision-support evidence, not as a deterministic ranking
+of “good” versus “bad” counties. Its primary value is comparative: it shows where infrastructure
+concentration, environmental stress, and community vulnerability overlap, and how those
+overlaps change under alternative growth assumptions.
+In this sense, the outputs are most useful for identifying where additional scrutiny is warranted,
+rather than replacing formal permitting, environmental review, or public consultation.
+
+
+
+Why This Matters for Illinois Data Center Governance
+Illinois is already experiencing uneven data center concentration, especially in and around major
+logistics and grid-access corridors. The project demonstrates that infrastructure siting discussions
+can be improved when they move from isolated project review to cumulative county context.
+By combining footprint layers with stress indicators, the platform helps decision-makers ask a
+stronger policy question:
+
+
+                                                                                                     26
+Is a county being asked to absorb incremental AI infrastructure on top of already elevated burden
+conditions?
+
+
+
+Policy Use Cases
+The system supports at least four practical governance uses:
+   ●​ Pre-screening for permitting bodies: Counties with high planned pressure and high
+      baseline stress can be flagged for enhanced review criteria, mitigation conditions, or
+      phased approvals.
+   ●​ Hearing preparation and community review: County Intelligence Briefing outputs
+      translate technical signals into concise narratives that stakeholders could potentially
+      discuss in public meetings.
+   ●​ Scenario negotiation: Impact Scenario Studio allows agencies, developers, and
+      community groups to test alternative assumptions and compare outcomes transparently.
+   ●​ Evidence traceability: Registry and source-quality panels improve trust by showing
+      where records come from and how confidence is assigned.
+
+
+
+Equity and Environmental Justice Implications
+A central contribution of this project is making equity analysis operational rather than rhetorical.
+By co-locating demographic/vulnerability indicators with infrastructure and stress signals, the
+platform helps reveal where expansion may reinforce existing disparities.
+This does not prove disproportionate impact by itself; however, it identifies counties where
+equity-sensitive governance safeguards are likely necessary before additional approvals.
+
+
+
+Methodological Implications
+The project illustrates a useful middle ground between static reporting and fully automated
+forecasting:
+   ●​ static maps are often descriptive but not actionable;
+   ●​ black-box models can be predictive but hard to contest publicly;
+   ●​ this platform uses explicit assumptions, editable weights, and interpretable outputs.
+That design choice is important for policy environments, where legitimacy depends on clarity,
+contestability, and public accountability.
+
+
+
+
+                                                                                                  27
+Limits of Interpretation
+Three limits should be stated clearly:
+     Composite scores simplify reality​
+      Pressure and threshold metrics are abstractions; they support comparison but do not
+     capture all local conditions.
+     Data completeness varies by source​
+      Some indicators are richer than others, and registry coverage differs across providers and
+     regions.
+     County scale can mask sub-county variation​
+      Intra-county inequalities and neighborhood-level exposures may not be fully visible in
+     county-level summaries.
+These limits do not reduce usefulness, but they define appropriate use: screening, prioritization,
+and policy framing.
+
+
+
+Recommended Policy Direction
+Based on this project’s outputs and workflow, a practical policy path is to adopt:
+   ●​ tiered review triggers for high-pressure/high-burden counties,
+   ●​ phased approvals linked to measurable checkpoints,
+   ●​ public disclosure requirements for siting assumptions and cumulative burden context,
+   ●​ county-specific mitigation commitments when threshold indicators are elevated.
+This aligns infrastructure growth with procedural fairness and environmental accountability.
+
+
+
+Broader Significance
+Although developed for Illinois, the framework is transferable. Any region facing
+AI-infrastructure growth can adapt the same structure: footprint mapping, stress overlays,
+scenario testing, and explainable briefing outputs.
+The broader research contribution is therefore not only a map, but a replicable governance
+method for evaluating AI infrastructure expansion under uncertainty.
+
+
+Recommendations
+To move from "hasty" expansion to sustainable integration, we will now propose the following
+supplemental solutions designed to build upon the foundation of SB 4016, specifically tuned for
+data centers built around residential areas.
+
+
+                                                                                                   28
+The cheapest solution is not inherently the most optimal. When built with haste, infrastructure
+can cause unintended harm that lingers for generations. Regulation should not be feared by the
+individual, as it exists for their protection. Regulation should not be feared by the company, as it
+does not halt progress; rather, it encourages creative work-around solutions. Regulation inspires
+innovation. True innovation is born from constraints, and by setting higher standards for
+community care, we push the industry toward a more sophisticated, resilient future.
+
+
+
+The “Keeler Garden” Green Wall
+
+The concept of a "green wall" or vegetative buffer—inspired by this semester’s partnership with
+the Chicago-based organization Keeler Gardens—transforms a data center’s exterior into a
+multifunctional environmental asset. This works by mandating a minimum "Green Coverage"
+ratio (or some similar metric) in local zoning codes.
+By implementing a dense strip of native trees and shrubs (16-32 feet thick), the facility gains a
+natural filtration system for nitrogen oxides and particulate matter emitted during generator
+testing—the exact pollutants documented as a primary stressor in the Memphis xAI case study..
+This living barrier also serves to muffle high-frequency mechanical noise and mitigate the
+"Urban Heat Island" effect (United States Environmental Protection Agency), lowering the
+ambient temperature for both the residents and the facility itself.
+   ●​ Community Win: Improved local aesthetics, buffered air quality, and the restoration of
+      local biodiversity.
+   ●​ Company Win: Lowered cooling costs due to reduced ambient heat and the security of a
+      "social license", per say, to operate without constant PR crises.
+Ultimately, this initiative builds a bridge of trust between the industry and its neighbors. As a
+compromise, in areas where space is too tight for a full 32-foot buffer, companies can implement
+vertical "living facades" or provide direct funding to local organizations to develop off-site green
+spaces in the immediate neighborhood. (Note: Keeler Gardens can serve as a placeholder for any
+professional landscaping or state-funded ecological project.)
+
+
+
+Operational Accountability During Emergency Situations
+
+Operational accountability ensures that when local resources or the power grid are under
+pressure, the "invisible giant" is an active participant in the community’s stability, rather than a
+drain on it.
+A water budgeting and drought-proof operations plan would require facilities to operate on a
+strict water budget, incorporating real-time leak detection and prioritizing reclaimed water for
+
+                                                                                                       29
+cooling. It would work by requiring developers to submit a "Water Impact Plan" as part of the
+zoning process. As a compromise, if reclaimed water infrastructure is not immediately available,
+the company must commit to a phased retrofit plan as municipal infrastructure matures.
+   ●​ Community Win: Eliminates hidden strain on the municipal drinking water supply and
+      protects local aquifers.
+   ●​ Company Win: Reduces long-term water supply risks and prevents emergency
+      operational restrictions during droughts/water scarcity scenarios.
+Moving away from a "diesel-by-default" model, we propose that batteries handle all routine
+testing and short-term outages. Policies would cap annual generator testing hours and require
+public reporting of backup power events. Generators would be strictly reserved as a "true last
+resort" for catastrophic grid failures.
+   ●​ Community Win: Significantly less diesel exhaust, reduced noise pollution from testing,
+      and lower particulate emissions in residential corridors.
+   ●​ Company Win: Improves overall system reliability, reduces fuel logistics/storage risks,
+      and lowers wear and tear on backup generators.
+
+
+
+Building on SB 4016: Ending “Cross-Subsidy”
+
+To ensure that technological progress does not lead to economic injustice, we propose
+implementing structural protections that prevent residents from subsidizing industrial growth.
+
+Transmission security agreements would require "letters of credit" from developers before
+breaking ground on massive grid upgrades. This ensures that if a "phantom" project is canceled
+mid-build, the developer—not the local ratepayers—is responsible for the multimillion-dollar
+substation already under construction.
+
+Community benefit agreements could be triggered for any facility exceeding a specific Megawatt
+(MW) threshold. Fees would be indexed to a "dollar-per-MW per year" formula, ensuring the
+community’s benefit scales with the facility's power consumption.
+
+   ●​ Community Win: Direct funding for home weatherization, industrial-grade air filters for
+      nearby schools, and local bill relief programs.
+   ●​ Company Win: Secures the "social license" to operate and reduces the risk of costly
+      litigation or PR crises.
+
+Enforcing zoning to data centers where they’d “fit” is a strategy that uses data to pre-designate
+industrial brownfields and reuse sites as "preferred" for data center development. Minimum
+distance buffers from residential edges would be mandated unless extra, high-tier mitigation (like
+the Green Wall) is fully funded.
+
+
+                                                                                                 30
+   ●​ Community Win: Prevents the "surprise" factor of industrial giants appearing next to
+      homes, schools, or parks.
+   ●​ Company Win: Provides a predictable roadmap with less public backlash and fewer
+      expensive site redesigns.
+
+Transparent reporting, but with a “safe harbor” (for legitimate security needs) would require
+data, but it must be balanced with operational safety. Companies would be required to publish
+aggregated monthly resource data (energy, water, generator runtime) to keep the community
+informed. This provision would ensure that specific tenant data or sensitive security details
+remain confidential while the impacts remain public.
+   ●​ Community win: real data on energy, water, and generator runtime.
+   ●​ Company win: avoids oversharing sensitive internal details while still meeting
+      accountability.
+
+Infrastructure funded by developers (i.e. grid upgrades) should serve the surrounding
+neighborhood as well. When a developer funds a grid upgrade, a portion of that work (such as
+feeder hardening) must directly improve local residential reliability. Incentives could be provided
+if these upgrades specifically integrate clean energy sources.
+
+   ●​ Community win: reliability improvements and hard protections against bill spikes.
+   ●​ Company win: guaranteed interconnection timeline and clearer cost responsibilities.
+
+
+
+Limitations
+
+Despite the promise of these solutions, several hurdles remain. Legacy facilities are much harder
+to retrofit than "greenfield" projects; while a new building in DeKalb can easily integrate a
+32-foot vegetative buffer, a 20-year-old facility in Chicago’s South Loop faces significant spatial
+constraints. This means older neighborhoods may continue to experience a higher "annoyance
+factor" than areas with newer developments.
+
+Furthermore, there is a significant enforcement asymmetry. Without the independent monitoring
+proposed in SB 4016, residents are still forced to rely on company-provided data, which
+historically lacks the granularity needed for true accountability. Finally, the speed of the AI race
+often outpaces the growth of nature-based solutions—a tree buffer takes years to reach its full
+filtration potential, while a data center can be operational in mere months. Recognizing these
+gaps is essential to ensuring our recommendations remain grounded in reality, serving as a
+framework for persistent advocacy rather than a one-time fix.
+
+
+
+
+                                                                                                   31
+Conclusion: Protecting the Right to be Annoyed
+Throughout this assessment, we have tracked the footprint of an "invisible giant." We have seen
+how AI infrastructure occupies a massive physical reality in our neighborhoods, consuming our
+water, straining our power grid, and altering the very air we breathe. From the cautionary tale of
+Memphis to the active negotiations in Illinois, the pattern is clear: when AI expansion is driven
+by haste rather than harmony, the community is the one expected to shrink.
+The "annoyance threshold" is a boundary of human dignity. By making the “invisible giant”
+visible through data, mapping, and legislation like SB 4016, we shift the burden of proof. It is no
+longer the resident’s job to "learn to be bothered less"—it is the industry’s job to prove it can
+coexist without causing harm.
+We must protect the "right to be annoyed". Annoyance is our internal alarm system—a signal
+that a boundary has been crossed and a social contract has been broken. By reclaiming this right,
+we ensure that the progress of artificial intelligence does not require the sacrifice of local
+stability.
+The giant may be massive, but it is no longer invisible. It is our right to decide how, and where, it
+fits into our lives.
+
+
+Acknowledgments
+Thank you to Sonja Petrikov, Robert Ellis, and all of our participating faculty and peers of
+SoReMo S26. More about the SoReMo initiative can be found at SoReMo.org.
+
+
+
+SoReMo Partnership: Keeler Gardens
+
+A cornerstone of this project’s “recommendations” is our collaboration with Keeler Gardens, a
+Chicago-based organization dedicated to improving urban community health through
+nature-based connections. Their expertise in environmental sustainability provided the
+foundation for our "Green Wall" mitigation strategy, and gave us a good jump off point for the
+ideas that followed.
+
+
+
+References
+“350 East Cermak Road in Chicago | Digital Realty (19.5 MW).”              www.datacenterdynamics.com/en/news/cboe-edga-equi
+           Datacentermap.com, 2026,                                        ties-exchange-migrates-secondary-data-center-to-equini
+           www.datacentermap.com/usa/illinois/chicago/350-east-            x-facility-in-illinois/. Accessed 24 Feb. 2026.
+           cermark-road/. Accessed 8 Apr. 2026.                   Chow, Andrew R. ““We Are the Last of the Forgotten:” inside the
+“Cboe EDGA Equities Exchange Migrates Secondary Data Center                Memphis Community Battling Elon Musk’s XAI.”
+           to Equinix Facility in Illinois.”                               TIME, Time, 13 Aug. 2025,
+           Datacenterdynamics.com, 24 Feb. 2026,                           time.com/7308925/elon-musk-memphis-ai-data-center/.
+
+
+
+                                                                                                                              32
+“ComEd and CloudHQ Break Ground on New Hyperscale Data                             Burden in the Contiguous United States.” IScience, vol.
+           Center in Mount Prospect.” Business Wire, 23 Aug.                       28, no. 6, 6 May 2025, p. 112559,
+           2022, ComEd and CloudHQ Break Ground on New                             www.sciencedirect.com/science/article/pii/S258900422
+           Hyperscale Data Center in Mount Prospect.                               500820X, https://doi.org/10.1016/j.isci.2025.112559.
+“Compass Kicks off Development of Its First Campus in Illinois.”      Google Maps. “Google Maps.” Google Maps, 2021,
+           Compass Datacenters, 12 July 2024,                                      maps.app.goo.gl/3txjjEskweQeAtC76. Accessed 8 Apr.
+           www.compassdatacenters.com/news/compass-kicks-off                       2026.
+           -development-of-its-first-hyperscale-campus-in-illinois/                             Digital Reality ORD10; Chicago.
+           . Accessed 4 Mar. 2026.                                    ---. “Google Maps.” Google Maps, 2021,
+“CoreSite CH1 Data Center.” Coresite.com, 2025,                                    maps.app.goo.gl/S4fvdupqbiWZrQUu9. Accessed 8
+           www.coresite.com/data-center/ch1-chicago-il. Accessed                   Apr. 2026.
+           24 Feb. 2026.                                                                        Meta data center campus; DeKalb, IL.
+“CoreSite CH2 Data Center.” Coresite.com, 2025,                       ---. “Google Maps.” Google Maps, 2024,
+           www.coresite.com/data-center/ch2-chicago-il. Accessed                   maps.app.goo.gl/UWpwMFoMFHELSnGZ6. Accessed
+           24 Feb. 2026.                                                           8 Apr. 2026.
+Danelski, David. “AI Programs Consume Large Volumes of Scarce                                   Stream Data Centers; Elk Grove Village, IL.
+           Water.” News, 28 Apr. 2023,                                Han, Yuelin, et al. “The Unpaid Toll: Quantifying the Public
+           news.ucr.edu/articles/2023/04/28/ai-programs-consume                    Health Impact of AI.” ArXiv.org, 2024,
+           -large-volumes-scarce-water.                                            arxiv.org/abs/2412.06288.
+de Vries-Gao, Alex. “The Carbon and Water Footprints of Data          Hilt, Eric. “XAI Built an Illegal Power Plant to Power Its Data
+           Centers and What This Could Mean for Artificial                         Center.” Southern Environmental Law Center, 17 Feb.
+           Intelligence.” Patterns, Dec. 2025, p. 101430,                          2026,
+           www.cell.com/patterns/fulltext/S2666-3899(25)00278-                     www.selc.org/news/xai-built-an-illegal-power-plant-to-
+           8?_returnURL=https%3A%2F%2Flinkinghub.elsevier.c                        power-its-data-center/.
+           om%2Fretrieve%2Fpii%2FS2666389925002788%3Fsh               Ireland, Illan. ““We Are Not Expendable”: Southaven Residents
+           owall%3Dtrue,                                                           Fight XAI’s Plan for 41 Gas Turbines to Power Musk’s
+           https://doi.org/10.1016/j.patter.2025.101430.                           Grok.” Mississippi Free Press, 7 Mar. 2026,
+Debus, Charlotte, et al. “Reporting Electricity Consumption Is                     www.mississippifreepress.org/xai-faces-fierce-oppositio
+           Essential for Sustainable AI.” Nature Machine                           n-over-southaven-mississippi-power-plant-permit/.
+           Intelligence, vol. 5, no. 11, 1 Nov. 2023, pp.             Kerr, Dara. “Elon Musk’s XAI Datacenter Generating Extra
+           1176–1178,                                                              Electricity Illegally, Regulator Rules.” The Guardian,
+           www.nature.com/articles/s42256-023-00750-1,                             The Guardian, 16 Jan. 2026,
+           https://doi.org/10.1038/s42256-023-00750-1.                             www.theguardian.com/technology/2026/jan/15/elon-mu
+“Edged Development Approved • DeKalb, IL.” Cityofdekalb.com,                       sk-xai-datacenter-memphis.
+           2022,                                                      Lee, Charles, et al. “Reducing Concentrated Environmental
+           www.cityofdekalb.com/m/newsflash/home/detail/964.                       Burden: Addressing Cumulative Impacts in
+           Accessed 4 Mar. 2026.                                                   Government Decision Making.” Environmental Justice,
+Environmental Protection Agency. “Stationary Gas and                               vol. 18, no. 6, 1 Dec. 2025, pp. 357–365,
+           Combustion Turbines: New Source Performance                             https://doi.org/10.1177/19394071251398548.
+           Standards (NSPS) | US EPA.” US EPA, 28 Mar. 2016,          Legislative Information System. “Official Government Website of
+           www.epa.gov/stationary-sources-air-pollution/stationar                  the Illinois General Assembly.” Ilga.gov, 14 June 2024,
+           y-gas-and-combustion-turbines-new-source-performanc                     www.ilga.gov/Legislation/BillStatus?DocNum=4016&
+           e.                                                                      GAID=18&DocTypeID=SB&SessionID=114&GA=10
+Farivar, Cyrus. “Elon Musk Installs “Quick and Dirty” Turbines to                  4.
+           Power XAI’s Memphis Data Centers.” Forbes, 17 Mar.         Lindwall, Courtney. “The AI Boom Is Stressing the Grid—but It
+           2025,                                                                   Doesn’t Have to Be This Way.” Nrdc.org, 29 Sept.
+           www.forbes.com/sites/cyrusfarivar/2025/03/17/power-h                    2025,
+           ungry-ai-data-centers-seek-more-quick-and-dirty-mobil                   www.nrdc.org/stories/ai-boom-stressing-grid-it-doesnt-
+           e-gas-turbines/.                                                        have-be-way.
+Farver, Lisa Marie. “Naperville Data Center Proposal Nixed by         Lucivero, Federica. “Big Data, Big Waste? A Reflection on the
+           City Council.” Naperville, IL Patch, Patch, 21 Jan.                     Environmental Sustainability of Big Data Initiatives.”
+           2026,                                                                   Science and Engineering Ethics, vol. 26, 23 Dec. 2019,
+           patch.com/illinois/naperville/data-center-proposal-voted                https://doi.org/10.1007/s11948-019-00171-7.
+           -down-naperville. Accessed 24 Feb. 2026.                   “Meta Expanding DeKalb Data Center.” DeKalb, IL, 2016,
+Frenzel, Janna, et al. “DIGITAL INFRASTRUCTURES and                                www.cityofdekalb.com/CivicAlerts.aspx?AID=670&A
+           ENVIRONMENTAL JUSTICE: POLICIES,                                        RC=1459. Accessed 24 Feb. 2026.
+           PRACTICES, and VISIONS.” Selected Papers of                Mongird, Kendall, et al. “Energy and AI: Evaluating Future Grid
+           Internet Research, 31 Dec. 2023,                                        and Water Stress due to Data Centers.” Osti.gov, 16
+           https://doi.org/10.5210/spir.v2023i0.13522.                             June 2025,
+Garland, Jasmine, et al. “Exploring the Importance of                              www.osti.gov/biblio/2572012?utm_source=chatgpt.co
+           Environmental Justice Variables for Predicting Energy
+
+
+                                                                                                                                       33
+           m, https://doi.org/10.57931/2572012. Accessed 30 Sept.                Community Risks and Benefits of Nordic Datacenter
+           2025.                                                                 Development.” Energy Research & Social Science, vol.
+More Perfect Union. “We Went to the Town Elon Musk Is                            88, June 2022, p. 102493,
+           Poisoning.” YouTube, 30 May 2025,                                     https://doi.org/10.1016/j.erss.2022.102493.
+           www.youtube.com/watch?v=3VJT2JeDCyw. Accessed              Spieth, Walter. “Annoyance Threshold Judgments of Bands of
+           5 June 2025.                                                          Noise.” The Journal of the Acoustical Society of
+“ORD10 Data Center | 350 East Cermak | Digital Realty.”                          America, vol. 28, no. 5, 1 Sept. 1956, pp. 872–877,
+           Digitalrealty.com, 2026,                                              https://doi.org/10.1121/1.1908499. Accessed 25 Feb.
+           www.digitalrealty.com/data-centers/americas/chicago/o                 2026.
+           rd10. Accessed 24 Feb. 2026.                               Stream Data Centers. “Chicago Data Centers.” Stream Data
+Patel, Aadi, et al. “The Environmental Impact of AI Servers and                  Centers, 27 May 2025,
+           Sustainable Solutions.” ArXiv.org, 2025,                              www.streamdatacenters.com/locations/chicago-data-cen
+           arxiv.org/abs/2601.06063.                                             ters/.
+Piekos, Christian. “Naperville City Council Denies Controversial      United States Environmental Protection Agency. “What Are Heat
+           Plan for Large Data Center.” ABC7 Chicago, 21 Jan.                    Islands?” US EPA, 10 Dec. 2024,
+           2026,                                                                 www.epa.gov/heatislands/what-are-heat-islands.
+           abc7chicago.com/post/naperville-illinois-city-council-d    Vera, Lourdes A., et al. “When Data Justice and Environmental
+           enies-plan-karis-critical-data-center-vacant-lucent-camp              Justice Meet: Formulating a Response to Extractive
+           us-off-warrenville-road/18442413/.                                    Logic through Environmental Data Justice.”
+Pirc, Kim. “Naperville City Council Votes down Proposed Data                     Information, Communication & Society, vol. 22, no. 7,
+           Center.” NCTV17, 21 Jan. 2026,                                        13 May 2019, pp. 1012–1028,
+           www.nctv17.org/news/naperville-city-council-votes-do                  https://doi.org/10.1080/1369118x.2019.1596293.
+           wn-proposed-data-center/. Accessed 24 Feb. 2026.           Village of Minooka. “Minooka Data Center FAQ and Fact Sheet |
+Sangamon County. “Proposed CyrusOne Data Center.”                                Minooka.” Minooka, 2025,
+           Sangamonil.gov, 2025,                                                 www.minooka.com/news/posts/minooka-data-center-fa
+           sangamonil.gov/departments/a-c/county-board/propose                   q-and-fact-sheet. Accessed 5 Mar. 2026.
+           d-cyrusone-data-center. Accessed 4 Mar. 2026.              Walker, Carla, and Ian Goldsmith. “From Energy Use to Air
+“SB4016 104TH GENERAL ASSEMBLY.” Ilga.gov, 2025,                                 Quality, How Data Centers Affect US Communities.”
+           ilga.gov/documents/legislation/104/SB/10400SB4016.h                   World Resources Institute, 2026,
+           tm. Accessed 25 Feb. 2026.                                            www.wri.org/insights/us-data-center-growth-impacts.
+Sovacool, Benjamin K., et al. “The “Whole Systems” Energy
+           Sustainability of Digitalization: Humanizing the
+
+
+
+
+                                                                                                                                   34
+
